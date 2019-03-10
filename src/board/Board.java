@@ -24,6 +24,7 @@ public class Board extends Application {
 	int rows = Literals.RANKS;
 	int cols = Literals.FILES;
 	int gridsize = Literals.GRIDSIZE;
+	int asciiCaps = Literals.ASCII_CAPS;
 	final Group group = new Group();
 	Scene scene;
 	ArrayList<Piece> pieces = new ArrayList<Piece>();
@@ -44,7 +45,7 @@ public class Board extends Application {
 	private void setUpBoard() {
         drawSquares();
         drawLines();
-        annotateBoard();
+        drawLabels();
 	}
 
 	private void drawSquares() {
@@ -76,9 +77,9 @@ public class Board extends Application {
 	}
 	
 	
-	private void annotateBoard() {
+	private void drawLabels() {
 		for(int i = 1; i <= cols; i++) {
-			setText("" + (char)(i + Literals.ASCII_CAPS), gridsize + gridsize*(i) + gridsize/2, 10*gridsize + gridsize/2);
+			setText("" + (char)(i + asciiCaps), gridsize + gridsize*(i) + gridsize/2, 10*gridsize + gridsize/2);
 			setText("" + (9 - i), gridsize + gridsize/2, gridsize + gridsize*(i) + gridsize/2);
 		}
 	}
@@ -98,12 +99,16 @@ public class Board extends Application {
 					for(int number = 1; number <= type.getQuantity(); number++) {
 						Piece piece = factory.assignPieces(type, colour, number);
 					
-						piece.setOnMouseClicked(new EventHandler<MouseEvent>() {
+						piece.setOnMousePressed(new EventHandler<MouseEvent>() {
 							@Override
 							public void handle(MouseEvent event) {
-								
-								//piece.setFill(new ImagePattern(new Image("res/chess_icon.jpg")));
+								System.out.println("CLICKED THIS PIECE " + piece.name);
+								TranslateTransition transition = createTranslateTransition(piece);
+								transition.setToX((int)(event.getSceneX()/gridsize) * gridsize + gridsize/4 - piece.getX());
+								transition.setToY((int)(event.getSceneY()/gridsize) * gridsize + gridsize/4 - piece.getY());
+								transition.playFromStart();
 							}
+							//piece.setFill(new ImagePattern(new Image("res/chess_icon.jpg")));
 						});
 						pieces.add(piece);
 						group.getChildren().add(piece);
@@ -124,11 +129,11 @@ public class Board extends Application {
 	private void setUpMovements() {
 		
 		
-		TranslateTransition transition = createTranslateTransition(pieces.get(5));
-		movePieceOnMousePress(scene, pieces.get(5), transition);
+//		TranslateTransition transition = createTranslateTransition(pieces.get(5));
+//		movePieceOnMousePress(scene, pieces.get(5), transition);
 	}
 	
-	private TranslateTransition createTranslateTransition(final Rectangle piece) {
+	private TranslateTransition createTranslateTransition(final Piece piece) {
 		final TranslateTransition transition = new TranslateTransition(Literals.TRANSLATE_DURATION, piece);
 		transition.setOnFinished(new EventHandler<ActionEvent>() {
 			@Override
@@ -143,13 +148,13 @@ public class Board extends Application {
 	}
 	
 	private void movePieceOnMousePress(Scene scene, final Rectangle piece, final TranslateTransition transition) {
-		scene.setOnMousePressed(new EventHandler<MouseEvent>() {
-			@Override
-			public void handle(MouseEvent event) {
-				transition.setToX((int)(event.getSceneX()/gridsize) * gridsize + gridsize/4 - piece.getX());
-				transition.setToY((int)(event.getSceneY()/gridsize) * gridsize + gridsize/4 - piece.getY());
-				transition.playFromStart();
-			}
-		});
+//		scene.setOnMousePressed(new EventHandler<MouseEvent>() {
+//			@Override
+//			public void handle(MouseEvent event) {
+//				transition.setToX((int)(event.getSceneX()/gridsize) * gridsize + gridsize/4 - piece.getX());
+//				transition.setToY((int)(event.getSceneY()/gridsize) * gridsize + gridsize/4 - piece.getY());
+//				transition.playFromStart();
+//			}
+//		});
 	}
 }
