@@ -1,0 +1,5 @@
+package enums;
+
+public enum State {
+	NORMAL, CHECK, CHECKMATE, TAKEN, TOOK, MOVED, INITIAL, DEFAULT, EN_PASSANT, SELECTED;
+}
