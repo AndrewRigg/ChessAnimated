@@ -1,6 +1,5 @@
 package pieces;
 
-import board.Piece;
 import enums.Colour;
 import enums.Type;
 

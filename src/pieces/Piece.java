@@ -1,11 +1,13 @@
-package board;
+package pieces;
 
+import board.Literals;
 import enums.Colour;
 import enums.State;
 import enums.Type;
 import javafx.scene.image.Image;
 import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Rectangle;
+import board.Coord;
 
 public class Piece extends Rectangle{
 
@@ -42,4 +44,38 @@ public class Piece extends Rectangle{
 		this.setY((isWhite ? Literals.EIGHTH_ROW : Literals.FIRST_ROW) * gridsize + gridsize/4);
 		this.setX((pieceNumber == 1 ? type.getPositionX()+1 : Literals.BOARD_END - type.getPositionX()-1)*gridsize + gridsize/4);
 	}
+	
+//	public void setUpBasicMoves(int mag, int max) {
+//		for (int i = mag*(-1); i <= mag; i++) {
+//			direction: 
+//			for (int j = mag*(-1); j <= mag; j++) {
+//				for (int k = 1; k <= max; k++) {
+//					if (thisPieceCondition(i, j, k)) {
+//						Coord coord = thisPieceConditionCoord(i, j, k);
+//						if (coord.onGrid() && !validMoves.contains(coord)) {
+//							if (!board.getSquare(coord).thisSquareEmpty) {
+//								if (board.getSquare(coord).occupyingPiece.colour != this.colour) {
+//									validMoves.add(coord);
+//								}
+//								continue direction;
+//							} else {
+//								validMoves.add(coord);
+//							}
+//						}
+//					}
+//				}
+//			}
+//		}
+//	}
+//	
+	public boolean thisPieceCondition(int i, int j, int k) {
+		return false;
+	}
+	
+	public Coord thisPieceConditionCoord(int i, int j, int k) {
+		return null;
+	}
+	
+	public void calculateValidMoves(int col, int row) {}
+	
 }
