@@ -6,24 +6,27 @@ import enums.Colour;
 import enums.Type;
 import javafx.animation.TranslateTransition;
 import javafx.application.Application;
-import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import pieces.Piece;
+import board.Literals;
 
 public class Board extends Application {
 	
 	int rows = Literals.RANKS;
 	int cols = Literals.FILES;
 	int gridsize = Literals.GRIDSIZE;
+	int asciiCaps = Literals.ASCII_CAPS;
 	final Group group = new Group();
 	Scene scene;
 	ArrayList<Piece> pieces = new ArrayList<Piece>();
@@ -38,13 +41,12 @@ public class Board extends Application {
 		setUpBoard();
 		initialisePieces();
 		setScene(stage);
-		setUpMovements();
 	}
 
 	private void setUpBoard() {
         drawSquares();
         drawLines();
-        annotateBoard();
+        drawLabels();
 	}
 
 	private void drawSquares() {
@@ -76,9 +78,9 @@ public class Board extends Application {
 	}
 	
 	
-	private void annotateBoard() {
+	private void drawLabels() {
 		for(int i = 1; i <= cols; i++) {
-			setText("" + (char)(i + Literals.ASCII_CAPS), gridsize + gridsize*(i) + gridsize/2, 10*gridsize + gridsize/2);
+			setText("" + (char)(i + asciiCaps), gridsize + gridsize*(i) + gridsize/2, 10*gridsize + gridsize/2);
 			setText("" + (9 - i), gridsize + gridsize/2, gridsize + gridsize*(i) + gridsize/2);
 		}
 	}
@@ -97,12 +99,17 @@ public class Board extends Application {
 				for(Type type : Type.values()){
 					for(int number = 1; number <= type.getQuantity(); number++) {
 						Piece piece = factory.assignPieces(type, colour, number);
-					
 						piece.setOnMouseClicked(new EventHandler<MouseEvent>() {
 							@Override
 							public void handle(MouseEvent event) {
-								
-								//piece.setFill(new ImagePattern(new Image("res/chess_icon.jpg")));
+								piece.thisPieceSelected = !piece.thisPieceSelected;
+								System.out.println("CLICKED THIS PIECE " + piece.thisPieceSelected);
+								if(piece.thisPieceSelected) {
+									System.out.println("Selected " + piece.name);
+									moveOnKeyPressed(piece, (int)(event.getSceneX()/gridsize) * gridsize, (int)(event.getSceneY()/gridsize) * gridsize);
+								}else {
+									System.out.println("Unselected " + piece.name);
+								}
 							}
 						});
 						pieces.add(piece);
@@ -121,35 +128,24 @@ public class Board extends Application {
 		stage.show();
 	}
 	
-	private void setUpMovements() {
-		
-		
-		TranslateTransition transition = createTranslateTransition(pieces.get(5));
-		movePieceOnMousePress(scene, pieces.get(5), transition);
-	}
+	private void moveOnKeyPressed(Piece piece, int x, int y)
+    {
+        final TranslateTransition transition = new TranslateTransition(Literals.TRANSLATE_DURATION, piece);
+        scene.setOnMousePressed(e -> {
+            transition.setFromX(piece.getTranslateX());
+            transition.setFromY(piece.getTranslateY());
+            transition.setToX((int)(e.getSceneX()/gridsize) * gridsize - x);
+            transition.setToY((int)(e.getSceneY()/gridsize) * gridsize - y);
+            transition.playFromStart();
+        });
+        piece.thisPieceSelected = false;
+    }
 	
-	private TranslateTransition createTranslateTransition(final Rectangle piece) {
-		final TranslateTransition transition = new TranslateTransition(Literals.TRANSLATE_DURATION, piece);
-		transition.setOnFinished(new EventHandler<ActionEvent>() {
-			@Override
-			public void handle(ActionEvent t) {
-				piece.setX(piece.getTranslateX() + piece.getX());
-				piece.setY(piece.getTranslateY() + piece.getY());
-				piece.setTranslateX(0);
-				piece.setTranslateY(0);
-			}
-		});
-		return transition;
-	}
-	
-	private void movePieceOnMousePress(Scene scene, final Rectangle piece, final TranslateTransition transition) {
-		scene.setOnMousePressed(new EventHandler<MouseEvent>() {
-			@Override
-			public void handle(MouseEvent event) {
-				transition.setToX((int)(event.getSceneX()/gridsize) * gridsize + gridsize/4 - piece.getX());
-				transition.setToY((int)(event.getSceneY()/gridsize) * gridsize + gridsize/4 - piece.getY());
-				transition.playFromStart();
-			}
-		});
+	public void drawCircle(int row, int col) {
+		Circle circle =  new Circle(gridsize/3.5);
+		circle.setFill(Color.GREENYELLOW);
+		circle.setCenterX(row * gridsize+ 2 * gridsize);
+		circle.setCenterY(col * gridsize + 2 * gridsize);
+		group.getChildren().add(circle);
 	}
 }
