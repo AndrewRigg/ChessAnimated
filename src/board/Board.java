@@ -27,6 +27,7 @@ public class Board extends Application {
 	int cols = Literals.FILES;
 	int gridsize = Literals.GRIDSIZE;
 	int asciiCaps = Literals.ASCII_CAPS;
+	ArrayList<Circle> validMoveCircles;
 	final Group group = new Group();
 	Piece selectedPiece;
 	boolean pieceSelected = false;
@@ -35,7 +36,7 @@ public class Board extends Application {
 	PieceFactory factory = new PieceFactory();
 	
 	public Board(){
-		
+		this.validMoveCircles = new ArrayList<Circle>();
 	}
 	
 	public static void main(String[] args) {
@@ -58,11 +59,9 @@ public class Board extends Application {
 	private void drawSquares() {
 		for(int i = 0; i < Literals.FILES; i++) {
 			for(int j = 0; j < Literals.RANKS; j++) {
-				if((i + j) % 2 != 0) {
-					Rectangle rectangle= new Rectangle(120 + i * gridsize, 120 + j * gridsize, 60, 60);
-					rectangle.setFill(Color.LIGHTGRAY);
-					group.getChildren().add(rectangle);
-				}	
+				Rectangle rectangle= new Rectangle(120 + i * gridsize, 120 + j * gridsize, 60, 60);
+				rectangle.setFill((i + j) % 2 != 0 ? Color.LIGHTGRAY : Color.WHITE);
+				group.getChildren().add(rectangle);
 			}	
 		}
 		group.setOnMouseClicked(new EventHandler<MouseEvent>() {
@@ -70,6 +69,7 @@ public class Board extends Application {
 			public void handle(MouseEvent event) {
 				if(!pieceSelected) {
 					System.out.println("Selected Group");
+					removeHighlightedSquares(group);
 					selectedPiece = null;
 				}
 			}
@@ -117,16 +117,19 @@ public class Board extends Application {
 						piece.setOnMouseClicked(new EventHandler<MouseEvent>() {
 							@Override
 							public void handle(MouseEvent event) {
+								removeHighlightedSquares(group);
 								piece.thisPieceSelected = !piece.thisPieceSelected;
 								pieceSelected = !pieceSelected;
 								if(piece.thisPieceSelected) {
+									validMoveCircles.clear();
 									piece.calculateValidMoves();
-									piece.highlightSquares(group);
+									validMoveCircles.addAll(piece.getCircles());
+									drawCircles(group);
 									selectedPiece = piece;
 									System.out.println("CLICKED THIS PIECE " + piece.thisPieceSelected);
 								}else if(!piece.thisPieceSelected) {
 									System.out.println("NOT piece selected");
-									piece.removeHighlightedSquares(group);
+									//piece.removeHighlightedSquares(group);
 								}
 								if(selectedPiece == piece) {
 									System.out.println("Selected " + piece.name);
@@ -145,6 +148,20 @@ public class Board extends Application {
 					}
 				}
 			}
+		}
+	}
+	
+	public void removeHighlightedSquares(Group group) {
+		System.out.println("Removing circles...");
+		//group.getChildren().removeAll(validMoveCircles);
+		for(Circle circle: validMoveCircles) {
+			group.getChildren().remove(circle);
+		}
+	}
+	
+	public void drawCircles(Group group) {
+		for(Circle circle: validMoveCircles) {
+			group.getChildren().add(circle);
 		}
 	}
 	
