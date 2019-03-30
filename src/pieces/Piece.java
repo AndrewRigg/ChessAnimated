@@ -23,7 +23,7 @@ public class Piece extends Rectangle{
 	Colour colour;
 	State state;
 	Type type;
-	int pieceNumber, yOffset;
+	int pieceNumber, yOffset, magnitudeMove, maximumMove;
 	public boolean thisPieceSelected, isWhite, thisPieceCondition;
 	ArrayList<Coord> validMoves;
 	ArrayList<Circle> validMoveCircles;
@@ -43,6 +43,8 @@ public class Piece extends Rectangle{
 		getInitialCoords();
 		this.yOffset = 0;
 		this.thisPieceSelected = false;
+		magnitudeMove = 1;
+		maximumMove = 7;
 		this.validMoves = new ArrayList<Coord>();
 		this.validMoveCircles = new ArrayList<Circle>();
 		this.setFill(new ImagePattern(image));
@@ -65,11 +67,11 @@ public class Piece extends Rectangle{
 		return initial;
 	}
 	
-	public void setUpBasicMoves(int mag, int max) {
-		for (int i = mag*(-1); i <= mag; i++) {
-			for (int j = mag*(-1); j <= mag; j++) {
-				for (int k = 1; k <= max; k++) {
-					if (thisPieceCondition(i, j, k)) {
+	public void setUpBasicMoves() {
+		for (int i = magnitudeMove*(-1); i <= magnitudeMove; i++) {
+			for (int j = magnitudeMove*(-1); j <= magnitudeMove; j++) {
+				for (int k = 1; k <= maximumMove; k++) {
+					if (thisPieceCondition(i, j, k) && !(i == 0 && j == 0)) {
 						Coord coord = thisPieceConditionCoord(i, j, k);
 						if (coord.onGrid() && !validMoves.contains(coord)) {
 							validMoves.add(coord);
@@ -92,11 +94,11 @@ public class Piece extends Rectangle{
 	}
 	
 	public boolean thisPieceCondition(int i, int j, int k) {
-		return false;
+		return true;
 	}
 	
 	public Coord thisPieceConditionCoord(int i, int j, int k) {
-		return null;
+		return new Coord(current.getX() + i * k, current.getY() + j * k);
 	}
 
 	public void calculateValidMoves() {}

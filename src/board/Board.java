@@ -122,7 +122,7 @@ public class Board extends Application {
 								pieceSelected = !pieceSelected;
 								if(piece.thisPieceSelected) {
 									validMoveCircles.clear();
-									piece.calculateValidMoves();
+									piece.setUpBasicMoves();
 									validMoveCircles.addAll(piece.getCircles());
 									drawCircles(group);
 									selectedPiece = piece;
