@@ -11,17 +11,17 @@ public class Bishop extends Piece{
 	}
 	
 	@Override
-	public void calculateValidMoves(int col, int row) {
-	//	super.setUpBasicMoves(1, 7);
+	public void calculateValidMoves() {
+		super.setUpBasicMoves(1, 7);
 	}
 	
 	@Override
 	public boolean thisPieceCondition(int i, int j, int k) {
-		return (Math.abs(i) == Math.abs(j));
+		return (Math.abs(i) == Math.abs(j) && !(i == 0 && j == 0));
 	}
 	
 	@Override
 	public Coord thisPieceConditionCoord(int i, int j, int k) {
-		return new Coord((int)this.getX() + i * k, (int)this.getY() + j * k);
+		return new Coord(current.getX() + i * k, current.getY() + j * k);
 	}
 }

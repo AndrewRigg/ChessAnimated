@@ -28,9 +28,15 @@ public class Board extends Application {
 	int gridsize = Literals.GRIDSIZE;
 	int asciiCaps = Literals.ASCII_CAPS;
 	final Group group = new Group();
+	Piece selectedPiece;
+	boolean pieceSelected = false;
 	Scene scene;
 	ArrayList<Piece> pieces = new ArrayList<Piece>();
 	PieceFactory factory = new PieceFactory();
+	
+	public Board(){
+		
+	}
 	
 	public static void main(String[] args) {
 		launch(args);
@@ -59,6 +65,15 @@ public class Board extends Application {
 				}	
 			}	
 		}
+		group.setOnMouseClicked(new EventHandler<MouseEvent>() {
+			@Override
+			public void handle(MouseEvent event) {
+				if(!pieceSelected) {
+					System.out.println("Selected Group");
+					selectedPiece = null;
+				}
+			}
+		});
 	}
 
 	private void drawLines() {
@@ -103,12 +118,25 @@ public class Board extends Application {
 							@Override
 							public void handle(MouseEvent event) {
 								piece.thisPieceSelected = !piece.thisPieceSelected;
-								System.out.println("CLICKED THIS PIECE " + piece.thisPieceSelected);
+								pieceSelected = !pieceSelected;
 								if(piece.thisPieceSelected) {
+									piece.calculateValidMoves();
+									piece.highlightSquares(group);
+									selectedPiece = piece;
+									System.out.println("CLICKED THIS PIECE " + piece.thisPieceSelected);
+								}else if(!piece.thisPieceSelected) {
+									System.out.println("NOT piece selected");
+									piece.removeHighlightedSquares(group);
+								}
+								if(selectedPiece == piece) {
 									System.out.println("Selected " + piece.name);
 									moveOnKeyPressed(piece, (int)(event.getSceneX()/gridsize) * gridsize, (int)(event.getSceneY()/gridsize) * gridsize);
+									
+//									piece.setX((int)(event.getSceneX()/gridsize) * gridsize);		TRY THIS TYPE OF THING
+//									piece.setY((int)(event.getSceneY()/gridsize) * gridsize);
 								}else {
 									System.out.println("Unselected " + piece.name);
+									
 								}
 							}
 						});
@@ -132,20 +160,14 @@ public class Board extends Application {
     {
         final TranslateTransition transition = new TranslateTransition(Literals.TRANSLATE_DURATION, piece);
         scene.setOnMousePressed(e -> {
-            transition.setFromX(piece.getTranslateX());
-            transition.setFromY(piece.getTranslateY());
-            transition.setToX((int)(e.getSceneX()/gridsize) * gridsize - x);
-            transition.setToY((int)(e.getSceneY()/gridsize) * gridsize - y);
-            transition.playFromStart();
+            if(piece.thisPieceSelected) {
+            	transition.setFromX(piece.getTranslateX());
+                transition.setFromY(piece.getTranslateY());
+                transition.setToX((int)(e.getSceneX()/gridsize) * gridsize - x);
+                transition.setToY((int)(e.getSceneY()/gridsize) * gridsize - y);
+            	transition.playFromStart();
+            	piece.thisPieceSelected = false;
+            }
         });
-        piece.thisPieceSelected = false;
     }
-	
-	public void drawCircle(int row, int col) {
-		Circle circle =  new Circle(gridsize/3.5);
-		circle.setFill(Color.GREENYELLOW);
-		circle.setCenterX(row * gridsize+ 2 * gridsize);
-		circle.setCenterY(col * gridsize + 2 * gridsize);
-		group.getChildren().add(circle);
-	}
 }

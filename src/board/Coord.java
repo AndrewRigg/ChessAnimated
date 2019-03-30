@@ -60,6 +60,7 @@ public class Coord {
 	}
 	
 	public boolean onGrid() {
+		//System.out.println("X is " + x + " Y is " + y);
 		return (x > 1 && x < 10 && y > 1 && y < 10);
 	}
 }
