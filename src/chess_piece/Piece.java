@@ -1,19 +1,14 @@
-package pieces;
+package chess_piece;
 
 import java.util.ArrayList;
 
-import board.Coord;
-import board.Literals;
-import enums.Colour;
-import enums.State;
-import enums.Type;
-import javafx.scene.Group;
-import javafx.scene.Node;
-import javafx.scene.image.Image;
-import javafx.scene.paint.Color;
-import javafx.scene.paint.ImagePattern;
-import javafx.scene.shape.Circle;
-import javafx.scene.shape.Rectangle;
+import board.*;
+import enums.*;
+import javafx.event.*;
+import javafx.scene.image.*;
+import javafx.scene.input.*;
+import javafx.scene.paint.*;
+import javafx.scene.shape.*;
 
 public class Piece extends Rectangle{
 
@@ -23,33 +18,60 @@ public class Piece extends Rectangle{
 	Colour colour;
 	State state;
 	Type type;
+	Board board;
 	int pieceNumber, yOffset, magnitudeMove, maximumMove;
 	public boolean thisPieceSelected, isWhite, thisPieceCondition;
 	ArrayList<Coord> validMoves;
 	ArrayList<Circle> validMoveCircles;
 	Coord current;
 	
-	public Piece(Type type, Colour colour, int pieceNumber) {
+	public Piece(Board board, Type type, Colour colour, int pieceNumber) {
 		super(gridsize/2, gridsize/2);
-		this.isWhite = (colour == Colour.WHITE);
+		this.board = board;
 		this.type = type; 
 		this.colour = colour; 
 		this.pieceNumber = pieceNumber; 
+		this.isWhite = (colour == Colour.WHITE);
 		this.state = State.INITIAL; 
 		this.notation = type.toString().substring(0, 1); 
 		this.name = colour.toString().toLowerCase() + "_" + type.toString().toLowerCase();
 		this.image = new Image("res/"+name+".png");
 		this.current = getInitialCoords(type, colour, pieceNumber);
-		getInitialCoords();
+		this.getInitialCoords();
 		this.yOffset = 0;
 		this.thisPieceSelected = false;
-		magnitudeMove = 1;
-		maximumMove = 7;
+		this.magnitudeMove = 1;
+		this.maximumMove = 7;
 		this.validMoves = new ArrayList<Coord>();
 		this.validMoveCircles = new ArrayList<Circle>();
 		this.setFill(new ImagePattern(image));
+		this.pieceClicked(this);
 	}	
-	
+
+	private void pieceClicked(Piece piece) {
+		setOnMouseClicked(new EventHandler<MouseEvent>() {
+			@Override
+			public void handle(MouseEvent event) {
+				thisPieceSelected = !thisPieceSelected;
+				board.removeHighlightedSquares();
+				validMoveCircles.clear();
+				validMoves.clear();
+				if(thisPieceSelected) {
+					setUpBasicMoves();
+					board.currentPiece = piece;
+					//thisPieceSelected = false;
+				}else {
+					//board.removeHighlightedSquares();
+					//moveOnKeyPressed(piece, (int)(event.getSceneX()/gridsize) * gridsize, (int)(event.getSceneY()/gridsize) * gridsize);
+					System.out.println("Unselected " + name);	
+					//thisPieceSelected = true;
+				}
+//				piece.setX((int)(event.getSceneX()/gridsize) * gridsize);		//TRY THIS TYPE OF THING
+//				piece.setY((int)(event.getSceneY()/gridsize) * gridsize);
+			}
+		});
+	}
+
 	public ArrayList<Circle> getCircles(){
 		return validMoveCircles;
 	}
@@ -58,7 +80,6 @@ public class Piece extends Rectangle{
 		this.setY((isWhite ? Literals.EIGHTH_ROW : Literals.FIRST_ROW) * gridsize + gridsize/4);
 		this.setX((pieceNumber == 1 ? type.getPositionX()+1 : Literals.BOARD_END - type.getPositionX()-1)*gridsize + gridsize/4);
 	}
-	
 	
 	public Coord getInitialCoords(Type type, Colour colour, int number) {
 		Coord initial = new Coord(0, 0);
@@ -83,14 +104,17 @@ public class Piece extends Rectangle{
 		highlightSquares();
 	}
 	
+	
+	//MOVE THIS TO BOARD CLASS
 	public void highlightSquares() {
 		for(Coord coord: validMoves) {
-			Circle circle =  new Circle(Literals.GRIDSIZE/3.5);
+			Circle circle =  new Circle(gridsize/3.5);
 			circle.setFill(Color.GREENYELLOW);
 			circle.setCenterX(coord.getX() * gridsize + gridsize/2);
 			circle.setCenterY(coord.getY() * gridsize + gridsize/2);
 			validMoveCircles.add(circle);
 		}
+		board.pieceClicked(this);
 	}
 	
 	public boolean thisPieceCondition(int i, int j, int k) {
@@ -102,5 +126,17 @@ public class Piece extends Rectangle{
 	}
 
 	public void calculateValidMoves() {}
+
+	public boolean validMovesContains(Coord coord) {
+		System.out.println("Coord X: " + coord.getY()/gridsize + " Coord Y: " + coord.getY()/gridsize);
+		for(Coord co : validMoves) {
+			System.out.println("X: " + co.getX() + " Y: " + co.getY());
+			if(co.getX() == coord.getX()/gridsize && co.getY() == coord.getY()/gridsize) {
+				return true;
+			}
+		}
+		System.out.println("valid move?: " + validMoves.contains(coord));
+		return false;
+	}
 	
 }

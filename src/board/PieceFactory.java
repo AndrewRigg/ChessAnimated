@@ -1,34 +1,26 @@
 package board;
 
-import enums.Colour;
-import enums.Type;
-import pieces.Bishop;
-import pieces.King;
-import pieces.Knight;
-import pieces.Pawn;
-import pieces.Piece;
-import pieces.Queen;
-import pieces.Rook;
+import chess_piece.*;
+import enums.*;
 
 public class PieceFactory {
-
 	
 	public PieceFactory() {}
 	
-	public Piece assignPieces(Type type, Colour colour, int number) {
-		Piece piece = new Piece(type, colour, number);
+	public Piece assignPieces(Board board, Type type, Colour colour, int number) {
+		Piece piece = new Piece(board, type, colour, number);
 		if(type == Type.BISHOP) {
-			piece = new Bishop(type, colour, number);
+			piece = new Bishop(board, type, colour, number);
 		}else if(type == Type.KING) {
-			piece = new King(type, colour, number);
+			piece = new King(board, type, colour, number);
 		}else if(type == Type.KNIGHT) {
-			piece = new Knight(type, colour, number);
+			piece = new Knight(board, type, colour, number);
 		}else if(type == Type.PAWN) {
-			piece = new Pawn(type, colour, number);
+			piece = new Pawn(board, type, colour, number);
 		}else if(type == Type.QUEEN) {
-			piece = new Queen(type, colour, number);
+			piece = new Queen(board, type, colour, number);
 		}else if(type == Type.ROOK) {
-			piece = new Rook(type, colour, number);
+			piece = new Rook(board, type, colour, number);
 		}
 		return piece;
 	}

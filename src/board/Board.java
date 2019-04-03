@@ -2,24 +2,18 @@ package board;
 
 import java.util.ArrayList;
 
-import enums.Colour;
-import enums.Type;
+import chess_piece.*;
+import enums.*;
 import javafx.animation.TranslateTransition;
-import javafx.application.Application;
-import javafx.event.EventHandler;
-import javafx.scene.Group;
-import javafx.scene.Scene;
-import javafx.scene.image.Image;
-import javafx.scene.input.MouseEvent;
-import javafx.scene.paint.Color;
-import javafx.scene.shape.Circle;
-import javafx.scene.shape.Line;
-import javafx.scene.shape.Rectangle;
-import javafx.scene.text.Font;
-import javafx.scene.text.Text;
-import javafx.stage.Stage;
-import pieces.Piece;
-import board.Literals;
+import javafx.application.*;
+import javafx.event.*;
+import javafx.scene.*;
+import javafx.scene.image.*;
+import javafx.scene.input.*;
+import javafx.scene.paint.*;
+import javafx.scene.shape.*;
+import javafx.scene.text.*;
+import javafx.stage.*;
 
 public class Board extends Application {
 	
@@ -29,9 +23,9 @@ public class Board extends Application {
 	int asciiCaps = Literals.ASCII_CAPS;
 	ArrayList<Circle> validMoveCircles;
 	final Group group = new Group();
-	Piece selectedPiece;
-	boolean pieceSelected = false;
-	Scene scene;
+	public boolean pieceSelected = true;
+	public Piece currentPiece;
+	public Scene scene;
 	ArrayList<Piece> pieces = new ArrayList<Piece>();
 	PieceFactory factory = new PieceFactory();
 	
@@ -67,14 +61,33 @@ public class Board extends Application {
 		group.setOnMouseClicked(new EventHandler<MouseEvent>() {
 			@Override
 			public void handle(MouseEvent event) {
+				int x = (int)(event.getSceneX()/gridsize);
+				int y = (int)(event.getSceneY()/gridsize);
+				System.out.println("x " +x + " y " + y);
+				Coord coord = new Coord(x, y);
 				if(!pieceSelected) {
-					System.out.println("Selected Group");
-					removeHighlightedSquares(group);
-					selectedPiece = null;
+					removeHighlightedSquares();
+				}else if(currentPiece != null && currentPiece.validMovesContains(coord)){
+					System.out.println("Moved");
+					moveOnKeyPressed(currentPiece, y, x);
 				}
 			}
 		});
 	}
+	
+	private void moveOnKeyPressed(Piece piece, int x, int y)
+    {
+        final TranslateTransition transition = new TranslateTransition(Literals.TRANSLATE_DURATION, piece);
+        scene.setOnMousePressed(e -> {
+            if(piece.thisPieceSelected) {
+            	transition.setFromX(piece.getTranslateX());
+                transition.setFromY(piece.getTranslateY());
+                transition.setToX((int)(e.getSceneX()/gridsize) * gridsize - x);
+                transition.setToY((int)(e.getSceneY()/gridsize) * gridsize - y);
+            	transition.playFromStart();
+            }
+        });
+    }
 
 	private void drawLines() {
 		for(int i = 0; i < rows+1; i++) {
@@ -113,36 +126,7 @@ public class Board extends Application {
 			if(colour.ordinal() < 2) {
 				for(Type type : Type.values()){
 					for(int number = 1; number <= type.getQuantity(); number++) {
-						Piece piece = factory.assignPieces(type, colour, number);
-						piece.setOnMouseClicked(new EventHandler<MouseEvent>() {
-							@Override
-							public void handle(MouseEvent event) {
-								removeHighlightedSquares(group);
-								piece.thisPieceSelected = !piece.thisPieceSelected;
-								pieceSelected = !pieceSelected;
-								if(piece.thisPieceSelected) {
-									validMoveCircles.clear();
-									piece.setUpBasicMoves();
-									validMoveCircles.addAll(piece.getCircles());
-									drawCircles(group);
-									selectedPiece = piece;
-									System.out.println("CLICKED THIS PIECE " + piece.thisPieceSelected);
-								}else if(!piece.thisPieceSelected) {
-									System.out.println("NOT piece selected");
-									//piece.removeHighlightedSquares(group);
-								}
-								if(selectedPiece == piece) {
-									System.out.println("Selected " + piece.name);
-									moveOnKeyPressed(piece, (int)(event.getSceneX()/gridsize) * gridsize, (int)(event.getSceneY()/gridsize) * gridsize);
-									
-//									piece.setX((int)(event.getSceneX()/gridsize) * gridsize);		TRY THIS TYPE OF THING
-//									piece.setY((int)(event.getSceneY()/gridsize) * gridsize);
-								}else {
-									System.out.println("Unselected " + piece.name);
-									
-								}
-							}
-						});
+						Piece piece = factory.assignPieces(this, type, colour, number);
 						pieces.add(piece);
 						group.getChildren().add(piece);
 					}
@@ -151,15 +135,33 @@ public class Board extends Application {
 		}
 	}
 	
-	public void removeHighlightedSquares(Group group) {
-		System.out.println("Removing circles...");
-		//group.getChildren().removeAll(validMoveCircles);
-		for(Circle circle: validMoveCircles) {
-			group.getChildren().remove(circle);
+	/**
+	 * This is called from the piece class to allow the board to define the valid moves in order to clear 
+	 * moves from other pieces (which pieces cannot access)
+	 * @param piece
+	 */
+	public void pieceClicked(Piece piece) {
+		//removeHighlightedSquares();
+		//pieceSelected = !pieceSelected;
+		if(pieceSelected) {
+			validMoveCircles.clear();
+			validMoveCircles.addAll(piece.getCircles());
+			drawCircles();
 		}
 	}
 	
-	public void drawCircles(Group group) {
+	public void removeHighlightedSquares() {
+		//This is not a great solution as more circles keep getting added to the group (could lead to memory overflow and slowdown)
+		//System.out.println("Before: " + group.getChildren().size());
+		System.out.println("Clear circles");
+		for(Circle circle: validMoveCircles) {
+			circle.setFill(Color.rgb(255, 0, 0, 0.00));
+		}
+		//group.getChildren().removeAll(validMoveCircles);	//Old method which doesn't always work for some reason
+		validMoveCircles.clear();
+	}
+	
+	public void drawCircles() {
 		for(Circle circle: validMoveCircles) {
 			group.getChildren().add(circle);
 		}
@@ -172,19 +174,4 @@ public class Board extends Application {
 		stage.getIcons().add(new Image("res/chess_icon.jpg"));
 		stage.show();
 	}
-	
-	private void moveOnKeyPressed(Piece piece, int x, int y)
-    {
-        final TranslateTransition transition = new TranslateTransition(Literals.TRANSLATE_DURATION, piece);
-        scene.setOnMousePressed(e -> {
-            if(piece.thisPieceSelected) {
-            	transition.setFromX(piece.getTranslateX());
-                transition.setFromY(piece.getTranslateY());
-                transition.setToX((int)(e.getSceneX()/gridsize) * gridsize - x);
-                transition.setToY((int)(e.getSceneY()/gridsize) * gridsize - y);
-            	transition.playFromStart();
-            	piece.thisPieceSelected = false;
-            }
-        });
-    }
 }
