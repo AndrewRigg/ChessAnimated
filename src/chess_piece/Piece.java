@@ -25,6 +25,7 @@ public class Piece extends Rectangle{
 	ArrayList<Circle> validMoveCircles;
 	Coord current;
 	
+	
 	public Piece(Board board, Type type, Colour colour, int pieceNumber) {
 		super(gridsize/2, gridsize/2);
 		this.board = board;
@@ -57,6 +58,7 @@ public class Piece extends Rectangle{
 				validMoveCircles.clear();
 				validMoves.clear();
 				if(thisPieceSelected) {
+					board.pieceSelected = true;
 					setUpBasicMoves();
 					board.currentPiece = piece;
 					//thisPieceSelected = false;
@@ -128,14 +130,14 @@ public class Piece extends Rectangle{
 	public void calculateValidMoves() {}
 
 	public boolean validMovesContains(Coord coord) {
-		System.out.println("Coord X: " + coord.getY()/gridsize + " Coord Y: " + coord.getY()/gridsize);
+		//System.out.println("Coord X: " + coord.getY()/gridsize + " Coord Y: " + coord.getY()/gridsize);
 		for(Coord co : validMoves) {
-			System.out.println("X: " + co.getX() + " Y: " + co.getY());
+			//System.out.println("X: " + co.getX() + " Y: " + co.getY());
 			if(co.getX() == coord.getX()/gridsize && co.getY() == coord.getY()/gridsize) {
 				return true;
 			}
 		}
-		System.out.println("valid move?: " + validMoves.contains(coord));
+		//System.out.println("valid move?: " + validMoves.contains(coord));
 		return false;
 	}
 	

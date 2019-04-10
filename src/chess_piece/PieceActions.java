@@ -7,6 +7,10 @@ public class PieceActions implements GameActions{
 		// TODO Auto-generated method stub
 		
 	}
+	
+	public PieceActions(Piece piece) {
+		
+	}
 
 	@Override
 	public void isTaken(Piece piece) {
@@ -14,4 +18,9 @@ public class PieceActions implements GameActions{
 		
 	}
 
+	@Override
+	public void pieceClicked(Piece piece) {
+		// TODO Auto-generated method stub
+		
+	}
 }

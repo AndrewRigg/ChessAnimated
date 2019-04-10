@@ -8,6 +8,7 @@ import javafx.animation.TranslateTransition;
 import javafx.application.*;
 import javafx.event.*;
 import javafx.scene.*;
+import javafx.scene.control.Label;
 import javafx.scene.image.*;
 import javafx.scene.input.*;
 import javafx.scene.paint.*;
@@ -21,9 +22,11 @@ public class Board extends Application {
 	int cols = Literals.FILES;
 	int gridsize = Literals.GRIDSIZE;
 	int asciiCaps = Literals.ASCII_CAPS;
+	Label clock1Label, clock2Label;
+	ChessClock clock1, clock2;
 	ArrayList<Circle> validMoveCircles;
 	final Group group = new Group();
-	public boolean pieceSelected = true;
+	public boolean pieceSelected;
 	public Piece currentPiece;
 	public Scene scene;
 	ArrayList<Piece> pieces = new ArrayList<Piece>();
@@ -31,6 +34,29 @@ public class Board extends Application {
 	
 	public Board(){
 		this.validMoveCircles = new ArrayList<Circle>();
+		pieceSelected = false;
+	}
+	
+	public void addChessClock(boolean showClock) {
+		if(showClock) {
+			clock1 = new ChessClock();
+			clock2 = new ChessClock();
+//			clock1 = new Label();
+//			clock2 = new Label();
+			clock1Label = clock1.getLabel();
+			clock2Label = clock2.getLabel();
+//			clock1.setup();
+//			clock1.setText("Clock1");
+//			clock2.setText("Clock2");
+			clock1Label.setTextAlignment(TextAlignment.RIGHT);
+			clock2Label.setTextAlignment(TextAlignment.CENTER);
+			clock1Label.setTranslateX(gridsize + 10);
+			clock1Label.setTranslateY(gridsize);
+			clock2Label.setTranslateX(10*gridsize+10);
+			clock2Label.setTranslateY(gridsize);
+			group.getChildren().add(clock1Label);
+			group.getChildren().add(clock2Label);
+		}
 	}
 	
 	public static void main(String[] args) {
@@ -42,12 +68,13 @@ public class Board extends Application {
 		setUpBoard();
 		initialisePieces();
 		setScene(stage);
+		addChessClock(true);
 	}
 
 	private void setUpBoard() {
         drawSquares();
         drawLines();
-        drawLabels();
+        drawLabels(); 
 	}
 
 	private void drawSquares() {
@@ -63,14 +90,15 @@ public class Board extends Application {
 			public void handle(MouseEvent event) {
 				int x = (int)(event.getSceneX()/gridsize);
 				int y = (int)(event.getSceneY()/gridsize);
-				System.out.println("x " +x + " y " + y);
+				//System.out.println("x " +x + " y " + y);
 				Coord coord = new Coord(x, y);
 				if(!pieceSelected) {
 					removeHighlightedSquares();
 				}else if(currentPiece != null && currentPiece.validMovesContains(coord)){
-					System.out.println("Moved");
+					//System.out.println("Moved");
 					moveOnKeyPressed(currentPiece, y, x);
 				}
+				pieceSelected = false;
 			}
 		});
 	}
@@ -153,11 +181,12 @@ public class Board extends Application {
 	public void removeHighlightedSquares() {
 		//This is not a great solution as more circles keep getting added to the group (could lead to memory overflow and slowdown)
 		//System.out.println("Before: " + group.getChildren().size());
-		System.out.println("Clear circles");
-		for(Circle circle: validMoveCircles) {
-			circle.setFill(Color.rgb(255, 0, 0, 0.00));
-		}
-		//group.getChildren().removeAll(validMoveCircles);	//Old method which doesn't always work for some reason
+		//System.out.println("Clear circles");
+//		for(Circle circle: validMoveCircles) {
+//			circle.setFill(Color.rgb(255, 0, 0, 0.00));
+//		}
+		
+		group.getChildren().removeAll(validMoveCircles);	//Old method which doesn't always work for some reason
 		validMoveCircles.clear();
 	}
 	

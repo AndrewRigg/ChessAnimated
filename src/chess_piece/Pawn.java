@@ -18,7 +18,7 @@ public class Pawn extends Piece{
 		this.setX((type.getPositionX()+pieceNumber)*gridsize + gridsize/4);
 	}
 	
-	//TODO: his needs careful condsideration
+	//TODO: this needs careful consideration
 //	@Override
 //	public boolean thisPieceCondition(int i, int j, int k) {
 //		return (Math.abs(j) != Math.abs(i) && !(i == 0 || j == 0));
