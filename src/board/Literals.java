@@ -26,10 +26,10 @@ public class Literals {
 	/**
 	 * Below are a list of commonly used points systems which can be set for the type enums
 	 */
-	public static final double [] 	STANDARD = {3, 3, 5, 9, 1000000, 1},
-									SARRATT = {3.1, 3.3, 5, 7.9, 2.2, 1},
-									PHILIDOR = {3.05, 3.5, 5.48, 9.94, 1000000, 1},
-									PRATT = {3, 3, 5, 10, 1000000, 1},
+	public static final double [] 	STANDARD 	= {3, 3, 5, 9, 1000000, 1},
+									SARRATT 	= {3.1, 3.3, 5, 7.9, 2.2, 1},
+									PHILIDOR	= {3.05, 3.5, 5.48, 9.94, 1000000, 1},
+									PRATT 		= {3, 3, 5, 10, 1000000, 1},
 									BILGUER = {3.5, 3.5, 5.7, 10.3, 1000000, 1},
 									EUWE = {3.5, 3.5, 5.5, 10, 1000000, 1},
 									LASKER = {3.5, 3.5, 5, 8.5, 4, 1},
@@ -50,6 +50,19 @@ public class Literals {
 	
 	public static final String EMPTY = "";
 	
-	 public static final Duration TRANSLATE_DURATION = Duration.seconds(0.5); 
+	public static final Duration TRANSLATE_DURATION = Duration.seconds(0.5); 
+	
+	public static final boolean BOARD_DEBUG 	= true,
+								PIECE_DEBUG 	= false,
+								PAWN_DEBUG  	= false,
+								KING_DEBUG  	= false,
+								PLAYER_DEBUG 	= false,
+								COORD_DEBUG 	= false;
+	
+	public static final void print(String str, boolean bool) {
+		if(bool) {
+			System.out.println(str);
+		}
+	}
 	
 }

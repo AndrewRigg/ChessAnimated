@@ -8,7 +8,7 @@ import javafx.animation.TranslateTransition;
 import javafx.application.*;
 import javafx.event.*;
 import javafx.scene.*;
-import javafx.scene.control.Label;
+import javafx.scene.control.*;
 import javafx.scene.image.*;
 import javafx.scene.input.*;
 import javafx.scene.paint.*;
@@ -24,17 +24,21 @@ public class Board extends Application {
 	int asciiCaps = Literals.ASCII_CAPS;
 	Label clock1Label, clock2Label;
 	ChessClock clock1, clock2;
-	ArrayList<Circle> validMoveCircles;
+	static ArrayList<Circle> validMoveCircles;
 	final Group group = new Group();
-	public boolean pieceSelected;
+	static public boolean pieceSelected;
 	public Piece currentPiece;
 	public Scene scene;
 	ArrayList<Piece> pieces = new ArrayList<Piece>();
 	PieceFactory factory = new PieceFactory();
 	
 	public Board(){
-		this.validMoveCircles = new ArrayList<Circle>();
+		Board.validMoveCircles = new ArrayList<Circle>();
 		pieceSelected = false;
+	}
+	
+	public void print(String str) {
+		Literals.print(str, Literals.BOARD_DEBUG);
 	}
 	
 	public void addChessClock(boolean showClock) {
@@ -62,7 +66,7 @@ public class Board extends Application {
 	public static void main(String[] args) {
 		launch(args);
 	}
-
+	
 	@Override
 	public void start(Stage stage) throws Exception {
 		setUpBoard();
@@ -81,7 +85,7 @@ public class Board extends Application {
 		for(int i = 0; i < Literals.FILES; i++) {
 			for(int j = 0; j < Literals.RANKS; j++) {
 				Rectangle rectangle= new Rectangle(120 + i * gridsize, 120 + j * gridsize, 60, 60);
-				rectangle.setFill((i + j) % 2 != 0 ? Color.LIGHTGRAY : Color.WHITE);
+				rectangle.setFill((i + j) % 2 != 0 ? Color.grayRgb(180) : Color.WHITE);
 				group.getChildren().add(rectangle);
 			}	
 		}
@@ -90,15 +94,30 @@ public class Board extends Application {
 			public void handle(MouseEvent event) {
 				int x = (int)(event.getSceneX()/gridsize);
 				int y = (int)(event.getSceneY()/gridsize);
-				//System.out.println("x " +x + " y " + y);
 				Coord coord = new Coord(x, y);
-				if(!pieceSelected) {
-					removeHighlightedSquares();
-				}else if(currentPiece != null && currentPiece.validMovesContains(coord)){
-					//System.out.println("Moved");
-					moveOnKeyPressed(currentPiece, y, x);
+				print("x " +x + " y " + y);
+				print("\nPiece Selected: " + pieceSelected);//
+				print("validMoveCircles: " + validMoveCircles.toString());
+				if(currentPiece != null){
+					print(currentPiece.name);
+					//System.out.println("currentPiece != null: " + (currentPiece != null));
+					System.out.print("validMovesContains: " + currentPiece.validMovesContains(coord));
 				}
-				pieceSelected = false;
+				
+				if(!pieceSelected) {
+					print("Board: Removing highlights");
+					//validMoveCircles.clear();
+					print("validMoveCircles: " + validMoveCircles.toString());
+					removeHighlightedSquares();
+					print("validMoveCircles: " + validMoveCircles.toString());
+					
+				}
+				if(pieceSelected && currentPiece != null && currentPiece.validMovesContains(coord)){
+					print("Moved");
+					moveOnKeyPressed(currentPiece, x, y);
+					pieceSelected = false;
+				}
+				//
 			}
 		});
 	}
@@ -106,14 +125,13 @@ public class Board extends Application {
 	private void moveOnKeyPressed(Piece piece, int x, int y)
     {
         final TranslateTransition transition = new TranslateTransition(Literals.TRANSLATE_DURATION, piece);
+        
         scene.setOnMousePressed(e -> {
-            if(piece.thisPieceSelected) {
-            	transition.setFromX(piece.getTranslateX());
-                transition.setFromY(piece.getTranslateY());
-                transition.setToX((int)(e.getSceneX()/gridsize) * gridsize - x);
-                transition.setToY((int)(e.getSceneY()/gridsize) * gridsize - y);
-            	transition.playFromStart();
-            }
+        	transition.setFromX(piece.getTranslateX());
+            transition.setFromY(piece.getTranslateY());
+            transition.setToX(x*gridsize - piece.getX() + gridsize/4);
+            transition.setToY(y*gridsize - piece.getY() + gridsize/4);
+        	transition.playFromStart();
         });
     }
 
@@ -169,10 +187,11 @@ public class Board extends Application {
 	 * @param piece
 	 */
 	public void pieceClicked(Piece piece) {
-		//removeHighlightedSquares();
+		print("Board: Piece clicked");
+		removeHighlightedSquares();
 		//pieceSelected = !pieceSelected;
 		if(pieceSelected) {
-			validMoveCircles.clear();
+			//validMoveCircles.clear();
 			validMoveCircles.addAll(piece.getCircles());
 			drawCircles();
 		}
@@ -180,12 +199,11 @@ public class Board extends Application {
 	
 	public void removeHighlightedSquares() {
 		//This is not a great solution as more circles keep getting added to the group (could lead to memory overflow and slowdown)
-		//System.out.println("Before: " + group.getChildren().size());
-		//System.out.println("Clear circles");
-//		for(Circle circle: validMoveCircles) {
-//			circle.setFill(Color.rgb(255, 0, 0, 0.00));
-//		}
-		
+		print("Before: " + group.getChildren().size());
+		print("Clear circles");
+		for(Circle circle: validMoveCircles) {
+			circle.setFill(Color.rgb(255, 0, 0, 0.00));
+		}
 		group.getChildren().removeAll(validMoveCircles);	//Old method which doesn't always work for some reason
 		validMoveCircles.clear();
 	}
@@ -202,5 +220,12 @@ public class Board extends Application {
 		stage.setTitle("Animated Chess");
 		stage.getIcons().add(new Image("res/chess_icon.jpg"));
 		stage.show();
+		stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+		    @Override
+		    public void handle(WindowEvent t) {
+		        Platform.exit();
+		        System.exit(0);
+		    }
+		});
 	}
 }
