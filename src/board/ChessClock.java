@@ -18,6 +18,10 @@ public class ChessClock {
 		TimerTask task = setTimerTask();
 	}
 	
+	public void print(String str) {
+		Literals.print(str, Literals.CLOCK_DEBUG);
+	}
+	
 	public void setText(String hours, String minutes) {
 		//return String.format("%02d:%02d", minutes, seconds);
 	}
@@ -26,7 +30,7 @@ public class ChessClock {
 		TimerTask task = new TimerTask() {
 			public void run()
 			{
-				System.out.println("Tick");
+				print("Tick");
 				updateLabel(clock);
 			}
 		};

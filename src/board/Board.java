@@ -26,7 +26,7 @@ public class Board extends Application {
 	ChessClock clock1, clock2;
 	static ArrayList<Circle> validMoveCircles;
 	final Group group = new Group();
-	static public boolean pieceSelected;
+	public boolean pieceSelected;
 	public Piece currentPiece;
 	public Scene scene;
 	ArrayList<Piece> pieces = new ArrayList<Piece>();
@@ -100,8 +100,8 @@ public class Board extends Application {
 				print("validMoveCircles: " + validMoveCircles.toString());
 				if(currentPiece != null){
 					print(currentPiece.name);
-					//System.out.println("currentPiece != null: " + (currentPiece != null));
-					System.out.print("validMovesContains: " + currentPiece.validMovesContains(coord));
+					//print("currentPiece != null: " + (currentPiece != null));
+					print("validMovesContains: " + currentPiece.validMovesContains(coord));
 				}
 				
 				if(!pieceSelected) {

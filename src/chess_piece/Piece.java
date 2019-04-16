@@ -49,23 +49,27 @@ public class Piece extends Rectangle{
 		this.pieceClicked(this);
 	}	
 
+	public void print(String str) {
+		Literals.print(str, Literals.PIECE_DEBUG);
+	}
+	
 	private void pieceClicked(Piece piece) {
 		setOnMouseClicked(new EventHandler<MouseEvent>() {
 			@Override
 			public void handle(MouseEvent event) {
 				thisPieceSelected = !thisPieceSelected;
-				System.out.println("Piece: Removing highlights");	
+				print("Piece: Removing highlights");	
 				board.removeHighlightedSquares();				
 				if(thisPieceSelected) {
 					Board.pieceSelected = true;
-					System.out.println("Piece: board.pieceSelected: " + Board.pieceSelected);
+					print("Piece: board.pieceSelected: " + Board.pieceSelected);
 					setUpBasicMoves();
 					board.currentPiece = piece;
 					//thisPieceSelected = false;
 				}else {
 					//board.removeHighlightedSquares();
 					//moveOnKeyPressed(piece, (int)(event.getSceneX()/gridsize) * gridsize, (int)(event.getSceneY()/gridsize) * gridsize);
-					System.out.println("Unselected " + name);	
+					print("Unselected " + name);	
 					//thisPieceSelected = true;
 				}
 //				piece.setX((int)(event.getSceneX()/gridsize) * gridsize);		//TRY THIS TYPE OF THING
@@ -132,15 +136,15 @@ public class Piece extends Rectangle{
 	public void calculateValidMoves() {}
 
 	public boolean validMovesContains(Coord coord) {
-		//System.out.println("Coord X: " + coord.getX() + " Coord Y: " + coord.getY());
+		print("Coord X: " + coord.getX() + " Coord Y: " + coord.getY());
 		for(Coord co : validMoves) {
-			//System.out.println("X: " + co.getX() + " Y: " + co.getY());
+			print("X: " + co.getX() + " Y: " + co.getY());
 			if(co.getX() == coord.getX() && co.getY() == coord.getY()) {
-				System.out.println("Contains square!");
+				print("Contains square!");
 				return true;
 			}
 		}
-		//System.out.println("valid move?: " + validMoves.contains(coord));
+		print("valid move?: " + validMoves.contains(coord));
 		return false;
 	}
 	
