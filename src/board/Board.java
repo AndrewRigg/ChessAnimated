@@ -84,7 +84,7 @@ public class Board extends Application {
 	private void drawSquares() {
 		for(int i = 0; i < Literals.FILES; i++) {
 			for(int j = 0; j < Literals.RANKS; j++) {
-				Rectangle rectangle= new Rectangle(120 + i * gridsize, 120 + j * gridsize, 60, 60);
+				Rectangle rectangle= new Rectangle(gridsize*2 + i * gridsize, gridsize*2 + j * gridsize, gridsize, gridsize);
 				rectangle.setFill((i + j) % 2 != 0 ? Color.grayRgb(180) : Color.WHITE);
 				group.getChildren().add(rectangle);
 			}	

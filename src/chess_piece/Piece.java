@@ -61,8 +61,8 @@ public class Piece extends Rectangle{
 				print("Piece: Removing highlights");	
 				board.removeHighlightedSquares();				
 				if(thisPieceSelected) {
-					Board.pieceSelected = true;
-					print("Piece: board.pieceSelected: " + Board.pieceSelected);
+					board.pieceSelected = true;
+					print("Piece: board.pieceSelected: " + board.pieceSelected);
 					setUpBasicMoves();
 					board.currentPiece = piece;
 					//thisPieceSelected = false;
