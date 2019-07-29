@@ -4,9 +4,7 @@ import java.util.ArrayList;
 
 import board.*;
 import enums.*;
-import javafx.event.*;
 import javafx.scene.image.*;
-import javafx.scene.input.*;
 import javafx.scene.paint.*;
 import javafx.scene.shape.*;
 
@@ -18,17 +16,16 @@ public class Piece extends Rectangle{
 	Colour colour;
 	State state;
 	Type type;
-	Board board;
-	int pieceNumber, yOffset, magnitudeMove, maximumMove;
+	int pieceNumber, yOffset;
+	private int magnitudeMove, maximumMove;
 	public boolean thisPieceSelected, isWhite, thisPieceCondition;
-	ArrayList<Coord> validMoves;
+	private ArrayList<Coord> validMoves;
 	ArrayList<Circle> validMoveCircles;
 	Coord current;
 	
 	
-	public Piece(Board board, Type type, Colour colour, int pieceNumber) {
+	public Piece(Type type, Colour colour, int pieceNumber) {
 		super(gridsize/2, gridsize/2);
-		this.board = board;
 		this.type = type; 
 		this.colour = colour; 
 		this.pieceNumber = pieceNumber; 
@@ -41,41 +38,19 @@ public class Piece extends Rectangle{
 		this.getInitialCoords();
 		this.yOffset = 0;
 		this.thisPieceSelected = false;
-		this.magnitudeMove = 1;
-		this.maximumMove = 7;
-		this.validMoves = new ArrayList<Coord>();
+		this.setMagnitudeMove(1);
+		this.setMaximumMove(7);
+		this.setValidMoves(new ArrayList<Coord>());
 		this.validMoveCircles = new ArrayList<Circle>();
 		this.setFill(new ImagePattern(image));
-		this.pieceClicked(this);
 	}	
 
+	/**
+	 * Debugging function, set PIECE_DEBUG to true to turn on
+	 * @param str
+	 */
 	public void print(String str) {
 		Literals.print(str, Literals.PIECE_DEBUG);
-	}
-	
-	private void pieceClicked(Piece piece) {
-		setOnMouseClicked(new EventHandler<MouseEvent>() {
-			@Override
-			public void handle(MouseEvent event) {
-				thisPieceSelected = !thisPieceSelected;
-				print("Piece: Removing highlights");	
-				board.removeHighlightedSquares();				
-				if(thisPieceSelected) {
-					board.pieceSelected = true;
-					print("Piece: board.pieceSelected: " + board.pieceSelected);
-					setUpBasicMoves();
-					board.currentPiece = piece;
-					//thisPieceSelected = false;
-				}else {
-					//board.removeHighlightedSquares();
-					//moveOnKeyPressed(piece, (int)(event.getSceneX()/gridsize) * gridsize, (int)(event.getSceneY()/gridsize) * gridsize);
-					print("Unselected " + name);	
-					//thisPieceSelected = true;
-				}
-//				piece.setX((int)(event.getSceneX()/gridsize) * gridsize);		//TRY THIS TYPE OF THING
-//				piece.setY((int)(event.getSceneY()/gridsize) * gridsize);
-			}
-		});
 	}
 
 	public ArrayList<Circle> getCircles(){
@@ -88,44 +63,22 @@ public class Piece extends Rectangle{
 	}
 	
 	public Coord getInitialCoords(Type type, Colour colour, int number) {
-		Coord initial = new Coord(0, 0);
-		initial.setY(isWhite ? Literals.EIGHTH_ROW : Literals.FIRST_ROW);
-		initial.setX(number == 1 ? type.getPositionX()+1 : Literals.BOARD_END - type.getPositionX()-1);
-		return initial;
+		//Coord initial = new Coord(0, 0);
+		//initial.setY(isWhite ? Literals.EIGHTH_ROW : Literals.FIRST_ROW);
+		//initial.setX(number == 1 ? type.getPositionX()+1 : Literals.BOARD_END - type.getPositionX()-1);
+		//return initial;
+		return new Coord(number == 1 ? type.getPositionX()+1 : Literals.BOARD_END - type.getPositionX()-1, isWhite ? Literals.EIGHTH_ROW : Literals.FIRST_ROW);
 	}
-	
-	public void setUpBasicMoves() {
-		validMoves.clear();
-		for (int i = magnitudeMove*(-1); i <= magnitudeMove; i++) {
-			for (int j = magnitudeMove*(-1); j <= magnitudeMove; j++) {
-				for (int k = 1; k <= maximumMove; k++) {
-					if (thisPieceCondition(i, j, k) && !(i == 0 && j == 0)) {
-						Coord coord = thisPieceConditionCoord(i, j, k);
-						if (coord.onGrid() && !validMoves.contains(coord)) {
-							validMoves.add(coord);
-						}
-					}
-				}
-			}
-		}
-		highlightSquares();
-	}
-	
-	
-	//MOVE THIS TO BOARD CLASS
-	public void highlightSquares() {
-		//validMoveCircles.clear();
-		for(Coord coord: validMoves) {
-			Circle circle =  new Circle(gridsize/3.5);
-			circle.setFill(Color.GREENYELLOW);
-			circle.setCenterX(coord.getX() * gridsize + gridsize/2);
-			circle.setCenterY(coord.getY() * gridsize + gridsize/2);
-			validMoveCircles.add(circle);
-		}
-		board.pieceClicked(this);
-	}
-	
-	public boolean thisPieceCondition(int i, int j, int k) {
+		
+	/**
+	 * This is the base function which is overridden by each individual piece
+	 * and is for determining the direction and magnitude of any potential moves
+	 * @param xDirection
+	 * @param yDirection
+	 * @param magnitude
+	 * @return
+	 */
+	public boolean movementCondition(int xDirection, int yDirection, int magnitude) {
 		return true;
 	}
 	
@@ -137,15 +90,39 @@ public class Piece extends Rectangle{
 
 	public boolean validMovesContains(Coord coord) {
 		print("Coord X: " + coord.getX() + " Coord Y: " + coord.getY());
-		for(Coord co : validMoves) {
+		for(Coord co : getValidMoves()) {
 			print("X: " + co.getX() + " Y: " + co.getY());
 			if(co.getX() == coord.getX() && co.getY() == coord.getY()) {
 				print("Contains square!");
 				return true;
 			}
 		}
-		print("valid move?: " + validMoves.contains(coord));
+		print("valid move?: " + getValidMoves().contains(coord));
 		return false;
+	}
+
+	public ArrayList<Coord> getValidMoves() {
+		return validMoves;
+	}
+
+	public void setValidMoves(ArrayList<Coord> validMoves) {
+		this.validMoves = validMoves;
+	}
+
+	public int getMagnitudeMove() {
+		return magnitudeMove;
+	}
+
+	public void setMagnitudeMove(int magnitudeMove) {
+		this.magnitudeMove = magnitudeMove;
+	}
+
+	public int getMaximumMove() {
+		return maximumMove;
+	}
+
+	public void setMaximumMove(int maximumMove) {
+		this.maximumMove = maximumMove;
 	}
 	
 }

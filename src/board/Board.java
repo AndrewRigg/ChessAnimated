@@ -2,16 +2,15 @@ package board;
 
 import java.util.ArrayList;
 
-import chess_piece.*;
-import enums.*;
-import javafx.animation.TranslateTransition;
+import chess_piece.Piece;
+import javafx.animation.*;
 import javafx.application.*;
-import javafx.event.*;
+import javafx.event.EventHandler;
 import javafx.scene.*;
-import javafx.scene.control.*;
-import javafx.scene.image.*;
-import javafx.scene.input.*;
-import javafx.scene.paint.*;
+import javafx.scene.control.Label;
+import javafx.scene.image.Image;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.paint.Color;
 import javafx.scene.shape.*;
 import javafx.scene.text.*;
 import javafx.stage.*;
@@ -29,11 +28,12 @@ public class Board extends Application {
 	public boolean pieceSelected;
 	public Piece currentPiece;
 	public Scene scene;
-	ArrayList<Piece> pieces = new ArrayList<Piece>();
-	PieceFactory factory = new PieceFactory();
-	
-	public Board(){
-		Board.validMoveCircles = new ArrayList<Circle>();
+	private Player player1, player2;
+
+	public Board(Player player1, Player player2){
+		this.player1 = player1;
+		this.player2 = player2;
+		validMoveCircles = new ArrayList<Circle>();
 		pieceSelected = false;
 	}
 	
@@ -70,7 +70,8 @@ public class Board extends Application {
 	@Override
 	public void start(Stage stage) throws Exception {
 		setUpBoard();
-		initialisePieces();
+		player1.initialise();
+		player2.initialise();
 		setScene(stage);
 		addChessClock(true);
 	}
@@ -167,17 +168,9 @@ public class Board extends Application {
     	group.getChildren().add(text);
 	}
 	
-	public void initialisePieces() {
-		for(Colour colour: Colour.values()) {
-			if(colour.ordinal() < 2) {
-				for(Type type : Type.values()){
-					for(int number = 1; number <= type.getQuantity(); number++) {
-						Piece piece = factory.assignPieces(this, type, colour, number);
-						pieces.add(piece);
-						group.getChildren().add(piece);
-					}
-				}
-			}
+	public void initialisePieces(Player player) {
+		for(Piece piece : player.pieces) {
+			group.getChildren().add(piece);
 		}
 	}
 	
@@ -212,6 +205,64 @@ public class Board extends Application {
 		for(Circle circle: validMoveCircles) {
 			group.getChildren().add(circle);
 		}
+	}
+	
+	//MOVED FROM PIECE - CHANGE TO ONLY HAVE SQUARES CLICKED
+	@SuppressWarnings("unused")
+	private void pieceClickedFromPiece(Piece piece) {
+//		setOnMouseClicked(new EventHandler<MouseEvent>() {
+//			@Override
+//			public void handle(MouseEvent event) {
+//				piece.thisPieceSelected = !piece.thisPieceSelected;
+//				print("Piece: Removing highlights");	
+//				removeHighlightedSquares();				
+//				if(piece.thisPieceSelected) {
+//					pieceSelected = true;
+//					print("Piece: board.pieceSelected: " + pieceSelected);
+//					setUpBasicMoves(piece);
+//					currentPiece = piece;
+//					//thisPieceSelected = false;
+//				}else {
+//					//board.removeHighlightedSquares();
+//					//moveOnKeyPressed(piece, (int)(event.getSceneX()/gridsize) * gridsize, (int)(event.getSceneY()/gridsize) * gridsize);
+//					print("Unselected " + piece.name);	
+//					//thisPieceSelected = true;
+//				}
+////				piece.setX((int)(event.getSceneX()/gridsize) * gridsize);		//TRY THIS TYPE OF THING
+////				piece.setY((int)(event.getSceneY()/gridsize) * gridsize);
+//			}
+//		});
+	}
+
+	//MOVED FROM PIECE
+	public void setUpBasicMoves(Piece piece) {
+		piece.getValidMoves().clear();
+		for (int i = piece.getMagnitudeMove()*(-1); i <= piece.getMagnitudeMove(); i++) {
+			for (int j = piece.getMagnitudeMove()*(-1); j <= piece.getMagnitudeMove(); j++) {
+				for (int k = 1; k <= piece.getMaximumMove(); k++) {
+					if (piece.movementCondition(i, j, k) && !(i == 0 && j == 0)) {
+						Coord coord = piece.thisPieceConditionCoord(i, j, k);
+						if (coord.onGrid() && !piece.getValidMoves().contains(coord)) {
+							piece.getValidMoves().add(coord);
+						}
+					}
+				}
+			}
+		}
+		highlightSquares(piece);
+	}
+	
+	//MOVED TO BOARD CLASS
+	public void highlightSquares(Piece piece) {
+		//validMoveCircles.clear();
+		for(Coord coord: piece.getValidMoves()) {
+			Circle circle =  new Circle(gridsize/3.5);
+			circle.setFill(Color.GREENYELLOW);
+			circle.setCenterX(coord.getX() * gridsize + gridsize/2);
+			circle.setCenterY(coord.getY() * gridsize + gridsize/2);
+			validMoveCircles.add(circle);
+		}
+		pieceClicked(piece);
 	}
 	
 	private void setScene(Stage stage) {

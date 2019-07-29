@@ -7,20 +7,20 @@ public class PieceFactory {
 	
 	public PieceFactory() {}
 	
-	public Piece assignPieces(Board board, Type type, Colour colour, int number) {
-		Piece piece = new Piece(board, type, colour, number);
+	public Piece assignPieces(Type type, Colour colour, int number) {
+		Piece piece = new Piece(type, colour, number);
 		if(type == Type.BISHOP) {
-			piece = new Bishop(board, type, colour, number);
+			piece = new Bishop(type, colour, number);
 		}else if(type == Type.KING) {
-			piece = new King(board, type, colour, number);
+			piece = new King(type, colour, number);
 		}else if(type == Type.KNIGHT) {
-			piece = new Knight(board, type, colour, number);
+			piece = new Knight(type, colour, number);
 		}else if(type == Type.PAWN) {
-			piece = new Pawn(board, type, colour, number);
+			piece = new Pawn(type, colour, number);
 		}else if(type == Type.QUEEN) {
-			piece = new Queen(board, type, colour, number);
+			piece = new Queen(type, colour, number);
 		}else if(type == Type.ROOK) {
-			piece = new Rook(board, type, colour, number);
+			piece = new Rook(type, colour, number);
 		}
 		return piece;
 	}

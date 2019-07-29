@@ -5,11 +5,11 @@ import enums.*;
 
 public class Pawn extends Piece{
 	
-	public Pawn(Board board, Type type, Colour colour, int number) {
-		super(board, type, colour, number);
+	public Pawn(Type type, Colour colour, int number) {
+		super(type, colour, number);
 		notation = "";
-		magnitudeMove = 1;
-		maximumMove = 1;
+		setMagnitudeMove(1);
+		setMaximumMove(1);
 	}
 	
 	@Override
@@ -20,7 +20,7 @@ public class Pawn extends Piece{
 	
 	//TODO: this needs careful consideration
 //	@Override
-//	public boolean thisPieceCondition(int i, int j, int k) {
-//		return (Math.abs(j) != Math.abs(i) && !(i == 0 || j == 0));
+//	public boolean movementCondition(int xDirection, int yDirection, int magnitude) {
+//		return (Math.abs(yDirection) != Math.abs(xDirection) && !(xDirection == 0 || yDirection == 0));
 //	}
 }
