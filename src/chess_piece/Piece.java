@@ -11,32 +11,30 @@ import javafx.scene.shape.*;
 public class Piece extends Rectangle{
 
 	static int gridsize = Literals.GRIDSIZE;
-	public String name, notation;
+	String name, notation;
 	Image image;
 	Colour colour;
 	State state;
 	Type type;
-	int pieceNumber, yOffset;
+	int number;
 	private int magnitudeMove, maximumMove;
 	public boolean thisPieceSelected, isWhite, thisPieceCondition;
 	private ArrayList<Coord> validMoves;
 	ArrayList<Circle> validMoveCircles;
 	Coord current;
 	
-	
-	public Piece(Type type, Colour colour, int pieceNumber) {
+	public Piece(Type type, Colour colour, int number) {
 		super(gridsize/2, gridsize/2);
 		this.type = type; 
 		this.colour = colour; 
-		this.pieceNumber = pieceNumber; 
+		this.number = number; 
 		this.isWhite = (colour == Colour.WHITE);
 		this.state = State.INITIAL; 
 		this.notation = type.toString().substring(0, 1); 
 		this.name = colour.toString().toLowerCase() + "_" + type.toString().toLowerCase();
 		this.image = new Image("res/"+name+".png");
-		this.current = getInitialCoords(type, colour, pieceNumber);
+		this.current = getInitialCoords(type, colour, number);
 		this.getInitialCoords();
-		this.yOffset = 0;
 		this.thisPieceSelected = false;
 		this.setMagnitudeMove(1);
 		this.setMaximumMove(7);
@@ -59,7 +57,7 @@ public class Piece extends Rectangle{
 	
 	public void getInitialCoords() {
 		this.setY((isWhite ? Literals.EIGHTH_ROW : Literals.FIRST_ROW) * gridsize + gridsize/4);
-		this.setX((pieceNumber == 1 ? type.getPositionX()+1 : Literals.BOARD_END - type.getPositionX()-1)*gridsize + gridsize/4);
+		this.setX((number == 1 ? type.getPositionX()+1 : Literals.BOARD_END - type.getPositionX()-1)*gridsize + gridsize/4);
 	}
 	
 	public Coord getInitialCoords(Type type, Colour colour, int number) {
@@ -82,7 +80,7 @@ public class Piece extends Rectangle{
 		return true;
 	}
 	
-	public Coord thisPieceConditionCoord(int i, int j, int k) {
+	public Coord validMoveCoord(int i, int j, int k) {
 		return new Coord(current.getX() + i * k, current.getY() + j * k);
 	}
 

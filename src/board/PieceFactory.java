@@ -5,8 +5,6 @@ import enums.*;
 
 public class PieceFactory {
 	
-	public PieceFactory() {}
-	
 	public Piece assignPieces(Type type, Colour colour, int number) {
 		Piece piece = new Piece(type, colour, number);
 		if(type == Type.BISHOP) {

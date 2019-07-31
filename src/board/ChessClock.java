@@ -1,29 +1,33 @@
 package board;
 
 import java.util.*;
-
-import javafx.scene.control.Label;
+import javafx.scene.control.*;
 
 public class ChessClock {
 
-	int minutes = 20;
-	int seconds = 00;
+	private static int minutes = 20;
+	private static int seconds = 00;
 	
 	Label clock; 
 	Timer timer; 
+	TimerTask task;
 	
 	public ChessClock() {
-		clock = new Label(String.format("%02d:%02d", minutes, seconds));
+		this(minutes, seconds);
+	}
+	
+	public ChessClock(int minutes, int seconds) {
+		clock = new Label(setText(minutes, seconds));
 		timer = new Timer();
-		TimerTask task = setTimerTask();
+		task = setTimerTask();
 	}
 	
 	public void print(String str) {
 		Literals.print(str, Literals.CLOCK_DEBUG);
 	}
 	
-	public void setText(String hours, String minutes) {
-		//return String.format("%02d:%02d", minutes, seconds);
+	public String setText(int minutes, int seconds) {
+		return String.format("%02d:%02d", minutes, seconds);
 	}
 	
 	private TimerTask setTimerTask() {

@@ -17,6 +17,10 @@ public class Literals {
 							ASCII_SMALLS = 96,
 							FIRST_ROW = 2,
 							SECOND_ROW = 3,
+							THIRD_ROW = 4,
+							FOURTH_ROW = 5,
+							FIFTH_ROM = 6,
+							SIXTH_ROW = 7,
 							SEVENTH_ROW = 8,
 							EIGHTH_ROW = 9,
 							BOARD_END = 11,
@@ -52,7 +56,7 @@ public class Literals {
 	
 	public static final Duration TRANSLATE_DURATION = Duration.seconds(0.5); 
 	
-	public static final boolean BOARD_DEBUG 	= true,
+	public static final boolean BOARD_DEBUG 	= false,
 								PIECE_DEBUG 	= false,
 								PAWN_DEBUG  	= false,
 								KING_DEBUG  	= false,

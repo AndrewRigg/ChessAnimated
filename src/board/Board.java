@@ -2,15 +2,16 @@ package board;
 
 import java.util.ArrayList;
 
-import chess_piece.Piece;
+import chess_piece.*;
+import enums.*;
 import javafx.animation.*;
 import javafx.application.*;
-import javafx.event.EventHandler;
+import javafx.event.*;
 import javafx.scene.*;
-import javafx.scene.control.Label;
-import javafx.scene.image.Image;
-import javafx.scene.input.MouseEvent;
-import javafx.scene.paint.Color;
+import javafx.scene.control.*;
+import javafx.scene.image.*;
+import javafx.scene.input.*;
+import javafx.scene.paint.*;
 import javafx.scene.shape.*;
 import javafx.scene.text.*;
 import javafx.stage.*;
@@ -23,16 +24,16 @@ public class Board extends Application {
 	int asciiCaps = Literals.ASCII_CAPS;
 	Label clock1Label, clock2Label;
 	ChessClock clock1, clock2;
-	static ArrayList<Circle> validMoveCircles;
+	ArrayList<Circle> validMoveCircles;
 	final Group group = new Group();
 	public boolean pieceSelected;
 	public Piece currentPiece;
 	public Scene scene;
 	private Player player1, player2;
 
-	public Board(Player player1, Player player2){
-		this.player1 = player1;
-		this.player2 = player2;
+	public Board(){
+		player1 = new Player(Colour.WHITE);
+		player2 = new Player(Colour.BLACK);
 		validMoveCircles = new ArrayList<Circle>();
 		pieceSelected = false;
 	}
@@ -43,8 +44,8 @@ public class Board extends Application {
 	
 	public void addChessClock(boolean showClock) {
 		if(showClock) {
-			clock1 = new ChessClock();
-			clock2 = new ChessClock();
+			clock1 = player1.getClock();
+			clock2 = player2.getClock();
 //			clock1 = new Label();
 //			clock2 = new Label();
 			clock1Label = clock1.getLabel();
@@ -72,8 +73,10 @@ public class Board extends Application {
 		setUpBoard();
 		player1.initialise();
 		player2.initialise();
+		initialisePieces(player1);
+		initialisePieces(player2);
 		setScene(stage);
-		addChessClock(true);
+		//addChessClock(true);
 	}
 
 	private void setUpBoard() {
@@ -100,9 +103,9 @@ public class Board extends Application {
 				print("\nPiece Selected: " + pieceSelected);//
 				print("validMoveCircles: " + validMoveCircles.toString());
 				if(currentPiece != null){
-					print(currentPiece.name);
+					//print(currentPiece.name);
 					//print("currentPiece != null: " + (currentPiece != null));
-					print("validMovesContains: " + currentPiece.validMovesContains(coord));
+					//print("validMovesContains: " + currentPiece.validMovesContains(coord));
 				}
 				
 				if(!pieceSelected) {
@@ -241,7 +244,7 @@ public class Board extends Application {
 			for (int j = piece.getMagnitudeMove()*(-1); j <= piece.getMagnitudeMove(); j++) {
 				for (int k = 1; k <= piece.getMaximumMove(); k++) {
 					if (piece.movementCondition(i, j, k) && !(i == 0 && j == 0)) {
-						Coord coord = piece.thisPieceConditionCoord(i, j, k);
+						Coord coord = piece.validMoveCoord(i, j, k);
 						if (coord.onGrid() && !piece.getValidMoves().contains(coord)) {
 							piece.getValidMoves().add(coord);
 						}

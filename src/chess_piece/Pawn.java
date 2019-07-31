@@ -15,7 +15,7 @@ public class Pawn extends Piece{
 	@Override
 	public void getInitialCoords() {
 		this.setY((isWhite ? Literals.SEVENTH_ROW : Literals.SECOND_ROW) * gridsize + gridsize/4);
-		this.setX((type.getPositionX()+pieceNumber)*gridsize + gridsize/4);
+		this.setX((type.getPositionX()+number)*gridsize + gridsize/4);
 	}
 	
 	//TODO: this needs careful consideration
