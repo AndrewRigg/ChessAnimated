@@ -1,63 +1,84 @@
 package board;
 
 import java.util.*;
+
+import javafx.application.Platform;
 import javafx.scene.control.*;
 
 public class ChessClock {
 
-	private static int minutes = 20;
-	private static int seconds = 00;
-	
+	private static int defaultMinutes = 20, defaultSeconds = 00;
+	private int minutes, seconds;
 	Label clock; 
 	Timer timer; 
 	TimerTask task;
+	boolean running;
 	
 	public ChessClock() {
-		this(minutes, seconds);
+		this(defaultMinutes, defaultSeconds);
 	}
 	
 	public ChessClock(int minutes, int seconds) {
-		clock = new Label(setText(minutes, seconds));
+		this.minutes = minutes;
+		this.seconds = seconds;
+		clock = new Label(format(minutes, seconds));
 		timer = new Timer();
 		task = setTimerTask();
+		running = false;
+		setup();
 	}
 	
 	public void print(String str) {
 		Literals.print(str, Literals.CLOCK_DEBUG);
 	}
 	
-	public String setText(int minutes, int seconds) {
-		return String.format("%02d:%02d", minutes, seconds);
-	}
+	public void setup() {
+		timer.scheduleAtFixedRate(task, 1000, 1000);
+	}	
 	
 	private TimerTask setTimerTask() {
-		TimerTask task = new TimerTask() {
+		task = new TimerTask() {
 			public void run()
 			{
-				print("Tick");
-				updateLabel(clock);
+				Platform.runLater(new Runnable() {
+					public void run() {
+						if(running) {
+							print(format(minutes, seconds));
+							updateLabel();
+						}
+					}
+				});
 			}
 		};
 		return task;
 	}	
-
-	public void setup() {
-		timer.schedule(setTimerTask(), 1000);
+	
+	private void updateLabel() {
+		clock.setText(getNewTime());
 	}
 	
-	private void updateLabel(Label clock) {
-		clock.setText(getNewTime(minutes, seconds));
-	}
-	
-	private String getNewTime(int minutes, int seconds) {
+	private String getNewTime() {
 		if(seconds == 0) {
+			seconds += 60;
 			minutes--;
 		}
-		seconds -= 1 % 60;
-		return null;
+		seconds--;
+		return format(minutes, seconds);
+	}
+	
+	public String format(int minutes, int seconds) {
+		return String.format("%02d:%02d", minutes, seconds);
 	}
 	
 	public Label getLabel() {
 		return clock;
+	}
+
+	public boolean isRunning() {
+		return running;
+	}
+
+	public void setRunning(boolean running) {
+		this.running = running;
 	}
 }

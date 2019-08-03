@@ -9,8 +9,17 @@ public class Player {
 	PieceFactory factory = new PieceFactory();
 	ArrayList<Piece> pieces = new ArrayList<Piece>();
 	Colour colour;
-	ChessClock clock;
+	private ChessClock clock;
+	boolean turn;
 	
+	public boolean isTurn() {
+		return turn;
+	}
+
+	public void setTurn(boolean turn) {
+		this.turn = turn;
+	}
+
 	public Player(Colour colour) {
 		this(colour, false);
 	}

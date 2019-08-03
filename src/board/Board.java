@@ -1,7 +1,6 @@
 package board;
 
-import java.util.ArrayList;
-
+import java.util.*;
 import chess_piece.*;
 import enums.*;
 import javafx.animation.*;
@@ -22,46 +21,43 @@ public class Board extends Application {
 	int cols = Literals.FILES;
 	int gridsize = Literals.GRIDSIZE;
 	int asciiCaps = Literals.ASCII_CAPS;
-	Label clock1Label, clock2Label;
-	ChessClock clock1, clock2;
 	ArrayList<Circle> validMoveCircles;
 	final Group group = new Group();
 	public boolean pieceSelected;
+	public boolean clocks = true;
 	public Piece currentPiece;
 	public Scene scene;
 	private Player player1, player2;
 
-	public Board(){
-		player1 = new Player(Colour.WHITE);
-		player2 = new Player(Colour.BLACK);
+	public Board() {
+		player1 = new Player(Colour.WHITE, clocks);
+		player2 = new Player(Colour.BLACK, clocks);
 		validMoveCircles = new ArrayList<Circle>();
 		pieceSelected = false;
+	}
+	
+	/**
+	 * Update board every second and every time a move is made
+	 */
+	public void updateBoard() {
+		
 	}
 	
 	public void print(String str) {
 		Literals.print(str, Literals.BOARD_DEBUG);
 	}
 	
-	public void addChessClock(boolean showClock) {
-		if(showClock) {
-			clock1 = player1.getClock();
-			clock2 = player2.getClock();
-//			clock1 = new Label();
-//			clock2 = new Label();
-			clock1Label = clock1.getLabel();
-			clock2Label = clock2.getLabel();
-//			clock1.setup();
-//			clock1.setText("Clock1");
-//			clock2.setText("Clock2");
-			clock1Label.setTextAlignment(TextAlignment.RIGHT);
-			clock2Label.setTextAlignment(TextAlignment.CENTER);
-			clock1Label.setTranslateX(gridsize + 10);
-			clock1Label.setTranslateY(gridsize);
-			clock2Label.setTranslateX(10*gridsize+10);
-			clock2Label.setTranslateY(gridsize);
-			group.getChildren().add(clock1Label);
-			group.getChildren().add(clock2Label);
-		}
+	public void addChessClock() {
+		Label clock1Label = player1.getClock().getLabel();
+		Label clock2Label = player2.getClock().getLabel();
+		clock1Label.setTextAlignment(TextAlignment.RIGHT);
+		clock2Label.setTextAlignment(TextAlignment.CENTER);
+		clock1Label.setTranslateX(gridsize + 10);
+		clock1Label.setTranslateY(gridsize);
+		clock2Label.setTranslateX(10*gridsize+10);
+		clock2Label.setTranslateY(gridsize);
+		group.getChildren().add(clock1Label);
+		group.getChildren().add(clock2Label);
 	}
 	
 	public static void main(String[] args) {
@@ -73,10 +69,15 @@ public class Board extends Application {
 		setUpBoard();
 		player1.initialise();
 		player2.initialise();
+		player1.setTurn(true);
+		player1.getClock().setRunning(true);
+		player2.getClock().setRunning(true);
 		initialisePieces(player1);
 		initialisePieces(player2);
+		if(clocks) {
+			addChessClock();
+		}
 		setScene(stage);
-		//addChessClock(true);
 	}
 
 	private void setUpBoard() {

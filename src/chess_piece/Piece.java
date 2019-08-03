@@ -22,6 +22,7 @@ public class Piece extends Rectangle{
 	private ArrayList<Coord> validMoves;
 	ArrayList<Circle> validMoveCircles;
 	Coord current;
+	PieceActions actions;
 	
 	public Piece(Type type, Colour colour, int number) {
 		super(gridsize/2, gridsize/2);
@@ -41,6 +42,7 @@ public class Piece extends Rectangle{
 		this.setValidMoves(new ArrayList<Coord>());
 		this.validMoveCircles = new ArrayList<Circle>();
 		this.setFill(new ImagePattern(image));
+		actions = new PieceActions(this);
 	}	
 
 	/**

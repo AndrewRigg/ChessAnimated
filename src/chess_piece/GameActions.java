@@ -1,11 +1,13 @@
 package chess_piece;
 
+import board.Coord;
+
 public interface GameActions {
 
-	public void takePiece(Piece piece);
+	public void takePiece(Piece yieldingPiece);
 	
-	public void isTaken(Piece piece);
+	public void pieceClicked(Piece actionPiece);
 	
-	public void pieceClicked(Piece piece);
+	public void movePiece(Piece movingPiece, Coord destination);
 	
 }

@@ -1,25 +1,30 @@
 package chess_piece;
 
+import board.*;
+
 public class PieceActions implements GameActions{
 
-	@Override
-	public void takePiece(Piece piece) {
-		// TODO Auto-generated method stub
-		
-	}
 	
-	public PieceActions(Piece piece) {
-		
+	Piece actionPiece;
+	
+	public PieceActions(Piece actionPiece) {
+		this.actionPiece = actionPiece;
 	}
 
 	@Override
-	public void isTaken(Piece piece) {
+	public void takePiece(Piece yieldingPiece) {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	public void pieceClicked(Piece piece) {
+	public void pieceClicked(Piece actionPiece) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void movePiece(Piece movingPiece, Coord destination) {
 		// TODO Auto-generated method stub
 		
 	}
