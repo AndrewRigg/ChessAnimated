@@ -1,33 +1,35 @@
 package board;
 
-import java.util.*;
+import java.util.Timer;
+import java.util.TimerTask;
 
-import javafx.application.Platform;
+import javafx.application.*;
 import javafx.scene.control.*;
+import javafx.scene.control.Alert.AlertType;
+import javafx.scene.paint.*;
 
 public class ChessClock {
 
-	private static int defaultMinutes = 20, defaultSeconds = 00;
 	private int minutes, seconds;
 	Label clock; 
 	Timer timer; 
 	TimerTask task;
 	boolean running;
-	
-	public ChessClock() {
-		this(defaultMinutes, defaultSeconds);
-	}
-	
-	public ChessClock(int minutes, int seconds) {
+	Alert alert;
+
+	public ChessClock(int minutes, int seconds, boolean player) {
+		print("creating clock");
+		print(format(minutes, seconds));
 		this.minutes = minutes;
 		this.seconds = seconds;
 		clock = new Label(format(minutes, seconds));
 		timer = new Timer();
 		task = setTimerTask();
+		alert = new Alert(AlertType.INFORMATION, "Player " + (player? 1 : 2) + " timer has expired.\nPLAYER " + (player? 2 : 1) +  " WINS!");
 		running = false;
 		setup();
 	}
-	
+
 	public void print(String str) {
 		Literals.print(str, Literals.CLOCK_DEBUG);
 	}
@@ -43,8 +45,8 @@ public class ChessClock {
 				Platform.runLater(new Runnable() {
 					public void run() {
 						if(running) {
-							print(format(minutes, seconds));
 							updateLabel();
+							print(format(minutes, seconds));
 						}
 					}
 				});
@@ -54,18 +56,46 @@ public class ChessClock {
 	}	
 	
 	private void updateLabel() {
-		clock.setText(getNewTime());
+		if(running) {
+			tick();
+			clock.setText(format(minutes, seconds));
+		}
+		if(minutes == 0 && seconds == 0) {
+			if(!alert.isShowing()) {
+				clock.setTextFill(Color.web("#FF0000"));
+				alert.showAndWait();
+				//alert.show();
+			}
+		}
 	}
 	
-	private String getNewTime() {
-		if(seconds == 0) {
+	/**
+	 * This method acts as the tick to update time in minutes and seconds
+	 * If zero is reached the timer is stopped, if the 
+	 */
+	private void tick() {
+		if(seconds == 0 && minutes == 0 && running) {
+			running = false;
+			timer.cancel();
+			timer.purge();
+		}
+		else if(seconds == 0) {
 			seconds += 60;
 			minutes--;
+			seconds--;
 		}
-		seconds--;
-		return format(minutes, seconds);
+		else {
+			seconds--;
+		}
 	}
 	
+	/**
+	 * Returns a formatted String for the timer in 
+	 * minutes and seconds in the format MM:SS
+	 * @param minutes
+	 * @param seconds
+	 * @return
+	 */
 	public String format(int minutes, int seconds) {
 		return String.format("%02d:%02d", minutes, seconds);
 	}
@@ -74,10 +104,11 @@ public class ChessClock {
 		return clock;
 	}
 
-	public boolean isRunning() {
-		return running;
-	}
-
+	/**
+	 * Sets whether this clock is currently counting down
+	 * i.e. it is the associated player's turn
+	 * @param running
+	 */
 	public void setRunning(boolean running) {
 		this.running = running;
 	}

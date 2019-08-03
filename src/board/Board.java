@@ -1,6 +1,7 @@
 package board;
 
 import java.util.*;
+
 import chess_piece.*;
 import enums.*;
 import javafx.animation.*;
@@ -24,14 +25,21 @@ public class Board extends Application {
 	ArrayList<Circle> validMoveCircles;
 	final Group group = new Group();
 	public boolean pieceSelected;
-	public boolean clocks = true;
 	public Piece currentPiece;
 	public Scene scene;
 	private Player player1, player2;
 
 	public Board() {
-		player1 = new Player(Colour.WHITE, clocks);
-		player2 = new Player(Colour.BLACK, clocks);
+		//Game with no clocks
+//		player1 = new Player(Colour.WHITE);
+//		player2 = new Player(Colour.BLACK);
+		//Game with default clocks
+		//player1 = new Player(Colour.WHITE, true);
+		//player2 = new Player(Colour.BLACK, true);
+		//Game with custom clocks
+		player1 = new Player(Colour.WHITE, 1, 5);
+		player2 = new Player(Colour.BLACK, 0, 8);
+		
 		validMoveCircles = new ArrayList<Circle>();
 		pieceSelected = false;
 	}
@@ -47,17 +55,12 @@ public class Board extends Application {
 		Literals.print(str, Literals.BOARD_DEBUG);
 	}
 	
-	public void addChessClock() {
-		Label clock1Label = player1.getClock().getLabel();
-		Label clock2Label = player2.getClock().getLabel();
-		clock1Label.setTextAlignment(TextAlignment.RIGHT);
-		clock2Label.setTextAlignment(TextAlignment.CENTER);
-		clock1Label.setTranslateX(gridsize + 10);
-		clock1Label.setTranslateY(gridsize);
-		clock2Label.setTranslateX(10*gridsize+10);
-		clock2Label.setTranslateY(gridsize);
-		group.getChildren().add(clock1Label);
-		group.getChildren().add(clock2Label);
+	public void addChessClock(Player player) {
+		Label clockLabel = player.getClock().getLabel();
+		clockLabel.setTextAlignment(TextAlignment.CENTER);
+		clockLabel.setTranslateX(player.clockPosition);
+		clockLabel.setTranslateY(gridsize);
+		group.getChildren().add(clockLabel);
 	}
 	
 	public static void main(String[] args) {
@@ -67,18 +70,23 @@ public class Board extends Application {
 	@Override
 	public void start(Stage stage) throws Exception {
 		setUpBoard();
-		player1.initialise();
-		player2.initialise();
-		player1.setTurn(true);
-		player1.getClock().setRunning(true);
-		player2.getClock().setRunning(true);
-		initialisePieces(player1);
-		initialisePieces(player2);
-		if(clocks) {
-			addChessClock();
-		}
+		setPlayer(player1);
+		setPlayer(player2);
 		setScene(stage);
 	}
+	
+	public void setPlayer(Player player) {
+		player.initialise();
+		addPieces(player);
+		if(player.clockActive) {
+			addChessClock(player);
+			if(player.player == PlayerNumber.PlayerTwo) {
+				player.setTurn(true);
+				player.getClock().setRunning(true);
+			}
+		}
+	}
+	
 
 	private void setUpBoard() {
         drawSquares();
@@ -172,7 +180,7 @@ public class Board extends Application {
     	group.getChildren().add(text);
 	}
 	
-	public void initialisePieces(Player player) {
+	public void addPieces(Player player) {
 		for(Piece piece : player.pieces) {
 			group.getChildren().add(piece);
 		}

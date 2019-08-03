@@ -6,36 +6,42 @@ import enums.*;
 
 public class Player {
 
+	int gridsize = Literals.GRIDSIZE;
 	PieceFactory factory = new PieceFactory();
 	ArrayList<Piece> pieces = new ArrayList<Piece>();
 	Colour colour;
 	private ChessClock clock;
-	boolean turn;
+	int clockPosition;
+	boolean turn, clockActive = true;
+	PlayerNumber player;
+	private static int defaultMinutes = 20, defaultSeconds = 00;
 	
-	public boolean isTurn() {
-		return turn;
-	}
-
-	public void setTurn(boolean turn) {
-		this.turn = turn;
-	}
-
 	public Player(Colour colour) {
 		this(colour, false);
 	}
 	
-	public Player(Colour colour, boolean defaultClock) {
-		this.colour = colour;
-		if(defaultClock) {
-			clock = new ChessClock();
-		}
+	public Player(Colour colour, boolean clock) {
+		this(colour, defaultMinutes, defaultSeconds);
 	}
 	
 	public Player(Colour colour, int minutes, int seconds) {
 		this.colour = colour;
-		clock = new ChessClock(minutes, seconds);
+		player = setThisPlayer();
+		if(clockActive) {
+			clock = new ChessClock(minutes, seconds, player.ordinal() == 0);
+		}
 	}
-	
+
+	private PlayerNumber setThisPlayer() {
+		if(colour == Colour.WHITE) {
+			clockPosition = gridsize + 10;
+			return PlayerNumber.PlayerOne;
+		}else {
+			clockPosition = 10*gridsize+10;
+			return PlayerNumber.PlayerTwo;
+		}
+	}
+		
 	public void initialise() {
 		for(Type type : Type.values()){
 			for(int number = 1; number <= type.getQuantity(); number++) {
@@ -43,6 +49,14 @@ public class Player {
 				pieces.add(piece);
 			}
 		}
+	}
+	
+	public boolean isTurn() {
+		return turn;
+	}
+
+	public void setTurn(boolean turn) {
+		this.turn = turn;
 	}
 	
 	public ChessClock getClock() {

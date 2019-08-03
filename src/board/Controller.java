@@ -12,9 +12,12 @@ public class Controller {
 	}
 	
 	private void changeTurns() {
-		player1.setTurn(!player1.isTurn());
-		player2.setTurn(!player2.isTurn());
-		player1.getClock().setRunning(player1.isTurn());
-		player2.getClock().setRunning(player2.isTurn());
+		changePlayerTurn(player1);
+		changePlayerTurn(player2);
+	}
+	
+	private void changePlayerTurn(Player player) {
+		player.setTurn(!player.isTurn());
+		player.getClock().setRunning(player.isTurn());
 	}
 }
