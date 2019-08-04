@@ -16,14 +16,14 @@ import javafx.scene.shape.*;
 import javafx.scene.text.*;
 import javafx.stage.*;
 
-public class Board extends Application {
+public class Board{
 	
 	int rows = Literals.RANKS;
 	int cols = Literals.FILES;
 	int gridsize = Literals.GRIDSIZE;
 	int asciiCaps = Literals.ASCII_CAPS;
 	ArrayList<Circle> validMoveCircles;
-	final Group group = new Group();
+	public final Group group = new Group();
 	public boolean pieceSelected;
 	public Piece currentPiece;
 	public Scene scene;
@@ -37,56 +37,70 @@ public class Board extends Application {
 		//player1 = new Player(Colour.WHITE, true);
 		//player2 = new Player(Colour.BLACK, true);
 		//Game with custom clocks
-		player1 = new Player(Colour.WHITE, 0, 5);
-		player2 = new Player(Colour.BLACK, 1, 8);
-		validMoveCircles = new ArrayList<Circle>();
-		pieceSelected = false;
-	}
-	
-	/**
-	 * Update board every second and every time a move is made
-	 */
-	public void updateBoard() {
-		
+		setUpBoard();
+//		player1 = new Player(Colour.WHITE, 0, 5);
+//		player2 = new Player(Colour.BLACK, 1, 8);
+//		validMoveCircles = new ArrayList<Circle>();
+//		pieceSelected = false;
 	}
 	
 	public void print(String str) {
 		Literals.print(str, Literals.BOARD_DEBUG);
 	}
 	
-	public void addChessClock(Player player) {
-		Label clockLabel = player.getClock().getLabel();
-		clockLabel.setTextAlignment(TextAlignment.CENTER);
-		clockLabel.setTranslateX(player.clockPosition);
-		clockLabel.setTranslateY(gridsize);
-		group.getChildren().add(clockLabel);
-	}
+//	public void setPlayer(Player player) {
+//		player.initialise();
+//		addPieces(player);
+//		if(player.clockActive) {
+//			addChessClock(player);
+//			if(player.player == PlayerNumber.PlayerOne) {
+//				player.setTurn(true);
+//				player.getClock().setRunning(true);
+//			}
+//		}
+//	}
+//
+//	public void addPieces(Player player) {
+//		for(Piece piece : player.pieces) {
+//			group.getChildren().add(piece);
+//		}
+//	}
+//	
+//	public void addChessClock(Player player) {
+//		Label clockLabel = player.getClock().getLabel();
+//		clockLabel.setTextAlignment(TextAlignment.CENTER);
+//		clockLabel.setTranslateX(player.clockPosition);
+//		clockLabel.setTranslateY(gridsize);
+//		group.getChildren().add(clockLabel);
+//	}
 	
-	public static void main(String[] args) {
-		launch(args);
-	}
+//	public static void main(String[] args) {
+//		launch(args);
+//	}
 	
 	@Override
 	public void start(Stage stage) throws Exception {
-		setUpBoard();
-		setPlayer(player1);
-		setPlayer(player2);
-		setScene(stage);
+		//setUpBoard();
+//		setPlayer(player1);
+//		setPlayer(player2);
+//		setScene(stage);
 	}
 	
-	public void setPlayer(Player player) {
-		player.initialise();
-		addPieces(player);
-		if(player.clockActive) {
-			addChessClock(player);
-			if(player.player == PlayerNumber.PlayerOne) {
-				player.setTurn(true);
-				player.getClock().setRunning(true);
-			}
-		}
-	}
-	
-
+//	private void setScene(Stage stage) {
+//		scene = new Scene(group, gridsize * (rows + 4), gridsize * (cols + 4));
+//		stage.setScene(scene);
+//		stage.setTitle("Animated Chess");
+//		stage.getIcons().add(new Image("res/chess_icon.jpg"));
+//		stage.show();
+//		stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+//		    @Override
+//		    public void handle(WindowEvent t) {
+//		        Platform.exit();
+//		        System.exit(0);
+//		    }
+//		});
+//	}
+//	
 	private void setUpBoard() {
         drawSquares();
         drawLines();
@@ -138,7 +152,8 @@ public class Board extends Application {
     {
         final TranslateTransition transition = new TranslateTransition(Literals.TRANSLATE_DURATION, piece);
         
-        scene.setOnMousePressed(e -> {
+        //scene.setOnMousePressed(e -> {
+        group.setOnMousePressed(e -> {
         	transition.setFromX(piece.getTranslateX());
             transition.setFromY(piece.getTranslateY());
             transition.setToX(x*gridsize - piece.getX() + gridsize/4);
@@ -163,7 +178,6 @@ public class Board extends Application {
 			group.getChildren().add(line);
 	}
 	
-	
 	private void drawLabels() {
 		for(int i = 1; i <= cols; i++) {
 			setText("" + (char)(i + asciiCaps), gridsize + gridsize*(i) + gridsize/2, 10*gridsize + gridsize/2);
@@ -177,12 +191,6 @@ public class Board extends Application {
     	text.setX(x - text.getFont().getSize()/2);
     	text.setY(y + text.getFont().getSize()/2);
     	group.getChildren().add(text);
-	}
-	
-	public void addPieces(Player player) {
-		for(Piece piece : player.pieces) {
-			group.getChildren().add(piece);
-		}
 	}
 	
 	/**
@@ -274,20 +282,5 @@ public class Board extends Application {
 			validMoveCircles.add(circle);
 		}
 		pieceClicked(piece);
-	}
-	
-	private void setScene(Stage stage) {
-		scene = new Scene(group, gridsize * (rows + 4), gridsize * (cols + 4));
-		stage.setScene(scene);
-		stage.setTitle("Animated Chess");
-		stage.getIcons().add(new Image("res/chess_icon.jpg"));
-		stage.show();
-		stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
-		    @Override
-		    public void handle(WindowEvent t) {
-		        Platform.exit();
-		        System.exit(0);
-		    }
-		});
 	}
 }
