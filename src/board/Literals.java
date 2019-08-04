@@ -62,7 +62,7 @@ public class Literals {
 								KING_DEBUG  	= false,
 								PLAYER_DEBUG 	= false,
 								COORD_DEBUG 	= false,
-								CLOCK_DEBUG		= true;
+								CLOCK_DEBUG		= false;
 	
 	public static final void print(String str, boolean bool) {
 		if(bool) {

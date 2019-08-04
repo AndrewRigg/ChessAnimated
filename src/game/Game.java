@@ -1,28 +1,36 @@
 package game;
 
 import board.*;
-import enums.Colour;
-import javafx.application.Application;
-import javafx.application.Platform;
-import javafx.event.EventHandler;
-import javafx.scene.Group;
-import javafx.scene.Scene;
-import javafx.scene.image.Image;
-import javafx.stage.Stage;
-import javafx.stage.WindowEvent;
+import enums.*;
+import javafx.application.*;
+import javafx.event.*;
+import javafx.scene.*;
+import javafx.scene.image.*;
+import javafx.stage.*;
 
 public class Game extends Application{
 
 	Controller controller;
 	public Scene scene;
-	int gridsize = Literals.GRIDSIZE;
-	int rows = Literals.RANKS;
-	int cols = Literals.FILES;
-	//final Group group = new Group();
-	Board board = new Board();
+	Board board;
+	Player player1, player2;
+	int gridsize, rows, cols;
 	
 	public Game() {
-		controller = new Controller(board, new Player(Colour.WHITE), new Player(Colour.BLACK));
+		board = new Board();
+		//	Game with no clocks
+		player1 = new Player(Colour.WHITE);
+		player2 = new Player(Colour.BLACK);
+		//	Game with default clocks
+		//player1 = new Player(Colour.WHITE, true);
+		//player2 = new Player(Colour.BLACK, true);
+		//	Game with custom clocks
+		//player1 = new Player(Colour.WHITE, 0, 5);
+		//player2 = new Player(Colour.BLACK, 1, 8);
+		controller = new Controller(board, player1, player2);
+		gridsize = Literals.GRIDSIZE;
+		rows = Literals.RANKS;
+		cols = Literals.FILES;
 	}
 	
 	public static void main(String[] args) {
@@ -31,9 +39,6 @@ public class Game extends Application{
 
 	@Override
 	public void start(Stage stage) throws Exception {
-		// TODO Auto-generated method stub
-
-		
 		setScene(stage);
 	}
 	

@@ -1,22 +1,17 @@
 package board;
 
-import java.util.*;
+import java.util.ArrayList;
 
 import chess_piece.*;
-import enums.*;
 import javafx.animation.*;
-import javafx.application.*;
 import javafx.event.*;
 import javafx.scene.*;
-import javafx.scene.control.*;
-import javafx.scene.image.*;
 import javafx.scene.input.*;
 import javafx.scene.paint.*;
 import javafx.scene.shape.*;
 import javafx.scene.text.*;
-import javafx.stage.*;
 
-public class Board{
+public class Board /*extends Application */{
 	
 	int rows = Literals.RANKS;
 	int cols = Literals.FILES;
@@ -27,84 +22,18 @@ public class Board{
 	public boolean pieceSelected;
 	public Piece currentPiece;
 	public Scene scene;
-	private Player player1, player2;
 
 	public Board() {
-		//Game with no clocks
-		//player1 = new Player(Colour.WHITE);
-		//player2 = new Player(Colour.BLACK);
-		//Game with default clocks
-		//player1 = new Player(Colour.WHITE, true);
-		//player2 = new Player(Colour.BLACK, true);
-		//Game with custom clocks
-		setUpBoard();
-//		player1 = new Player(Colour.WHITE, 0, 5);
-//		player2 = new Player(Colour.BLACK, 1, 8);
+        drawSquares();
+        drawLines();
+        drawLabels(); 
+
 //		validMoveCircles = new ArrayList<Circle>();
 //		pieceSelected = false;
 	}
 	
 	public void print(String str) {
 		Literals.print(str, Literals.BOARD_DEBUG);
-	}
-	
-//	public void setPlayer(Player player) {
-//		player.initialise();
-//		addPieces(player);
-//		if(player.clockActive) {
-//			addChessClock(player);
-//			if(player.player == PlayerNumber.PlayerOne) {
-//				player.setTurn(true);
-//				player.getClock().setRunning(true);
-//			}
-//		}
-//	}
-//
-//	public void addPieces(Player player) {
-//		for(Piece piece : player.pieces) {
-//			group.getChildren().add(piece);
-//		}
-//	}
-//	
-//	public void addChessClock(Player player) {
-//		Label clockLabel = player.getClock().getLabel();
-//		clockLabel.setTextAlignment(TextAlignment.CENTER);
-//		clockLabel.setTranslateX(player.clockPosition);
-//		clockLabel.setTranslateY(gridsize);
-//		group.getChildren().add(clockLabel);
-//	}
-	
-//	public static void main(String[] args) {
-//		launch(args);
-//	}
-	
-	@Override
-	public void start(Stage stage) throws Exception {
-		//setUpBoard();
-//		setPlayer(player1);
-//		setPlayer(player2);
-//		setScene(stage);
-	}
-	
-//	private void setScene(Stage stage) {
-//		scene = new Scene(group, gridsize * (rows + 4), gridsize * (cols + 4));
-//		stage.setScene(scene);
-//		stage.setTitle("Animated Chess");
-//		stage.getIcons().add(new Image("res/chess_icon.jpg"));
-//		stage.show();
-//		stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
-//		    @Override
-//		    public void handle(WindowEvent t) {
-//		        Platform.exit();
-//		        System.exit(0);
-//		    }
-//		});
-//	}
-//	
-	private void setUpBoard() {
-        drawSquares();
-        drawLines();
-        drawLabels(); 
 	}
 
 	private void drawSquares() {
@@ -151,7 +80,7 @@ public class Board{
 	private void moveOnKeyPressed(Piece piece, int x, int y)
     {
         final TranslateTransition transition = new TranslateTransition(Literals.TRANSLATE_DURATION, piece);
-        
+        //This was before restructuring -> not sure if group works instead of scene
         //scene.setOnMousePressed(e -> {
         group.setOnMousePressed(e -> {
         	transition.setFromX(piece.getTranslateX());

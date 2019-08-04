@@ -1,11 +1,9 @@
 package board;
 
-import java.util.Timer;
-import java.util.TimerTask;
-
+import java.util.*;
 import javafx.application.*;
 import javafx.scene.control.*;
-import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.Alert.*;
 import javafx.scene.paint.*;
 
 public class ChessClock {
@@ -14,30 +12,52 @@ public class ChessClock {
 	Label clock; 
 	Timer timer; 
 	TimerTask task;
-	boolean running;
 	Alert alert;
+	boolean running;
+
 
 	public ChessClock(int minutes, int seconds, boolean player) {
-		print("creating clock");
 		print(format(minutes, seconds));
 		this.minutes = minutes;
 		this.seconds = seconds;
 		clock = new Label(format(minutes, seconds));
 		timer = new Timer();
 		task = setTimerTask();
-		alert = new Alert(AlertType.INFORMATION, "Player " + (player? 1 : 2) + " timer has expired.\nPLAYER " + (player? 2 : 1) +  " WINS!");
-		running = false;
+		alert = setAlert(player);
 		setup();
+	}
+
+	/**
+	 * Setting up the alert that will be displayed when this 
+	 * clock's timer has run out signifying this player has lost
+	 * @param player
+	 * @return
+	 */
+	private Alert setAlert(boolean player) {
+		Alert alert = new Alert(AlertType.INFORMATION, 
+				"Player " + (player? 1 : 2) + 
+				" timer has expired.\nPLAYER " + 
+				(player? 2 : 1) +  " WINS!");
+		return alert;
 	}
 
 	public void print(String str) {
 		Literals.print(str, Literals.CLOCK_DEBUG);
 	}
 	
+	/**
+	 * Setup the schedule of the timer, with the 
+	 * associated task, delay, and period
+	 */
 	public void setup() {
 		timer.scheduleAtFixedRate(task, 1000, 1000);
 	}	
 	
+	/**
+	 * This is the task which will run every second as long
+	 * as the timer is active
+	 * @return
+	 */
 	private TimerTask setTimerTask() {
 		task = new TimerTask() {
 			public void run()
@@ -55,25 +75,35 @@ public class ChessClock {
 		return task;
 	}	
 	
+	/**
+	 * Method to set the latest time on the clock label
+	 */
 	private void updateLabel() {
 		if(running) {
 			tick();
 			clock.setText(format(minutes, seconds));
 		}
 		if(minutes == 0 && seconds == 0) {
-			if(!alert.isShowing()) {
-				clock.setTextFill(Color.web("#FF0000"));
-				alert.showAndWait();
-			}
+			raiseAlert();
 		}
 	}
 	
 	/**
-	 * This method acts as the tick to update time in minutes and seconds each second
-	 * If the last second is reached the timer is stopped
+	 * Show game over dialog
+	 */
+	private void raiseAlert() {
+		if(!alert.isShowing()) {
+			clock.setTextFill(Color.web("#FF0000"));
+			alert.showAndWait();
+		}
+	}
+	
+	/**
+	 * This method updates the time in minutes and seconds every second,
+	 * if the last second is reached the timer is stopped
 	 */
 	private void tick() {
-		if(seconds == 1 && minutes == 0 && running) {
+		if(seconds == 1 && minutes == 0) {
 			running = false;
 			timer.cancel();
 			timer.purge();
@@ -87,7 +117,7 @@ public class ChessClock {
 	
 	/**
 	 * Returns a formatted String for the timer in 
-	 * minutes and seconds in the format MM:SS
+	 * minutes and seconds in the format mm:ss
 	 * @param minutes
 	 * @param seconds
 	 * @return
@@ -96,6 +126,11 @@ public class ChessClock {
 		return String.format("%02d:%02d", minutes, seconds);
 	}
 	
+	/**
+	 * Return the label of the clock 
+	 * i.e. the time it displays in the format mm:ss 
+	 * @return
+	 */
 	public Label getLabel() {
 		return clock;
 	}

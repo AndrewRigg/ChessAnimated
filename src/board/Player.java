@@ -16,15 +16,30 @@ public class Player {
 	PlayerNumber player;
 	private static int defaultMinutes = 20, defaultSeconds = 00;
 	
+	/**
+	 * Default constructor
+	 * @param colour
+	 */
 	public Player(Colour colour) {
 		this(colour, false);
 	}
 	
+	/**
+	 * Overrriding constructor #1
+	 * @param colour
+	 * @param clockActive
+	 */
 	public Player(Colour colour, boolean clockActive) {
 		this(colour, defaultMinutes, defaultSeconds);
 		this.clockActive = clockActive;
 	}
 	
+	/**
+	 * Overriding constructor #2
+	 * @param colour
+	 * @param minutes
+	 * @param seconds
+	 */
 	public Player(Colour colour, int minutes, int seconds) {
 		this.colour = colour;
 		player = setThisPlayer();
