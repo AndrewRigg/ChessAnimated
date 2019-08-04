@@ -31,15 +31,14 @@ public class Board extends Application {
 
 	public Board() {
 		//Game with no clocks
-//		player1 = new Player(Colour.WHITE);
-//		player2 = new Player(Colour.BLACK);
+		//player1 = new Player(Colour.WHITE);
+		//player2 = new Player(Colour.BLACK);
 		//Game with default clocks
 		//player1 = new Player(Colour.WHITE, true);
 		//player2 = new Player(Colour.BLACK, true);
 		//Game with custom clocks
-		player1 = new Player(Colour.WHITE, 1, 5);
-		player2 = new Player(Colour.BLACK, 0, 8);
-		
+		player1 = new Player(Colour.WHITE, 0, 5);
+		player2 = new Player(Colour.BLACK, 1, 8);
 		validMoveCircles = new ArrayList<Circle>();
 		pieceSelected = false;
 	}
@@ -80,7 +79,7 @@ public class Board extends Application {
 		addPieces(player);
 		if(player.clockActive) {
 			addChessClock(player);
-			if(player.player == PlayerNumber.PlayerTwo) {
+			if(player.player == PlayerNumber.PlayerOne) {
 				player.setTurn(true);
 				player.getClock().setRunning(true);
 			}

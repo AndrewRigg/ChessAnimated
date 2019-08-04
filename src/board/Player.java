@@ -20,8 +20,9 @@ public class Player {
 		this(colour, false);
 	}
 	
-	public Player(Colour colour, boolean clock) {
+	public Player(Colour colour, boolean clockActive) {
 		this(colour, defaultMinutes, defaultSeconds);
+		this.clockActive = clockActive;
 	}
 	
 	public Player(Colour colour, int minutes, int seconds) {

@@ -64,17 +64,16 @@ public class ChessClock {
 			if(!alert.isShowing()) {
 				clock.setTextFill(Color.web("#FF0000"));
 				alert.showAndWait();
-				//alert.show();
 			}
 		}
 	}
 	
 	/**
-	 * This method acts as the tick to update time in minutes and seconds
-	 * If zero is reached the timer is stopped, if the 
+	 * This method acts as the tick to update time in minutes and seconds each second
+	 * If the last second is reached the timer is stopped
 	 */
 	private void tick() {
-		if(seconds == 0 && minutes == 0 && running) {
+		if(seconds == 1 && minutes == 0 && running) {
 			running = false;
 			timer.cancel();
 			timer.purge();
@@ -82,11 +81,8 @@ public class ChessClock {
 		else if(seconds == 0) {
 			seconds += 60;
 			minutes--;
-			seconds--;
 		}
-		else {
-			seconds--;
-		}
+		seconds--;
 	}
 	
 	/**
@@ -106,7 +102,7 @@ public class ChessClock {
 
 	/**
 	 * Sets whether this clock is currently counting down
-	 * i.e. it is the associated player's turn
+	 * i.e. if it is the associated player's turn
 	 * @param running
 	 */
 	public void setRunning(boolean running) {
