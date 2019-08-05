@@ -52,7 +52,7 @@ public class Board /*extends Application */{
 				Coord coord = new Coord(x, y);
 				print("x " +x + " y " + y);
 				print("\nPiece Selected: " + pieceSelected);//
-				print("validMoveCircles: " + validMoveCircles.toString());
+				//print("validMoveCircles: " + validMoveCircles.toString());
 				if(currentPiece != null){
 					//print(currentPiece.name);
 					//print("currentPiece != null: " + (currentPiece != null));
@@ -62,9 +62,9 @@ public class Board /*extends Application */{
 				if(!pieceSelected) {
 					print("Board: Removing highlights");
 					//validMoveCircles.clear();
-					print("validMoveCircles: " + validMoveCircles.toString());
+					//print("validMoveCircles: " + validMoveCircles.toString());
 					removeHighlightedSquares();
-					print("validMoveCircles: " + validMoveCircles.toString());
+					//print("validMoveCircles: " + validMoveCircles.toString());
 					
 				}
 				if(pieceSelected && currentPiece != null && currentPiece.validMovesContains(coord)){

@@ -15,22 +15,45 @@ public class Game extends Application{
 	Board board;
 	Player player1, player2;
 	int gridsize, rows, cols;
+	private static int defaultMinutes = 20, defaultSeconds = 00;
 	
+	/**
+	 * Game with no clocks
+	 */
 	public Game() {
+		this(false);
+	}
+	
+	/**
+	 * Game with both default clocks (or both without)
+	 * @param clocks
+	 */
+	public Game(boolean clocks) {
+		this(clocks, clocks);
+	}
+	
+	/**
+	 * 	Game with up to two default clocks
+	 * @param clock1
+	 * @param clock2
+	 */
+	public Game(boolean clock1, boolean clock2) {
+		this(clock1, defaultMinutes, defaultSeconds, clock2, defaultMinutes, defaultSeconds);
+	}
+	
+	/**
+	 * Game with two custom clocks
+	 * @param clock1
+	 * @param clock2
+	 */
+	public Game(boolean clock1, int clock1Minutes, int clock1Seconds, boolean clock2, int clock2Minutes, int clock2Seconds) {
 		board = new Board();
-		//	Game with no clocks
-		player1 = new Player(Colour.WHITE);
-		player2 = new Player(Colour.BLACK);
-		//	Game with default clocks
-		//player1 = new Player(Colour.WHITE, true);
-		//player2 = new Player(Colour.BLACK, true);
-		//	Game with custom clocks
-		//player1 = new Player(Colour.WHITE, 0, 5);
-		//player2 = new Player(Colour.BLACK, 1, 8);
-		controller = new Controller(board, player1, player2);
 		gridsize = Literals.GRIDSIZE;
 		rows = Literals.RANKS;
 		cols = Literals.FILES;
+		player1 = clock1 ? new Player(Colour.WHITE, clock1Minutes, clock1Seconds) : new Player(Colour.WHITE);
+		player2 = clock2 ? new Player(Colour.BLACK, clock2Minutes, clock2Seconds) : new Player(Colour.BLACK);
+		controller = new Controller(board, player1, player2);
 	}
 	
 	public static void main(String[] args) {

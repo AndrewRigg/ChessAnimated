@@ -15,7 +15,12 @@ public class ChessClock {
 	Alert alert;
 	boolean running;
 
-
+/**
+ * Constructor for the ChessClock
+ * @param minutes
+ * @param seconds
+ * @param player
+ */
 	public ChessClock(int minutes, int seconds, boolean player) {
 		print(format(minutes, seconds));
 		this.minutes = minutes;
