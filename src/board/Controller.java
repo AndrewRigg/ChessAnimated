@@ -18,7 +18,8 @@ public class Controller {
 		this.player2 = player2;
 		setPlayer(player1);
 		setPlayer(player2);
-		currentPlayer = PlayerNumber.PlayerOne;
+		player1.setThisPlayer(PlayerNumber.PlayerOne);
+		player2.setThisPlayer(PlayerNumber.PlayerTwo);
 		player1.setTurn(true);
 		player1.getClock().setRunning(true);
 	}
@@ -31,6 +32,9 @@ public class Controller {
 	private void changePlayerTurn(Player player) {
 		player.setTurn(!player.isTurn());
 		player.getClock().setRunning(player.isTurn());
+		if(player.isTurn()){
+			setCurrentPlayer(player.getThisPlayer());
+		}
 	}
 	
 	public void setPlayer(Player player) {
@@ -62,5 +66,4 @@ public class Controller {
 	public void setCurrentPlayer(PlayerNumber player) {
 		currentPlayer = player;
 	}
-	
 }

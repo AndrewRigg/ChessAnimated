@@ -11,6 +11,7 @@ public class Player {
 	ArrayList<Piece> pieces = new ArrayList<Piece>();
 	Colour colour;
 	private ChessClock clock;
+	PlayerNumber thisPlayer; 
 	int clockPosition;
 	boolean turn, clockActive = true;
 	PlayerNumber player;
@@ -81,5 +82,13 @@ public class Player {
 	
 	public ArrayList<Piece> getPieces(){
 		return pieces;
+	}
+	
+	public PlayerNumber getThisPlayer() {
+		return thisPlayer;
+	}
+
+	public void setThisPlayer(PlayerNumber thisPlayer) {
+		this.thisPlayer = thisPlayer;
 	}
 }
