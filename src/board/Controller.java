@@ -9,6 +9,7 @@ public class Controller {
 	
 	Board board;
 	Player player1, player2;
+	PlayerNumber currentPlayer;
 	int gridsize = Literals.GRIDSIZE;
 	
 	public Controller(Board board, Player player1, Player player2) {
@@ -17,6 +18,9 @@ public class Controller {
 		this.player2 = player2;
 		setPlayer(player1);
 		setPlayer(player2);
+		currentPlayer = PlayerNumber.PlayerOne;
+		player1.setTurn(true);
+		player1.getClock().setRunning(true);
 	}
 	
 	private void changeTurns() {
@@ -34,10 +38,6 @@ public class Controller {
 		addPieces(player);
 		if(player.clockActive) {
 			addChessClock(player);
-			if(player.player == PlayerNumber.PlayerOne) {
-				player.setTurn(true);
-				player.getClock().setRunning(true);
-			}
 		}
 	}
 
@@ -53,6 +53,14 @@ public class Controller {
 		clockLabel.setTranslateX(player.clockPosition);
 		clockLabel.setTranslateY(board.gridsize);
 		board.group.getChildren().add(clockLabel);
+	}
+	
+	public PlayerNumber getCurrentPlayer() {
+		return currentPlayer;
+	}
+	
+	public void setCurrentPlayer(PlayerNumber player) {
+		currentPlayer = player;
 	}
 	
 }
