@@ -26,7 +26,7 @@ public class Player {
 	}
 	
 	/**
-	 * Overrriding constructor #1
+	 * Player with an active clock (or inactive)
 	 * @param colour
 	 * @param clockActive
 	 */
@@ -36,7 +36,7 @@ public class Player {
 	}
 	
 	/**
-	 * Overriding constructor #2
+	 * Player with a custom clock
 	 * @param colour
 	 * @param minutes
 	 * @param seconds

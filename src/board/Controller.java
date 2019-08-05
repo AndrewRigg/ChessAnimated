@@ -10,6 +10,8 @@ public class Controller {
 	Board board;
 	Player player1, player2;
 	PlayerNumber currentPlayer;
+	Piece selectedPiece;
+	boolean pieceCurrentlySelected;
 	int gridsize = Literals.GRIDSIZE;
 	
 	public Controller(Board board, Player player1, Player player2) {
@@ -21,7 +23,9 @@ public class Controller {
 		player1.setThisPlayer(PlayerNumber.PlayerOne);
 		player2.setThisPlayer(PlayerNumber.PlayerTwo);
 		player1.setTurn(true);
-		player1.getClock().setRunning(true);
+		if(player1.clockActive) {
+			player1.getClock().setRunning(true);
+		}
 	}
 	
 	private void changeTurns() {
@@ -31,7 +35,9 @@ public class Controller {
 	
 	private void changePlayerTurn(Player player) {
 		player.setTurn(!player.isTurn());
-		player.getClock().setRunning(player.isTurn());
+		if(player.clockActive) {
+			player.getClock().setRunning(player.isTurn());
+		}
 		if(player.isTurn()){
 			setCurrentPlayer(player.getThisPlayer());
 		}
@@ -57,6 +63,61 @@ public class Controller {
 		clockLabel.setTranslateX(player.clockPosition);
 		clockLabel.setTranslateY(board.gridsize);
 		board.group.getChildren().add(clockLabel);
+	}
+	
+	public void movePiece(Piece piece) {
+		
+	}
+	
+	public void selectPiece(Piece piece) {
+		selectedPiece = piece;
+	}
+	
+	public void takePiece(Piece piece) {
+		
+	}
+	
+	public void changePiece(Piece piece) {
+		unselectPiece();
+		selectPiece(piece);
+	}
+	
+	public void nothingChanged() {
+		
+	}
+	
+	public void unselectPiece() {
+		
+	}
+	
+	public void clickedOnOppositeColour() {
+		
+	}
+	
+	public void clickedOnSameColour(Piece piece) {
+		if(validPieceSelection(piece)) {
+			if(pieceCurrentlySelected) {
+				changePiece(piece);
+			}else {
+				selectPiece(piece);
+			}
+		}else {
+			nothingChanged();
+		}
+	}
+	
+	private boolean validPieceSelection(Piece piece) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	public void clickedOnSelf() {
+		pieceCurrentlySelected = false;
+		unselectPiece();
+	}
+	
+	public void clickedOnEmptySquare() {
+		
 	}
 	
 	public PlayerNumber getCurrentPlayer() {
