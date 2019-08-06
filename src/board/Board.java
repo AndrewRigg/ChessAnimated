@@ -11,7 +11,7 @@ import javafx.scene.paint.*;
 import javafx.scene.shape.*;
 import javafx.scene.text.*;
 
-public class Board /*extends Application */{
+public class Board{
 	
 	int rows = Literals.RANKS;
 	int cols = Literals.FILES;
@@ -63,7 +63,7 @@ public class Board /*extends Application */{
 					print("Board: Removing highlights");
 					//validMoveCircles.clear();
 					//print("validMoveCircles: " + validMoveCircles.toString());
-					removeHighlightedSquares();
+					//removeHighlightedSquares();
 					//print("validMoveCircles: " + validMoveCircles.toString());
 					
 				}

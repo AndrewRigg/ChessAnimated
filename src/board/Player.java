@@ -6,16 +6,15 @@ import enums.*;
 
 public class Player {
 
-	int gridsize = Literals.GRIDSIZE;
+
 	PieceFactory factory = new PieceFactory();
 	ArrayList<Piece> pieces = new ArrayList<Piece>();
 	Colour colour;
-	private ChessClock clock;
-	PlayerNumber thisPlayer; 
-	int clockPosition;
+	PlayerNumber player; 
 	boolean turn, clockActive = true;
-	PlayerNumber player;
+	private ChessClock clock;
 	private static int defaultMinutes = 20, defaultSeconds = 00;
+	int clockPosition, gridsize = Literals.GRIDSIZE;
 	
 	/**
 	 * Default constructor
@@ -80,15 +79,19 @@ public class Player {
 		return clock;
 	}
 	
+	public void setClock(ChessClock clock) {
+		this.clock = clock;
+	}
+	
 	public ArrayList<Piece> getPieces(){
 		return pieces;
 	}
 	
-	public PlayerNumber getThisPlayer() {
-		return thisPlayer;
+	public PlayerNumber getPlayer() {
+		return player;
 	}
 
-	public void setThisPlayer(PlayerNumber thisPlayer) {
-		this.thisPlayer = thisPlayer;
+	public void setPlayer(PlayerNumber player) {
+		this.player = player;
 	}
 }

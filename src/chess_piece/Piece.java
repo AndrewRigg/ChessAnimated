@@ -63,11 +63,9 @@ public class Piece extends Rectangle{
 	}
 	
 	public Coord getInitialCoords(Type type, Colour colour, int number) {
-		//Coord initial = new Coord(0, 0);
-		//initial.setY(isWhite ? Literals.EIGHTH_ROW : Literals.FIRST_ROW);
-		//initial.setX(number == 1 ? type.getPositionX()+1 : Literals.BOARD_END - type.getPositionX()-1);
-		//return initial;
-		return new Coord(number == 1 ? type.getPositionX()+1 : Literals.BOARD_END - type.getPositionX()-1, isWhite ? Literals.EIGHTH_ROW : Literals.FIRST_ROW);
+		return new Coord(number == 1 ? type.getPositionX()+1 : 
+			Literals.BOARD_END - type.getPositionX()-1, isWhite ? 
+			Literals.EIGHTH_ROW : Literals.FIRST_ROW);
 	}
 		
 	/**

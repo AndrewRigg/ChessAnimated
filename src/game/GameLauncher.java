@@ -17,8 +17,8 @@ public class GameLauncher extends Application{
 	
 	public GameLauncher() {
 		game1 = new Game(0, 10, 1, 40);
-//		game2 = new Game();
-//		game3 = new Game(true);
+		//game2 = new Game();
+		//game3 = new Game(true);
 	}
 	
 	public static void main(String[] args) {
