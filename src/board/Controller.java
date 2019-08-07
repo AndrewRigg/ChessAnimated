@@ -71,13 +71,23 @@ public class Controller {
 		board.group.getChildren().add(clockLabel);
 	}
 	
+	/**
+	 * Remove the markers from the board and clear the arrays 
+	 * of valid coordinates and markers
+	 */
 	public void clearValidMoves(){
 		for(Circle circle: validMoveMarkers) {
 			board.group.getChildren().remove(circle);
 		}
+		validMoveMarkers.clear();
 		validMoves.clear();
 	}
 	
+	/**
+	 * Calculate the valid moves which can be made by the currently selected piece
+	 * This will generate green circles as a visual indication of valid moves
+	 * @param piece
+	 */
 	private void calculateValidMoves(Piece piece) {
 		clearValidMoves();
 		for (int i = piece.getMagnitudeMove()*(-1); i <= piece.getMagnitudeMove(); i++) {
@@ -97,6 +107,20 @@ public class Controller {
 				}
 			}
 		}
+	}
+	
+	public void determineClickType(Piece piece) {
+		if(piece.getCurrent() == selectedPiece) {
+			clickedOnSelf();
+		}else {
+			clickedOnEmptySquare(piece.getCurrent());
+		}
+		else {
+			clickedOnSameColour(piece);
+		} else {
+			clickedOnOppositeColour(piece);
+		}
+		
 	}
 	
 	/**
@@ -183,12 +207,8 @@ public class Controller {
 	 * @param piece
 	 */
 	public void clickedOnOppositeColour(Piece piece) {
-		if(pieceCurrentlySelected) {
-			if(validPieceCapture(piece)) {
-				takePiece(piece);
-			}else {
-				unselectPiece();
-			}
+		if(pieceCurrentlySelected && validPieceCapture(piece)) {
+			takePiece(piece);
 		}else {
 			doNothing();
 		}
@@ -207,16 +227,41 @@ public class Controller {
 		return false;
 	}
 	
+	/**
+	 * Draw the markers for valid moves to show where the piece can move including 
+	 * empty square coordinates and coordinates of pieces which may be captured
+	 */
 	public void drawCircles() {
 		for(Circle circle: validMoveMarkers) {
 			board.group.getChildren().add(circle);
 		}
 	}
 
+	/**
+	 * Action to send taken piece to the graveyard (off grid) and move the current
+	 * piece into its position
+	 * @param piece
+	 */
 	public void takePiece(Piece piece) {
-		
+		Coord current = piece.getCurrent();
+		sendTakenPieceOffBoard(piece);
+		movePiece(current);
 	}
 	
+	/**
+	 * Figure out where in the graveyard of that colour to put the taken piece
+	 * @param piece
+	 */
+	private void sendTakenPieceOffBoard(Piece piece) {
+		// TODO Sort this out!
+		piece.setX(0);
+		piece.setY(0);
+	}
+
+	/**
+	 * Action to change to another piece when one is already selected
+	 * @param piece
+	 */
 	public void changePiece(Piece piece) {
 		unselectPiece();
 		selectPiece(piece);
@@ -229,9 +274,12 @@ public class Controller {
 		return;
 	}
 	
+	/**
+	 * Set selectedPiece to false and clear the valid squares
+	 */
 	public void unselectPiece() {
 		pieceCurrentlySelected = false;
-		//TODO: unselect piece - remove validMovesMarkers
+		clearValidMoves();
 	}
 	
 	public PlayerNumber getCurrentPlayer() {
