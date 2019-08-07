@@ -71,16 +71,6 @@ public class Controller {
 		board.group.getChildren().add(clockLabel);
 	}
 	
-	public void movePiece(Piece piece) {
-		//piece.setX();
-		//piece.setY();
-	}
-	
-	public void selectPiece(Piece piece) {
-		selectedPiece = piece;
-		calculateValidMoves(piece);
-	}
-
 	public void clearValidMoves(){
 		for(Circle circle: validMoveMarkers) {
 			board.group.getChildren().remove(circle);
@@ -109,41 +99,38 @@ public class Controller {
 		}
 	}
 	
-	public void drawCircles() {
-		for(Circle circle: validMoveMarkers) {
-			board.group.getChildren().add(circle);
-		}
-	}
-
-	public void takePiece(Piece piece) {
-		
-	}
-	
-	public void changePiece(Piece piece) {
-		unselectPiece();
-		selectPiece(piece);
-	}
-	
 	/**
-	 * This is for when rather than unselecting, a move leaves the 
-	 * 
+	 * Action to move piece to an empty square
+	 * @param coord
 	 */
-	public void doNothing() {
-		
-	}
-	
-	public void unselectPiece() {
-		
+	public void movePiece(Coord coord) {
+		selectedPiece.setX(coord.getX());
+		selectedPiece.setY(coord.getY());
 	}
 	
 	/**
-	 * Deal with action for when clicking on opposite piece
+	 * Set piece to the one clicked on
 	 * @param piece
 	 */
-	public void clickedOnOppositeColour(Piece piece) {
+	public void selectPiece(Piece piece) {
+		selectedPiece = piece;
+		calculateValidMoves(piece);
+	}
+	
+	/**
+	 * Action when clicking on current piece
+	 */
+	public void clickedOnSelf() {
+		unselectPiece();
+	}
+	
+	/**
+	 * Action when clicking on empty square
+	 */
+	public void clickedOnEmptySquare(Coord coord) {
 		if(pieceCurrentlySelected) {
-			if(validPieceCapture(piece)) {
-				takePiece(piece);
+			if(validSquareSelection(coord)) {
+				movePiece(coord);
 			}else {
 				unselectPiece();
 			}
@@ -152,6 +139,20 @@ public class Controller {
 		}
 	}
 	
+	/**
+	 * Check if the selected square is a valid move
+	 * @param square
+	 * @return
+	 */
+	private boolean validSquareSelection(Coord square) {
+		for(Coord coord: validMoves) {
+			if(square.getX() == coord.getX() && square.getY() == coord.getY()) {
+				return true;
+			}
+		}
+		return false;
+	}
+
 	/**
 	 * Deal with action for when clicking on the same piece
 	 * @param piece
@@ -174,11 +175,27 @@ public class Controller {
 	 * @return
 	 */
 	private boolean validPieceSelection(Piece piece) {
-		return false;
+		return !piece.getValidMoves().isEmpty();
 	}
 	
 	/**
+	 * Deal with action for when clicking on opposite piece
+	 * @param piece
+	 */
+	public void clickedOnOppositeColour(Piece piece) {
+		if(pieceCurrentlySelected) {
+			if(validPieceCapture(piece)) {
+				takePiece(piece);
+			}else {
+				unselectPiece();
+			}
+		}else {
+			doNothing();
+		}
+	}
+	/**
 	 * Check the piece can be captured
+	 * @param piece
 	 * @return
 	 */
 	public boolean validPieceCapture(Piece piece) {
@@ -189,14 +206,32 @@ public class Controller {
 		}
 		return false;
 	}
+	
+	public void drawCircles() {
+		for(Circle circle: validMoveMarkers) {
+			board.group.getChildren().add(circle);
+		}
+	}
 
-	public void clickedOnSelf() {
-		pieceCurrentlySelected = false;
-		unselectPiece();
+	public void takePiece(Piece piece) {
+		
 	}
 	
-	public void clickedOnEmptySquare() {
-		
+	public void changePiece(Piece piece) {
+		unselectPiece();
+		selectPiece(piece);
+	}
+	
+	/**
+	 * This is for when the click leaves the current state unchanged
+	 */
+	public void doNothing() {
+		return;
+	}
+	
+	public void unselectPiece() {
+		pieceCurrentlySelected = false;
+		//TODO: unselect piece - remove validMovesMarkers
 	}
 	
 	public PlayerNumber getCurrentPlayer() {

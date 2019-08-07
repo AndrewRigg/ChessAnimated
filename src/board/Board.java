@@ -127,16 +127,16 @@ public class Board{
 	 * moves from other pieces (which pieces cannot access)
 	 * @param piece
 	 */
-	public void pieceClicked(Piece piece) {
-		print("Board: Piece clicked");
-		removeHighlightedSquares();
-		//pieceSelected = !pieceSelected;
-		if(pieceSelected) {
-			//validMoveCircles.clear();
-			validMoveCircles.addAll(piece.getCircles());
-			drawCircles();
-		}
-	}
+//	public void pieceClicked(Piece piece) {
+//		print("Board: Piece clicked");
+//		removeHighlightedSquares();
+//		//pieceSelected = !pieceSelected;
+//		if(pieceSelected) {
+//			//validMoveCircles.clear();
+//			validMoveCircles.addAll(piece.getCircles());
+//			drawCircles();
+//		}
+//	}
 	
 	public void removeHighlightedSquares() {
 		//This is not a great solution as more circles keep getting added to the group (could lead to memory overflow and slowdown)
