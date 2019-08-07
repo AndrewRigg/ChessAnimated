@@ -45,6 +45,14 @@ public class Piece extends Rectangle{
 		actions = new PieceActions(this);
 	}	
 
+	public Coord getCurrent() {
+		return current;
+	}
+
+	public void setCurrent(Coord current) {
+		this.current = current;
+	}
+
 	/**
 	 * Debugging function, set PIECE_DEBUG to true to turn on
 	 * @param str

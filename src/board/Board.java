@@ -149,11 +149,11 @@ public class Board{
 		validMoveCircles.clear();
 	}
 	
-	public void drawCircles() {
-		for(Circle circle: validMoveCircles) {
-			group.getChildren().add(circle);
-		}
-	}
+//	public void drawCircles() {
+//		for(Circle circle: validMoveCircles) {
+//			group.getChildren().add(circle);
+//		}
+//	}
 	
 	//MOVED FROM PIECE - CHANGE TO ONLY HAVE SQUARES CLICKED
 	@SuppressWarnings("unused")

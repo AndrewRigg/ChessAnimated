@@ -108,6 +108,12 @@ public class Controller {
 			}
 		}
 	}
+	
+	public void drawCircles() {
+		for(Circle circle: validMoveMarkers) {
+			board.group.getChildren().add(circle);
+		}
+	}
 
 	public void takePiece(Piece piece) {
 		
@@ -118,7 +124,11 @@ public class Controller {
 		selectPiece(piece);
 	}
 	
-	public void nothingChanged() {
+	/**
+	 * This is for when rather than unselecting, a move leaves the 
+	 * 
+	 */
+	public void doNothing() {
 		
 	}
 	
@@ -126,10 +136,26 @@ public class Controller {
 		
 	}
 	
-	public void clickedOnOppositeColour() {
-		
+	/**
+	 * Deal with action for when clicking on opposite piece
+	 * @param piece
+	 */
+	public void clickedOnOppositeColour(Piece piece) {
+		if(pieceCurrentlySelected) {
+			if(validPieceCapture(piece)) {
+				takePiece(piece);
+			}else {
+				unselectPiece();
+			}
+		}else {
+			doNothing();
+		}
 	}
 	
+	/**
+	 * Deal with action for when clicking on the same piece
+	 * @param piece
+	 */
 	public void clickedOnSameColour(Piece piece) {
 		if(validPieceSelection(piece)) {
 			if(pieceCurrentlySelected) {
@@ -138,12 +164,29 @@ public class Controller {
 				selectPiece(piece);
 			}
 		}else {
-			nothingChanged();
+			doNothing();
 		}
 	}
 	
+	/**
+	 * Check to determine if the piece can move
+	 * @param piece
+	 * @return
+	 */
 	private boolean validPieceSelection(Piece piece) {
-		// TODO Auto-generated method stub
+		return false;
+	}
+	
+	/**
+	 * Check the piece can be captured
+	 * @return
+	 */
+	public boolean validPieceCapture(Piece piece) {
+		for(Coord coord: validMoves) {
+			if(piece.getCurrent().getX() == coord.getX() && piece.getCurrent().getY() == coord.getY()) {
+				return true;
+			}
+		}
 		return false;
 	}
 
