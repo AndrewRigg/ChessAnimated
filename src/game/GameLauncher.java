@@ -16,9 +16,9 @@ public class GameLauncher extends Application{
 	Game game1, game2, game3;
 	
 	public GameLauncher() {
-		game1 = new Game(0, 10, 1, 40);
-		//game2 = new Game();
-		//game3 = new Game(true);
+//		game1 = new Game(0, 10, 1, 40);
+		game2 = new Game(false);
+//		game3 = new Game(true);
 	}
 	
 	public static void main(String[] args) {
@@ -27,8 +27,8 @@ public class GameLauncher extends Application{
 
 	@Override
 	public void start(Stage stage) throws Exception {
-		setScene(scene1, stage, game1);
-//		setScene(scene2, new Stage(), game2);
+//		setScene(scene1, stage, game1);
+		setScene(scene2, new Stage(), game2);
 //		setScene(scene3, new Stage(), game3);
 	}
 	

@@ -109,20 +109,20 @@ public class Controller {
 		}
 	}
 	
-	public void determineClickType(Piece piece) {
-		if(piece.getCurrent() == selectedPiece) {
-			clickedOnSelf();
-		}else {
-			clickedOnEmptySquare(piece.getCurrent());
-		}
-		else {
-			clickedOnSameColour(piece);
-		} else {
-			clickedOnOppositeColour(piece);
-		}
-		
-	}
-	
+//	public void determineClickType(Piece piece) {
+//		if(piece.getCurrent() == selectedPiece) {
+//			clickedOnSelf();
+//		}else if(){
+//			clickedOnEmptySquare(piece.getCurrent());
+//		}
+//		else if(){
+//			clickedOnSameColour(piece);
+//		} else {
+//			clickedOnOppositeColour(piece);
+//		}
+//		
+//	}
+//	
 	/**
 	 * Action to move piece to an empty square
 	 * @param coord
