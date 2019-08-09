@@ -20,7 +20,7 @@ public class Board{
 	int asciiCaps = Literals.ASCII_CAPS;
 	ArrayList<Circle> validMoveCircles;
 	public final Group group = new Group();
-	public boolean pieceSelected;
+	public boolean pieceSelected, piecesInitialised;
 	public Piece currentPiece;
 	public Scene scene;
 	public Controller controller;
@@ -32,9 +32,9 @@ public class Board{
         drawLabels(); 
 		setPlayer(controller.player1);
 		setPlayer(controller.player2);
-
-//		validMoveCircles = new ArrayList<Circle>();
-//		pieceSelected = false;
+		piecesInitialised = true;
+		validMoveCircles = new ArrayList<Circle>();
+		pieceSelected = false;
 	}
 	
 	public void print(String str) {
@@ -52,12 +52,14 @@ public class Board{
 		group.setOnMouseClicked(new EventHandler<MouseEvent>() {
 			@Override
 			public void handle(MouseEvent event) {
-				int x = (int)(event.getSceneX()/gridsize)-1;
-				int y = 10-(int)(event.getSceneY()/gridsize);
+				int x = (int)(event.getSceneX()/gridsize);
+				int y = (int)(event.getSceneY()/gridsize);
 //				Coord coord = new Coord(x, y);
 				print("x " +x + " y " + y);
 				Coord clickedSquare = new Coord(x, y);
-				controller.determineClickType(clickedSquare);							//Use this line
+				if(piecesInitialised) {
+					controller.determineClickType(clickedSquare);							//Use this line
+				}
 				//print("\nPiece Selected: " + pieceSelected);//
 //				//print("validMoveCircles: " + validMoveCircles.toString());
 //				if(currentPiece != null){
@@ -130,7 +132,6 @@ public class Board{
 	}
 	
 	public void setPlayer(Player player) {
-		player.initialise();
 		addPieces(player);
 		if(player.clockActive) {
 			addChessClock(player);

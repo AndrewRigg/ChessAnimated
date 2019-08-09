@@ -3,14 +3,13 @@ package board;
 import java.util.ArrayList;
 
 import chess_piece.*;
-import enums.*;
 import javafx.scene.paint.*;
 import javafx.scene.shape.*;
 
 public class Controller {
 	
 	Board board;
-	Player player1, player2, currentPlayer;
+	Player player1, player2, currentPlayer, opponent;
 	ArrayList<Circle> validMoveMarkers;
 	ArrayList<Coord> validMoves;
 	Piece selectedPiece;
@@ -20,12 +19,18 @@ public class Controller {
 	public Controller(Player player1, Player player2) {
 		this.player1 = player1;
 		this.player2 = player2;
-		player1.setPlayer(PlayerNumber.PlayerOne);
-		player2.setPlayer(PlayerNumber.PlayerTwo);
+		currentPlayer = player1;
+		opponent = player2;
 		player1.setTurn(true);
 		if(player1.clockActive) {
 			player1.getClock().setRunning(true);
 		}
+		validMoves = new ArrayList<>();
+		validMoveMarkers = new ArrayList<>();
+	}
+	
+	public void print(String str) {
+		Literals.print(str, Literals.CONTROLLER_DEBUG);
 	}
 	
 	private void changeTurns() {
@@ -40,6 +45,8 @@ public class Controller {
 		}
 		if(player.isTurn()){
 			setCurrent(player);
+		}else {
+			setOpponent(player);
 		}
 	}
 		
@@ -51,13 +58,23 @@ public class Controller {
 		this.currentPlayer = currentPlayer;
 	}
 
+	public Player getOpponent() {
+		return opponent;
+	}
+
+	public void setOpponent(Player opponent) {
+		this.opponent = opponent;
+	}
+
 	/**
 	 * Remove the markers from the board and clear the arrays 
 	 * of valid coordinates and markers
 	 */
 	public void clearValidMoves(){
-		for(Circle circle: validMoveMarkers) {
-			board.group.getChildren().remove(circle);
+		if(!validMoveMarkers.isEmpty()) {
+			for(Circle circle: validMoveMarkers) {
+				board.group.getChildren().remove(circle);
+			}
 		}
 		validMoveMarkers.clear();
 		validMoves.clear();
@@ -90,34 +107,53 @@ public class Controller {
 	}
 	
 	public void determineClickType(Coord coord) {
-		isPieceClickedOn(currentPlayer, coord);
 		if(pieceCurrentlySelected) {
-			if(coord == selectedPiece.getCurrent()) {
-				clickedOnSelf();
-			}
-//			else if(){
-//				clickedOnSameColour(piece);
-//			} else {
-//				clickedOnOppositeColour(piece);
-//			}
-		}else {
-			clickedOnEmptySquare(coord);
-		}
-	}
-	
-	/**
-	 * Determine if a piece has been clicked on
-	 * @param player
-	 * @param coord
-	 */
-	private void isPieceClickedOn(Player player, Coord coord) {
-		for(Piece piece: player.pieces) {
-			if(piece.getCurrent() == coord) {
+			if(isPieceClickedOn(currentPlayer, coord)) {
+				if(compareCoords(coord, selectedPiece.getCoord())) {
+					clickedOnSelf();
+				}
+	//			else if(){
+	//				clickedOnSameColour(piece);
+	//			} else {
+	//				clickedOnOppositeColour(piece);
+	//			}
+			}else {
 				
+			}
+		}else {
+			if(isPieceClickedOn(currentPlayer, coord)) {
+				if(compareCoords(coord, selectedPiece.getCoord())) {
+					selectPiece(selectedPiece);
+				}else {
+					
+				} 
+			}else {
+				clickedOnEmptySquare(coord);
 			}
 		}
 	}
 
+	/**
+	 * Determine if a piece has been clicked on
+	 * @param player
+	 * @param coord
+	 * @return
+	 */
+	private boolean isPieceClickedOn(Player player, Coord coord) {
+		for(Piece piece: player.pieces) {
+			print("Piece: " + piece.getName() + " Coord: (" + piece.getCoord().getX() + ", " + piece.getCoord().getY()+ ")");
+			if (compareCoords(piece.getCoord(), coord)){
+				
+				selectedPiece = piece;
+				return true;
+			}
+		}
+		return false;
+	}
+
+	public boolean compareCoords(Coord coord1, Coord coord2) {
+		return (coord1.getX() == coord2.getX() && coord1.getY() == coord2.getY());
+	}
 	/**
 	 * Action to move piece to an empty square
 	 * @param coord
@@ -216,7 +252,7 @@ public class Controller {
 	 */
 	public boolean validPieceCapture(Piece piece) {
 		for(Coord coord: validMoves) {
-			if(piece.getCurrent().getX() == coord.getX() && piece.getCurrent().getY() == coord.getY()) {
+			if(piece.getCoord().getX() == coord.getX() && piece.getCoord().getY() == coord.getY()) {
 				return true;
 			}
 		}
@@ -239,7 +275,7 @@ public class Controller {
 	 * @param piece
 	 */
 	public void takePiece(Piece piece) {
-		Coord current = piece.getCurrent();
+		Coord current = piece.getCoord();
 		sendTakenPieceOffBoard(piece);
 		movePiece(current);
 	}

@@ -12,13 +12,14 @@ public class GameLauncher extends Application{
 	int gridsize = Literals.GRIDSIZE;
 	int rows = Literals.RANKS;
 	int cols = Literals.FILES;
-	public Scene scene1, scene2, scene3;
-	Game game1, game2, game3;
+	public Scene scene;
+	Game game1, game2, game3, game4;
 	
 	public GameLauncher() {
 //		game1 = new Game(0, 10, 1, 40);
 		game2 = new Game(false);
 //		game3 = new Game(true);
+//		game4 = new Game();
 	}
 	
 	public static void main(String[] args) {
@@ -27,9 +28,10 @@ public class GameLauncher extends Application{
 
 	@Override
 	public void start(Stage stage) throws Exception {
-//		setScene(scene1, stage, game1);
-		setScene(scene2, new Stage(), game2);
-//		setScene(scene3, new Stage(), game3);
+//		setScene(scene, stage, game1);
+		setScene(scene, new Stage(), game2);
+//		setScene(scene, new Stage(), game3);
+//		setScene(scene, new Stage(), game4);
 	}
 	
 	private void setScene(Scene scene, Stage stage, Game game) {

@@ -24,6 +24,14 @@ public class Literals {
 							SEVENTH_ROW = 8,
 							EIGHTH_ROW = 9,
 							BOARD_END = 11,
+							FIRST_COLUMN = 2,
+							SECOND_COLUMN = 3,
+							THIRD_COLUMN = 4,
+							FOURTH_COLUMN = 5,
+							FIFTH_COLUMN = 6,
+							SIXTH_COLUMN = 7,
+							SEVENTH_COLUMN = 8,
+							EIGHTH_COLUMN = 9,
 							BOARD_OFFSET_X = 2,
 							BOARD_OFFSET_Y = 2;
 	
@@ -56,13 +64,14 @@ public class Literals {
 	
 	public static final Duration TRANSLATE_DURATION = Duration.seconds(0.5); 
 	
-	public static final boolean BOARD_DEBUG 	= true,
-								PIECE_DEBUG 	= false,
-								PAWN_DEBUG  	= false,
-								KING_DEBUG  	= false,
-								PLAYER_DEBUG 	= false,
-								COORD_DEBUG 	= false,
-								CLOCK_DEBUG		= false;
+	public static final boolean BOARD_DEBUG 		= true,
+								PIECE_DEBUG 		= false,
+								PAWN_DEBUG  		= false,
+								KING_DEBUG  		= false,
+								PLAYER_DEBUG 		= true,
+								COORD_DEBUG 		= false,
+								CLOCK_DEBUG			= false, 
+								CONTROLLER_DEBUG	= true;
 	
 	public static final void print(String str, boolean bool) {
 		if(bool) {

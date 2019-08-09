@@ -21,7 +21,7 @@ public class Piece extends Rectangle{
 	public boolean thisPieceSelected, isWhite, thisPieceCondition;
 	private ArrayList<Coord> validMoves;
 	ArrayList<Circle> validMoveCircles;
-	Coord current;
+	Coord coord;
 	PieceActions actions;
 	
 	public Piece(Type type, Colour colour, int number) {
@@ -34,8 +34,8 @@ public class Piece extends Rectangle{
 		this.notation = type.toString().substring(0, 1); 
 		this.name = colour.toString().toLowerCase() + "_" + type.toString().toLowerCase();
 		this.image = new Image("res/"+name+".png");
-		this.current = getInitialCoords(type, colour, number);
 		this.getInitialCoords();
+		this.coord = getInitialCoords(type, number);
 		this.thisPieceSelected = false;
 		this.setMagnitudeMove(1);
 		this.setMaximumMove(7);
@@ -44,14 +44,6 @@ public class Piece extends Rectangle{
 		this.setFill(new ImagePattern(image));
 		actions = new PieceActions(this);
 	}	
-
-	public Coord getCurrent() {
-		return current;
-	}
-
-	public void setCurrent(Coord current) {
-		this.current = current;
-	}
 
 	/**
 	 * Debugging function, set PIECE_DEBUG to true to turn on
@@ -70,12 +62,10 @@ public class Piece extends Rectangle{
 		this.setX((number == 1 ? type.getPositionX()+1 : Literals.BOARD_END - type.getPositionX()-1)*gridsize + gridsize/4);
 	}
 	
-	public Coord getInitialCoords(Type type, Colour colour, int number) {
-		return new Coord(number == 1 ? type.getPositionX()+1 : 
-			Literals.BOARD_END - type.getPositionX()-1, isWhite ? 
-			Literals.EIGHTH_ROW : Literals.FIRST_ROW);
+	public Coord getInitialCoords(Type type, int number) {
+		return new Coord((int)this.getX()/gridsize, (int)this.getY()/gridsize);
 	}
-		
+	
 	/**
 	 * This is the base function which is overridden by each individual piece
 	 * and is for determining the direction and magnitude of any potential moves
@@ -89,7 +79,7 @@ public class Piece extends Rectangle{
 	}
 	
 	public Coord validMoveCoord(int i, int j, int k) {
-		return new Coord(current.getX() + i * k, current.getY() + j * k);
+		return new Coord(coord.getX() + i * k, coord.getY() + j * k);
 	}
 
 	//public void calculateValidMoves() {}
@@ -131,4 +121,19 @@ public class Piece extends Rectangle{
 		this.maximumMove = maximumMove;
 	}
 	
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public Coord getCoord() {
+		return coord;
+	}
+
+	public void setCoord(Coord coord) {
+		this.coord = coord;
+	}
 }

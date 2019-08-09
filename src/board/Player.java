@@ -8,7 +8,7 @@ public class Player {
 
 
 	PieceFactory factory = new PieceFactory();
-	ArrayList<Piece> pieces = new ArrayList<Piece>();
+	ArrayList<Piece> pieces;
 	Colour colour;
 	PlayerNumber player; 
 	boolean turn, clockActive = true;
@@ -43,11 +43,17 @@ public class Player {
 	public Player(Colour colour, int minutes, int seconds) {
 		this.colour = colour;
 		player = setThisPlayer();
+		pieces = new ArrayList<Piece>();
 		if(clockActive) {
 			clock = new ChessClock(minutes, seconds, player.ordinal() == 0);
 		}
+		initialise();
 	}
 
+	public static final void print(String str) {
+		Literals.print(str, Literals.PLAYER_DEBUG);
+	}
+	
 	private PlayerNumber setThisPlayer() {
 		if(colour == Colour.WHITE) {
 			clockPosition = gridsize + 10;
@@ -59,6 +65,7 @@ public class Player {
 	}
 		
 	public void initialise() {
+		print("player intialisation");
 		for(Type type : Type.values()){
 			for(int number = 1; number <= type.getQuantity(); number++) {
 				Piece piece = factory.assignPieces(type, colour, number);
