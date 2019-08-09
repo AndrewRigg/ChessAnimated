@@ -47,10 +47,12 @@ public class Board{
 		group.setOnMouseClicked(new EventHandler<MouseEvent>() {
 			@Override
 			public void handle(MouseEvent event) {
-				int x = (int)(event.getSceneX()/gridsize);
-				int y = 9-(int)(event.getSceneY()/gridsize);
+				int x = (int)(event.getSceneX()/gridsize)-1;
+				int y = 10-(int)(event.getSceneY()/gridsize);
 //				Coord coord = new Coord(x, y);
 				print("x " +x + " y " + y);
+				Coord clickedSquare = new Coord(x, y);
+				squareClicked();
 				//print("\nPiece Selected: " + pieceSelected);//
 //				//print("validMoveCircles: " + validMoveCircles.toString());
 //				if(currentPiece != null){
