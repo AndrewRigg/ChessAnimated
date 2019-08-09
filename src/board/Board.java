@@ -6,6 +6,7 @@ import chess_piece.*;
 import javafx.animation.*;
 import javafx.event.*;
 import javafx.scene.*;
+import javafx.scene.control.Label;
 import javafx.scene.input.*;
 import javafx.scene.paint.*;
 import javafx.scene.shape.*;
@@ -22,11 +23,15 @@ public class Board{
 	public boolean pieceSelected;
 	public Piece currentPiece;
 	public Scene scene;
+	public Controller controller;
 
-	public Board() {
+	public Board(Controller controller) {
+		this.controller = controller;
         drawSquares();
         drawLines();
         drawLabels(); 
+		setPlayer(controller.player1);
+		setPlayer(controller.player2);
 
 //		validMoveCircles = new ArrayList<Circle>();
 //		pieceSelected = false;
@@ -52,7 +57,7 @@ public class Board{
 //				Coord coord = new Coord(x, y);
 				print("x " +x + " y " + y);
 				Coord clickedSquare = new Coord(x, y);
-				squareClicked();
+				controller.determineClickType(clickedSquare);							//Use this line
 				//print("\nPiece Selected: " + pieceSelected);//
 //				//print("validMoveCircles: " + validMoveCircles.toString());
 //				if(currentPiece != null){
@@ -123,6 +128,38 @@ public class Board{
     	text.setY(y + text.getFont().getSize()/2);
     	group.getChildren().add(text);
 	}
+	
+	public void setPlayer(Player player) {
+		player.initialise();
+		addPieces(player);
+		if(player.clockActive) {
+			addChessClock(player);
+		}
+	}
+
+	public void addPieces(Player player) {
+		for(Piece piece : player.pieces) {
+			group.getChildren().add(piece);
+		}
+	}
+	
+	public void addChessClock(Player player) {
+		Label clockLabel = player.getClock().getLabel();
+		clockLabel.setTextAlignment(TextAlignment.CENTER);
+		clockLabel.setTranslateX(player.clockPosition);
+		clockLabel.setTranslateY(gridsize);
+		group.getChildren().add(clockLabel);
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	
 	/**
 	 * This is called from the piece class to allow the board to define the valid moves in order to clear 

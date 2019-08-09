@@ -2,30 +2,24 @@ package board;
 
 import java.util.ArrayList;
 
-import chess_piece.Piece;
-import enums.PlayerNumber;
-import javafx.scene.control.Label;
-import javafx.scene.paint.Color;
-import javafx.scene.shape.Circle;
-import javafx.scene.text.TextAlignment;
+import chess_piece.*;
+import enums.*;
+import javafx.scene.paint.*;
+import javafx.scene.shape.*;
 
 public class Controller {
 	
 	Board board;
-	Player player1, player2;
-	PlayerNumber currentPlayer;
+	Player player1, player2, currentPlayer;
 	ArrayList<Circle> validMoveMarkers;
 	ArrayList<Coord> validMoves;
 	Piece selectedPiece;
 	boolean pieceCurrentlySelected;
 	int gridsize = Literals.GRIDSIZE;
 	
-	public Controller(Board board, Player player1, Player player2) {
-		this.board = board;
+	public Controller(Player player1, Player player2) {
 		this.player1 = player1;
 		this.player2 = player2;
-		setPlayer(player1);
-		setPlayer(player2);
 		player1.setPlayer(PlayerNumber.PlayerOne);
 		player2.setPlayer(PlayerNumber.PlayerTwo);
 		player1.setTurn(true);
@@ -45,32 +39,18 @@ public class Controller {
 			player.getClock().setRunning(player.isTurn());
 		}
 		if(player.isTurn()){
-			setCurrentPlayer(player.getPlayer());
+			setCurrent(player);
 		}
 	}
-	
-	public void setPlayer(Player player) {
-		player.initialise();
-		addPieces(player);
-		if(player.clockActive) {
-			addChessClock(player);
-		}
+		
+	public Player getCurrent() {
+		return currentPlayer;
 	}
 
-	public void addPieces(Player player) {
-		for(Piece piece : player.pieces) {
-			board.group.getChildren().add(piece);
-		}
+	public void setCurrent(Player currentPlayer) {
+		this.currentPlayer = currentPlayer;
 	}
-	
-	public void addChessClock(Player player) {
-		Label clockLabel = player.getClock().getLabel();
-		clockLabel.setTextAlignment(TextAlignment.CENTER);
-		clockLabel.setTranslateX(player.clockPosition);
-		clockLabel.setTranslateY(board.gridsize);
-		board.group.getChildren().add(clockLabel);
-	}
-	
+
 	/**
 	 * Remove the markers from the board and clear the arrays 
 	 * of valid coordinates and markers
@@ -109,20 +89,35 @@ public class Controller {
 		}
 	}
 	
-//	public void determineClickType(Piece piece) {
-//		if(piece.getCurrent() == selectedPiece) {
-//			clickedOnSelf();
-//		}else if(){
-//			clickedOnEmptySquare(piece.getCurrent());
-//		}
-//		else if(){
-//			clickedOnSameColour(piece);
-//		} else {
-//			clickedOnOppositeColour(piece);
-//		}
-//		
-//	}
-//	
+	public void determineClickType(Coord coord) {
+		isPieceClickedOn(currentPlayer, coord);
+		if(pieceCurrentlySelected) {
+			if(coord == selectedPiece.getCurrent()) {
+				clickedOnSelf();
+			}
+//			else if(){
+//				clickedOnSameColour(piece);
+//			} else {
+//				clickedOnOppositeColour(piece);
+//			}
+		}else {
+			clickedOnEmptySquare(coord);
+		}
+	}
+	
+	/**
+	 * Determine if a piece has been clicked on
+	 * @param player
+	 * @param coord
+	 */
+	private void isPieceClickedOn(Player player, Coord coord) {
+		for(Piece piece: player.pieces) {
+			if(piece.getCurrent() == coord) {
+				
+			}
+		}
+	}
+
 	/**
 	 * Action to move piece to an empty square
 	 * @param coord
@@ -138,6 +133,7 @@ public class Controller {
 	 */
 	public void selectPiece(Piece piece) {
 		selectedPiece = piece;
+		//pieceCurrentlySelected = true;	//Do this when the piece is clicked on
 		calculateValidMoves(piece);
 	}
 	
@@ -280,13 +276,5 @@ public class Controller {
 	public void unselectPiece() {
 		pieceCurrentlySelected = false;
 		clearValidMoves();
-	}
-	
-	public PlayerNumber getCurrentPlayer() {
-		return currentPlayer;
-	}
-	
-	public void setCurrentPlayer(PlayerNumber player) {
-		currentPlayer = player;
 	}
 }

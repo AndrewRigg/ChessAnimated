@@ -46,9 +46,9 @@ public class Game{
 	 * @param clock2
 	 */
 	public Game(int clock1Minutes, int clock1Seconds, int clock2Minutes, int clock2Seconds) {
-		board = new Board();
 		player1 = new Player(Colour.WHITE, clock1Minutes, clock1Seconds);
 		player2 = new Player(Colour.BLACK, clock2Minutes, clock2Seconds);
-		controller = new Controller(board, player1, player2);
+		controller = new Controller(player1, player2);
+		board = new Board(controller);
 	}
 }
