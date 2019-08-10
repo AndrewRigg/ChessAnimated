@@ -8,7 +8,6 @@ import javafx.scene.shape.*;
 
 public class Controller {
 	
-	Board board;
 	Player player1, player2, currentPlayer, opponent;
 	ArrayList<Circle> validMoveMarkers;
 	ArrayList<Coord> validMoves;
@@ -67,26 +66,11 @@ public class Controller {
 	}
 
 	/**
-	 * Remove the markers from the board and clear the arrays 
-	 * of valid coordinates and markers
-	 */
-	public void clearValidMoves(){
-		if(!validMoveMarkers.isEmpty()) {
-			for(Circle circle: validMoveMarkers) {
-				board.group.getChildren().remove(circle);
-			}
-		}
-		validMoveMarkers.clear();
-		validMoves.clear();
-	}
-	
-	/**
 	 * Calculate the valid moves which can be made by the currently selected piece
 	 * This will generate green circles as a visual indication of valid moves
 	 * @param piece
 	 */
 	private void calculateValidMoves(Piece piece) {
-		clearValidMoves();
 		for (int i = piece.getMagnitudeMove()*(-1); i <= piece.getMagnitudeMove(); i++) {
 			for (int j = piece.getMagnitudeMove()*(-1); j <= piece.getMagnitudeMove(); j++) {
 				for (int k = 1; k <= piece.getMaximumMove(); k++) {
@@ -95,30 +79,38 @@ public class Controller {
 						if (coord.onGrid() && !piece.getValidMoves().contains(coord)) {
 							Circle circle =  new Circle(gridsize/3.5);
 							circle.setFill(Color.GREENYELLOW);
-							circle.setCenterX((piece.getX() + i * k) * gridsize + gridsize/2);
-							circle.setCenterY((piece.getY() + j * k) * gridsize + gridsize/2);
+							//circle.setCenterX((piece.getX() + i * k) * gridsize + gridsize/2);
+							//circle.setCenterY((piece.getY() + j * k) * gridsize + gridsize/2);
+							circle.setCenterX(coord.getX() * gridsize + gridsize/2);
+							circle.setCenterY(coord.getY() * gridsize + gridsize/2);
+							print(circle.getCenterX() + " " + circle.getCenterY());
 							validMoveMarkers.add(circle);
 							validMoves.add(coord);
+							print("Added circle");
 						}
 					}
 				}
 			}
 		}
+		print(validMoveMarkers.toString());
 	}
 	
 	public void determineClickType(Coord coord) {
 		if(pieceCurrentlySelected) {
+			print("IN piece selected");
 			if(isPieceClickedOn(currentPlayer, coord)) {
 				if(compareCoords(coord, selectedPiece.getCoord())) {
 					clickedOnSelf();
 				}
-	//			else if(){
-	//				clickedOnSameColour(piece);
-	//			} else {
-	//				clickedOnOppositeColour(piece);
-	//			}
+				else if(checkPieces(currentPlayer, coord)){
+					clickedOnSameColour(piece);
+				} else if(checkPieces(opponent, coord)){
+					clickedOnOppositeColour(piece);
+				}
 			}else {
-				
+				if(isValidMove(coord)) {
+					movePiece(coord);
+				}
 			}
 		}else {
 			if(isPieceClickedOn(currentPlayer, coord)) {
@@ -131,6 +123,20 @@ public class Controller {
 				clickedOnEmptySquare(coord);
 			}
 		}
+	}
+
+	private boolean checkPieces(Player player, Coord coord) {
+		for(Piece piece: player.pieces) {
+			return compareCoords(piece.getCoord(), coord);
+		}
+		return false;
+	}
+
+	private boolean isValidMove(Coord coord) {
+		for(Coord move: validMoves) {
+			return compareCoords(move, coord);
+		}
+		return false;
 	}
 
 	/**
@@ -258,16 +264,6 @@ public class Controller {
 		}
 		return false;
 	}
-	
-	/**
-	 * Draw the markers for valid moves to show where the piece can move including 
-	 * empty square coordinates and coordinates of pieces which may be captured
-	 */
-	public void drawCircles() {
-		for(Circle circle: validMoveMarkers) {
-			board.group.getChildren().add(circle);
-		}
-	}
 
 	/**
 	 * Action to send taken piece to the graveyard (off grid) and move the current
@@ -311,6 +307,5 @@ public class Controller {
 	 */
 	public void unselectPiece() {
 		pieceCurrentlySelected = false;
-		clearValidMoves();
 	}
 }

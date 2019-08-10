@@ -19,14 +19,17 @@ public class Board{
 	int gridsize = Literals.GRIDSIZE;
 	int asciiCaps = Literals.ASCII_CAPS;
 	ArrayList<Circle> validMoveCircles;
-	public final Group group = new Group();
+	public final Group group;
 	public boolean pieceSelected, piecesInitialised;
 	public Piece currentPiece;
 	public Scene scene;
 	public Controller controller;
+	ArrayList<Node> removable;
 
 	public Board(Controller controller) {
+		removable = new ArrayList<Node>();
 		this.controller = controller;
+		group = new Group();
         drawSquares();
         drawLines();
         drawLabels(); 
@@ -58,7 +61,12 @@ public class Board{
 				print("x " +x + " y " + y);
 				Coord clickedSquare = new Coord(x, y);
 				if(piecesInitialised) {
+					clearValidMoves();	//This needs more robust solution - perhaps create new layer which circles go onto, and remove the layer each time?
+//					for(Node node: removable) {
+//						group.getChildren().remove(node);
+//					}
 					controller.determineClickType(clickedSquare);							//Use this line
+					//drawCircles();
 				}
 				//print("\nPiece Selected: " + pieceSelected);//
 //				//print("validMoveCircles: " + validMoveCircles.toString());
@@ -84,6 +92,31 @@ public class Board{
 				//
 			}
 		});
+	}
+	
+	/**
+	 * Draw the markers for valid moves to show where the piece can move including 
+	 * empty square coordinates and coordinates of pieces which may be captured
+	 */
+	public void drawCircles() {
+		for(Circle circle: controller.validMoveMarkers) {
+			group.getChildren().add(circle);
+		}
+	}
+	
+	/**
+	 * Remove the markers from the board and clear the arrays 
+	 * of valid coordinates and markers
+	 */
+	public void clearValidMoves(){
+		print("Cleared"+ controller.validMoveMarkers.toString());
+		if(!controller.validMoveMarkers.isEmpty()) {
+			for(Circle circle: controller.validMoveMarkers) {
+				group.getChildren().remove(circle);
+			}
+		}
+		controller.validMoveMarkers.clear();
+		controller.validMoves.clear();
 	}
 	
 	private void moveOnKeyPressed(Piece piece, int x, int y)
