@@ -66,7 +66,7 @@ public class Board{
 //						group.getChildren().remove(node);
 //					}
 					controller.determineClickType(clickedSquare);							//Use this line
-					//drawCircles();
+					drawCircles();
 				}
 				//print("\nPiece Selected: " + pieceSelected);//
 //				//print("validMoveCircles: " + validMoveCircles.toString());
@@ -94,6 +94,21 @@ public class Board{
 		});
 	}
 	
+	//public void calculateValidMoves() {}
+
+//	public boolean validMovesContains(Coord coord) {
+//		print("Coord X: " + coord.getX() + " Coord Y: " + coord.getY());
+//		for(Coord co : getValidMoves()) {
+//			print("X: " + co.getX() + " Y: " + co.getY());
+//			if(co.getX() == coord.getX() && co.getY() == coord.getY()) {
+//				print("Contains square!");
+//				return true;
+//			}
+//		}
+//		print("valid move?: " + getValidMoves().contains(coord));
+//		return false;
+//	}
+	
 	/**
 	 * Draw the markers for valid moves to show where the piece can move including 
 	 * empty square coordinates and coordinates of pieces which may be captured
@@ -110,10 +125,12 @@ public class Board{
 	 */
 	public void clearValidMoves(){
 		print("Cleared"+ controller.validMoveMarkers.toString());
+		
 		if(!controller.validMoveMarkers.isEmpty()) {
-			for(Circle circle: controller.validMoveMarkers) {
-				group.getChildren().remove(circle);
-			}
+			group.getChildren().removeAll(controller.validMoveMarkers);
+//			for(Circle circle: controller.validMoveMarkers) {
+//				group.getChildren().remove(circle);
+//			}
 		}
 		controller.validMoveMarkers.clear();
 		controller.validMoves.clear();
@@ -255,23 +272,23 @@ public class Board{
 //		});
 	}
 
-	//MOVED FROM PIECE
-	public void setUpBasicMoves(Piece piece) {
-		piece.getValidMoves().clear();
-		for (int i = piece.getMagnitudeMove()*(-1); i <= piece.getMagnitudeMove(); i++) {
-			for (int j = piece.getMagnitudeMove()*(-1); j <= piece.getMagnitudeMove(); j++) {
-				for (int k = 1; k <= piece.getMaximumMove(); k++) {
-					if (piece.movementCondition(i, j, k) && !(i == 0 && j == 0)) {
-						Coord coord = piece.validMoveCoord(i, j, k);
-						if (coord.onGrid() && !piece.getValidMoves().contains(coord)) {
-							piece.getValidMoves().add(coord);
-						}
-					}
-				}
-			}
-		}
-		highlightSquares(piece);
-	}
+//	//MOVED FROM PIECE
+//	public void setUpBasicMoves(Piece piece) {
+//		piece.getValidMoves().clear();
+//		for (int i = piece.getMagnitudeMove()*(-1); i <= piece.getMagnitudeMove(); i++) {
+//			for (int j = piece.getMagnitudeMove()*(-1); j <= piece.getMagnitudeMove(); j++) {
+//				for (int k = 1; k <= piece.getMaximumMove(); k++) {
+//					if (piece.movementCondition(i, j, k) && !(i == 0 && j == 0)) {
+//						Coord coord = piece.validMoveCoord(i, j, k);
+//						if (coord.onGrid() && !piece.getValidMoves().contains(coord)) {
+//							piece.getValidMoves().add(coord);
+//						}
+//					}
+//				}
+//			}
+//		}
+//		highlightSquares(piece);
+//	}
 	
 	//MOVED TO BOARD CLASS
 	public void highlightSquares(Piece piece) {

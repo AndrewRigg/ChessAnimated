@@ -6,7 +6,6 @@ import enums.*;
 
 public class Player {
 
-
 	PieceFactory factory = new PieceFactory();
 	ArrayList<Piece> pieces;
 	Colour colour;
@@ -65,7 +64,6 @@ public class Player {
 	}
 		
 	public void initialise() {
-		print("player intialisation");
 		for(Type type : Type.values()){
 			for(int number = 1; number <= type.getQuantity(); number++) {
 				Piece piece = factory.assignPieces(type, colour, number);

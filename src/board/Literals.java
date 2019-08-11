@@ -64,7 +64,7 @@ public class Literals {
 	
 	public static final Duration TRANSLATE_DURATION = Duration.seconds(0.5); 
 	
-	public static final boolean BOARD_DEBUG 		= true,
+	public static final boolean BOARD_DEBUG 		= false,
 								PIECE_DEBUG 		= false,
 								PAWN_DEBUG  		= false,
 								KING_DEBUG  		= false,

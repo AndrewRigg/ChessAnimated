@@ -82,21 +82,6 @@ public class Piece extends Rectangle{
 		return new Coord(coord.getX() + i * k, coord.getY() + j * k);
 	}
 
-	//public void calculateValidMoves() {}
-
-//	public boolean validMovesContains(Coord coord) {
-//		print("Coord X: " + coord.getX() + " Coord Y: " + coord.getY());
-//		for(Coord co : getValidMoves()) {
-//			print("X: " + co.getX() + " Y: " + co.getY());
-//			if(co.getX() == coord.getX() && co.getY() == coord.getY()) {
-//				print("Contains square!");
-//				return true;
-//			}
-//		}
-//		print("valid move?: " + getValidMoves().contains(coord));
-//		return false;
-//	}
-
 	public ArrayList<Coord> getValidMoves() {
 		return validMoves;
 	}
