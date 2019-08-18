@@ -61,53 +61,19 @@ public class Board{
 				print("x " +x + " y " + y);
 				Coord clickedSquare = new Coord(x, y);
 				if(piecesInitialised) {
-					clearValidMoves();	//This needs more robust solution - perhaps create new layer which circles go onto, and remove the layer each time?
-//					for(Node node: removable) {
-//						group.getChildren().remove(node);
-//					}
+					//clearValidMoves();		//Need to clear this in controller somehow
 					controller.determineClickType(clickedSquare);							//Use this line
-					drawCircles();
+					if(controller.pieceCurrentlySelected) {
+//						clearValidMoves();
+						drawCircles();	//	Need to draw these in the controller somehow - pass variables from controller
+					}else {
+//						clearValidMarkers();
+						clearValidMoves();
+					}
 				}
-				//print("\nPiece Selected: " + pieceSelected);//
-//				//print("validMoveCircles: " + validMoveCircles.toString());
-//				if(currentPiece != null){
-//					//print(currentPiece.name);
-//					//print("currentPiece != null: " + (currentPiece != null));
-//					//print("validMovesContains: " + currentPiece.validMovesContains(coord));
-//				}
-//				
-//				if(!pieceSelected) {
-//					print("Board: Removing highlights");
-//					//validMoveCircles.clear();
-//					//print("validMoveCircles: " + validMoveCircles.toString());
-//					//removeHighlightedSquares();
-//					//print("validMoveCircles: " + validMoveCircles.toString());
-//					
-//				}
-//				if(pieceSelected && currentPiece != null && currentPiece.validMovesContains(coord)){
-//					print("Moved");
-//					moveOnKeyPressed(currentPiece, x, y);
-//					pieceSelected = false;
-//				}
-				//
 			}
 		});
 	}
-	
-	//public void calculateValidMoves() {}
-
-//	public boolean validMovesContains(Coord coord) {
-//		print("Coord X: " + coord.getX() + " Coord Y: " + coord.getY());
-//		for(Coord co : getValidMoves()) {
-//			print("X: " + co.getX() + " Y: " + co.getY());
-//			if(co.getX() == coord.getX() && co.getY() == coord.getY()) {
-//				print("Contains square!");
-//				return true;
-//			}
-//		}
-//		print("valid move?: " + getValidMoves().contains(coord));
-//		return false;
-//	}
 	
 	/**
 	 * Draw the markers for valid moves to show where the piece can move including 
@@ -128,13 +94,15 @@ public class Board{
 		
 		if(!controller.validMoveMarkers.isEmpty()) {
 			group.getChildren().removeAll(controller.validMoveMarkers);
-//			for(Circle circle: controller.validMoveMarkers) {
-//				group.getChildren().remove(circle);
-//			}
 		}
 		controller.validMoveMarkers.clear();
 		controller.validMoves.clear();
 	}
+	
+//	public void clearValidMarkers() {
+//		controller.validMoveMarkers.clear();
+//		controller.validMoves.clear();
+//	}
 	
 	private void moveOnKeyPressed(Piece piece, int x, int y)
     {
@@ -202,32 +170,6 @@ public class Board{
 		group.getChildren().add(clockLabel);
 	}
 	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	/**
-	 * This is called from the piece class to allow the board to define the valid moves in order to clear 
-	 * moves from other pieces (which pieces cannot access)
-	 * @param piece
-	 */
-//	public void pieceClicked(Piece piece) {
-//		print("Board: Piece clicked");
-//		removeHighlightedSquares();
-//		//pieceSelected = !pieceSelected;
-//		if(pieceSelected) {
-//			//validMoveCircles.clear();
-//			validMoveCircles.addAll(piece.getCircles());
-//			drawCircles();
-//		}
-//	}
-	
 	public void removeHighlightedSquares() {
 		//This is not a great solution as more circles keep getting added to the group (could lead to memory overflow and slowdown)
 		print("Before: " + group.getChildren().size());
@@ -237,69 +179,5 @@ public class Board{
 		}
 		group.getChildren().removeAll(validMoveCircles);	//Old method which doesn't always work for some reason
 		validMoveCircles.clear();
-	}
-	
-//	public void drawCircles() {
-//		for(Circle circle: validMoveCircles) {
-//			group.getChildren().add(circle);
-//		}
-//	}
-	
-	//MOVED FROM PIECE - CHANGE TO ONLY HAVE SQUARES CLICKED
-	@SuppressWarnings("unused")
-	private void pieceClickedFromPiece(Piece piece) {
-//		setOnMouseClicked(new EventHandler<MouseEvent>() {
-//			@Override
-//			public void handle(MouseEvent event) {
-//				piece.thisPieceSelected = !piece.thisPieceSelected;
-//				print("Piece: Removing highlights");	
-//				removeHighlightedSquares();				
-//				if(piece.thisPieceSelected) {
-//					pieceSelected = true;
-//					print("Piece: board.pieceSelected: " + pieceSelected);
-//					setUpBasicMoves(piece);
-//					currentPiece = piece;
-//					//thisPieceSelected = false;
-//				}else {
-//					//board.removeHighlightedSquares();
-//					//moveOnKeyPressed(piece, (int)(event.getSceneX()/gridsize) * gridsize, (int)(event.getSceneY()/gridsize) * gridsize);
-//					print("Unselected " + piece.name);	
-//					//thisPieceSelected = true;
-//				}
-////				piece.setX((int)(event.getSceneX()/gridsize) * gridsize);		//TRY THIS TYPE OF THING
-////				piece.setY((int)(event.getSceneY()/gridsize) * gridsize);
-//			}
-//		});
-	}
-
-//	//MOVED FROM PIECE
-//	public void setUpBasicMoves(Piece piece) {
-//		piece.getValidMoves().clear();
-//		for (int i = piece.getMagnitudeMove()*(-1); i <= piece.getMagnitudeMove(); i++) {
-//			for (int j = piece.getMagnitudeMove()*(-1); j <= piece.getMagnitudeMove(); j++) {
-//				for (int k = 1; k <= piece.getMaximumMove(); k++) {
-//					if (piece.movementCondition(i, j, k) && !(i == 0 && j == 0)) {
-//						Coord coord = piece.validMoveCoord(i, j, k);
-//						if (coord.onGrid() && !piece.getValidMoves().contains(coord)) {
-//							piece.getValidMoves().add(coord);
-//						}
-//					}
-//				}
-//			}
-//		}
-//		highlightSquares(piece);
-//	}
-	
-	//MOVED TO BOARD CLASS
-	public void highlightSquares(Piece piece) {
-		//validMoveCircles.clear();
-		for(Coord coord: piece.getValidMoves()) {
-			Circle circle =  new Circle(gridsize/3.5);
-			circle.setFill(Color.GREENYELLOW);
-			circle.setCenterX(coord.getX() * gridsize + gridsize/2);
-			circle.setCenterY(coord.getY() * gridsize + gridsize/2);
-			validMoveCircles.add(circle);
-		}
-		//pieceClicked(piece);
 	}
 }

@@ -11,7 +11,7 @@ public class Controller {
 	Player player1, player2, currentPlayer, opponent;
 	ArrayList<Circle> validMoveMarkers;
 	ArrayList<Coord> validMoves;
-	Piece selectedPiece;
+	Piece selectedPiece, clickedPiece;
 	boolean pieceCurrentlySelected;
 	int gridsize = Literals.GRIDSIZE;
 	
@@ -33,6 +33,9 @@ public class Controller {
 	}
 	
 	private void changeTurns() {
+		pieceCurrentlySelected = false;
+		selectedPiece = null;
+		clickedPiece = null;
 		changePlayerTurn(player1);
 		changePlayerTurn(player2);
 	}
@@ -71,103 +74,42 @@ public class Controller {
 	 * @param piece
 	 */
 	private void calculateValidMoves(Piece piece) {
-		for (int i = piece.getMagnitudeMove()*(-1); i <= piece.getMagnitudeMove(); i++) {
-			for (int j = piece.getMagnitudeMove()*(-1); j <= piece.getMagnitudeMove(); j++) {
-				for (int k = 1; k <= piece.getMaximumMove(); k++) {
-					if (piece.movementCondition(i, j, k) && !(i == 0 && j == 0)) {
-						Coord coord = piece.validMoveCoord(i, j, k);
-						if (coord.onGrid() && !piece.getValidMoves().contains(coord)) {
-							Circle circle =  new Circle(gridsize/3.5);
-							circle.setFill(Color.GREENYELLOW);
-							circle.setCenterX(coord.getX() * gridsize + gridsize/2);
-							circle.setCenterY(coord.getY() * gridsize + gridsize/2);
-							//print(circle.getCenterX() + " " + circle.getCenterY());
-							validMoveMarkers.add(circle);
-							validMoves.add(coord);
-						}
-					}
-				}
-			}
+		piece.calculateValidMoves();
+		validMoves.addAll(piece.getValidMoves());
+		for(Coord coord: validMoves) {
+			Circle circle =  new Circle(gridsize/3.5);
+			circle.setFill(Color.GREENYELLOW);
+			circle.setCenterX(coord.getX() * gridsize + gridsize/2);
+			circle.setCenterY(coord.getY() * gridsize + gridsize/2);
+			validMoveMarkers.add(circle);
 		}
-		//print(validMoveMarkers.toString());
 	}
 	
 	/**
 	 * This is the method to determine which type of click has occurred
 	 * and what to do with it
+	 * This only cares about whether a square is empty, has own colour or
+	 * different colour
 	 * @param coord
 	 */
 	public void determineClickType(Coord coord) {
-		print("Clicked on Coord: (" + coord.getX() + ", " + coord.getY() + ")");
-
-		
-			//A same coloured piece has been clicked on
-			if(selectedPiece != null) {
-				if(compareCoords(coord, selectedPiece.getCoord())) {
-					print("Clicked on Self");
-					clickedOnSelf();
-				}
-			}
-			else if(checkCoordForPiece(currentPlayer, coord)) {
-				Piece piece = getPieceClickedOn(currentPlayer, coord);
-				print("Clicked on Same Coloured Piece");
-				clickedOnSameColour(piece);
-				
-			}else if(checkCoordForPiece(opponent, coord)) {
-				Piece piece = getPieceClickedOn(opponent, coord);
-				print("Clicked on Opposite Coloured Piece");
-				clickedOnOppositeColour(piece);
-			}else {
-				print("Clicked on Empty Square");
-				clickedOnEmptySquare(coord);
-			}
-				//The piece clicked on was the one already selected (self)
-//				if(compareCoords(coord, selectedPiece.getCoord())) {
-//					clickedOnSelf();
-//				}
-//				//The piece clicked on was of the same colour
-//				else{
-//					Piece piece = getPieceClickedOn(currentPlayer, coord);
-//					clickedOnSameColour(piece);
-//				} //A different coloured piece has been clicked
-//			}else if(checkCoordForPiece(opponent, coord)) {
-//				//Is this a valid move?
-//				if(isValidMove(coord)) {
-//					Piece piece = getPieceClickedOn(opponent, coord);
-//					clickedOnOppositeColour(piece);
-//				}
-//				else {
-//					//If invalid move, do nothing
-//					doNothing();
-//				}
-//			}else {
-//				//An empty square has been clicked on
-//				if(isValidMove(coord)) {
-//					movePiece(coord);
-//				}else {
-//					doNothing();
-//				}
-//			}
-//			//An empty square has been clicked on
-//			
-//		}else {
-//			if(checkCoordForPiece(currentPlayer, coord)) {
-//				if(compareCoords(coord, selectedPiece.getCoord())) {
-//					selectPiece(selectedPiece);
-//				}else {
-//					
-//				} 
-//			}else {
-//				clickedOnEmptySquare(coord);
-//			}
-//		}
+		//print("Clicked on Coord: (" + coord.getX() + ", " + coord.getY() + ")");
+		if(checkCoordForPiece(currentPlayer, coord)) {
+			//clickedPiece = getPieceClickedOn(currentPlayer, coord);
+			clickedOnOwnColour();
+		}else if(checkCoordForPiece(opponent, coord)) {
+			//clickedPiece = getPieceClickedOn(opponent, coord);
+			clickedOnOppositeColour();
+		}else {
+			clickedOnEmptySquare(coord);
+		}
 	}
 
 	private Piece getPieceClickedOn(Player player, Coord coord) {
 		Piece thisPiece = null;
 		for(Piece piece: player.pieces) {
 			if (compareCoords(piece.getCoord(), coord)){
-				print("Piece: " + piece.getName() + " Coord: (" + piece.getCoord().getX() + ", " + piece.getCoord().getY()+ ")");
+				//print("Piece: " + piece.getName() + " Coord: (" + piece.getCoord().getX() + ", " + piece.getCoord().getY()+ ")");
 				thisPiece = piece;
 			}
 		}
@@ -198,9 +140,9 @@ public class Controller {
 	 */
 	private boolean checkCoordForPiece(Player player, Coord coord) {
 		for(Piece piece: player.pieces) {
-			if (compareCoords(piece.getCoord(), coord) && piece != selectedPiece){
+			if (compareCoords(piece.getCoord(), coord)){
 				//print("Piece: " + piece.getName() + " Coord: (" + piece.getCoord().getX() + ", " + piece.getCoord().getY()+ ")");
-				//selectedPiece = piece;
+				clickedPiece = piece;
 				return true;
 			}
 		}
@@ -216,8 +158,8 @@ public class Controller {
 	 */
 	public void movePiece(Coord coord) {
 		print("Move Piece...");
-		selectedPiece.setX(coord.getX());
-		selectedPiece.setY(coord.getY());
+		selectedPiece.setX(coord.getX()*gridsize + gridsize/4);
+		selectedPiece.setY(coord.getY()*gridsize + gridsize/4);
 		changeTurns();
 	}
 	
@@ -256,6 +198,7 @@ public class Controller {
 		}else {
 			doNothing();
 		}
+		pieceCurrentlySelected = false;
 	}
 	
 	/**
@@ -276,13 +219,17 @@ public class Controller {
 	 * Deal with action for when clicking on the same piece
 	 * @param piece
 	 */
-	public void clickedOnSameColour(Piece piece) {
-		print("Clicked on Same Colour...");
-		if(validPieceSelection(piece)) {
+	public void clickedOnOwnColour() {
+		print("Clicked on Own Colour...");
+		if(validPieceSelection(clickedPiece)) {
 			if(pieceCurrentlySelected) {
-				changePiece(piece);
+				if(compareCoords(clickedPiece.getCoord(), selectedPiece.getCoord())) {
+					clickedOnSelf();
+				}else {
+					changePiece(clickedPiece);
+				}
 			}else {
-				selectPiece(piece);
+				selectPiece(clickedPiece);
 			}
 		}else {
 			doNothing();
@@ -295,6 +242,10 @@ public class Controller {
 	 * @return
 	 */
 	private boolean validPieceSelection(Piece piece) {
+//		print("ValidMoves: ");
+//		for(Coord coord : piece.getValidMoves()) {
+//			print("(" + coord.getX() + ", " + coord.getY() + ") ");
+//		} 
 		return !piece.getValidMoves().isEmpty();
 	}
 	
@@ -302,10 +253,10 @@ public class Controller {
 	 * Deal with action for when clicking on opposite piece
 	 * @param piece
 	 */
-	public void clickedOnOppositeColour(Piece piece) {
+	public void clickedOnOppositeColour() {
 		print("Clicked on Opposite Colour...");
-		if(pieceCurrentlySelected && validPieceCapture(piece)) {
-			takePiece(piece);
+		if(pieceCurrentlySelected && validPieceCapture(clickedPiece)) {
+			takePiece(clickedPiece);
 		}else {
 			doNothing();
 		}
@@ -372,5 +323,7 @@ public class Controller {
 	public void unselectPiece() {
 		print("Unselect Piece...");
 		pieceCurrentlySelected = false;
+		selectedPiece = null;
+		validMoves.clear();
 	}
 }

@@ -9,7 +9,6 @@ public class Player {
 	PieceFactory factory = new PieceFactory();
 	ArrayList<Piece> pieces;
 	Colour colour;
-	PlayerNumber player; 
 	boolean turn, clockActive = true;
 	private ChessClock clock;
 	private static int defaultMinutes = 20, defaultSeconds = 00;
@@ -41,10 +40,10 @@ public class Player {
 	 */
 	public Player(Colour colour, int minutes, int seconds) {
 		this.colour = colour;
-		player = setThisPlayer();
+		setClockPosition();
 		pieces = new ArrayList<Piece>();
 		if(clockActive) {
-			clock = new ChessClock(minutes, seconds, player.ordinal() == 0);
+			clock = new ChessClock(minutes, seconds, colour == Colour.WHITE);
 		}
 		initialise();
 	}
@@ -53,20 +52,15 @@ public class Player {
 		Literals.print(str, Literals.PLAYER_DEBUG);
 	}
 	
-	private PlayerNumber setThisPlayer() {
-		if(colour == Colour.WHITE) {
-			clockPosition = gridsize + 10;
-			return PlayerNumber.PlayerOne;
-		}else {
-			clockPosition = 10*gridsize+10;
-			return PlayerNumber.PlayerTwo;
-		}
+	private void setClockPosition() {
+		clockPosition = (colour == Colour.WHITE) ? gridsize + 10 : 10 * gridsize + 10;
 	}
 		
 	public void initialise() {
 		for(Type type : Type.values()){
 			for(int number = 1; number <= type.getQuantity(); number++) {
 				Piece piece = factory.assignPieces(type, colour, number);
+				piece.calculateValidMoves();
 				pieces.add(piece);
 			}
 		}
@@ -90,13 +84,5 @@ public class Player {
 	
 	public ArrayList<Piece> getPieces(){
 		return pieces;
-	}
-	
-	public PlayerNumber getPlayer() {
-		return player;
-	}
-
-	public void setPlayer(PlayerNumber player) {
-		this.player = player;
 	}
 }

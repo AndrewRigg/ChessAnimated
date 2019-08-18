@@ -20,7 +20,6 @@ public class Piece extends Rectangle{
 	private int magnitudeMove, maximumMove;
 	public boolean thisPieceSelected, isWhite, thisPieceCondition;
 	private ArrayList<Coord> validMoves;
-	ArrayList<Circle> validMoveCircles;
 	Coord coord;
 	PieceActions actions;
 	
@@ -35,13 +34,13 @@ public class Piece extends Rectangle{
 		this.name = colour.toString().toLowerCase() + "_" + type.toString().toLowerCase();
 		this.image = new Image("res/"+name+".png");
 		this.getInitialCoords();
-		this.coord = getInitialCoords(type, number);
 		this.thisPieceSelected = false;
 		this.setMagnitudeMove(1);
 		this.setMaximumMove(7);
 		this.setValidMoves(new ArrayList<Coord>());
-		this.validMoveCircles = new ArrayList<Circle>();
 		this.setFill(new ImagePattern(image));
+		setCoord(getInitialCoords(type, number));
+		//calculateValidMoves();		//This is not setting right as it's not being overridden yet.  Need to do this after pieces created
 		actions = new PieceActions(this);
 	}	
 
@@ -51,10 +50,6 @@ public class Piece extends Rectangle{
 	 */
 	public void print(String str) {
 		Literals.print(str, Literals.PIECE_DEBUG);
-	}
-
-	public ArrayList<Circle> getCircles(){
-		return validMoveCircles;
 	}
 	
 	public void getInitialCoords() {
@@ -76,6 +71,27 @@ public class Piece extends Rectangle{
 	 */
 	public boolean movementCondition(int xDirection, int yDirection, int magnitude) {
 		return true;
+	}
+	
+	/**
+	 * calculate the valid moves for this piece 
+	 * (movementCondition is overridden by individual pieces)
+	 */
+	public void calculateValidMoves() {
+		validMoves.clear();
+		print(""+ this.getClass() + " Max: " + getMaximumMove() + " Mag: " + getMagnitudeMove());
+		for (int i = getMagnitudeMove()*(-1); i <= getMagnitudeMove(); i++) {
+			for (int j = getMagnitudeMove()*(-1); j <= getMagnitudeMove(); j++) {
+				for (int k = 1; k <= getMaximumMove(); k++) {
+					if (movementCondition(i, j, k) && !(i == 0 && j == 0)) {
+						Coord coord = validMoveCoord(i, j, k);
+						if (coord.onGrid() && !getValidMoves().contains(coord)) {
+							validMoves.add(coord);
+						}
+					}
+				}
+			}
+		}
 	}
 	
 	public Coord validMoveCoord(int i, int j, int k) {
@@ -120,5 +136,6 @@ public class Piece extends Rectangle{
 
 	public void setCoord(Coord coord) {
 		this.coord = coord;
+//		calculateValidMoves();
 	}
 }

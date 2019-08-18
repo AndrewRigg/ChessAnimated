@@ -2,7 +2,7 @@ package enums;
 
 public enum Type {
 	
-	KNIGHT(2, 2, 1, 3), BISHOP(2, 3, 1, 3),  ROOK(2, 1, 1, 5), QUEEN(1, 4, 1, 9), KING(1, 5, 1, 1000000), PAWN(8, 1, 2, 1);
+	KNIGHT(2, 2, 1, 3.0), BISHOP(2, 3, 1, 3.0),  ROOK(2, 1, 1, 5.0), QUEEN(1, 4, 1, 9.0), KING(1, 5, 1, 1000000.0), PAWN(8, 1, 2, 1.0);
 	
 	  private final int quantity;
 	  private final int positionX, positionY;

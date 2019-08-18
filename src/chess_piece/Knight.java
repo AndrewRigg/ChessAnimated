@@ -13,6 +13,8 @@ public class Knight extends Piece{
 	
 	@Override
 	public boolean movementCondition(int xDirection, int yDirection, int magnitude) {
-		return (Math.abs(yDirection) != Math.abs(xDirection) && !(xDirection == 0 || yDirection == 0));
+		//print("Knight: " + xDirection + ", " + yDirection + ", " + magnitude);
+		//print(""+ (Math.abs(yDirection) != Math.abs(xDirection) && xDirection != 0 && yDirection != 0));
+		return ((Math.abs(yDirection) != Math.abs(xDirection)) && !(xDirection == 0 || yDirection == 0));
 	}
 }
