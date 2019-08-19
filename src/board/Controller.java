@@ -160,6 +160,7 @@ public class Controller {
 		print("Move Piece...");
 		selectedPiece.setX(coord.getX()*gridsize + gridsize/4);
 		selectedPiece.setY(coord.getY()*gridsize + gridsize/4);
+		selectedPiece.setCoord(new Coord(coord.getX(), coord.getY()));
 		changeTurns();
 	}
 	
@@ -323,7 +324,9 @@ public class Controller {
 	public void unselectPiece() {
 		print("Unselect Piece...");
 		pieceCurrentlySelected = false;
+		//clickedPiece = null;
 		selectedPiece = null;
 		validMoves.clear();
+		//validMoveMarkers.clear();
 	}
 }
