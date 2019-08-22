@@ -12,7 +12,7 @@ public class Controller {
 	ArrayList<Circle> validMoveMarkers;
 	ArrayList<Coord> validMoves;
 	Piece selectedPiece, clickedPiece;
-	boolean pieceCurrentlySelected;
+	boolean pieceCurrentlySelected, movingPiece;
 	int gridsize = Literals.GRIDSIZE;
 	
 	public Controller(Player player1, Player player2) {
@@ -34,7 +34,7 @@ public class Controller {
 	
 	private void changeTurns() {
 		pieceCurrentlySelected = false;
-		selectedPiece = null;
+		//selectedPiece = null;
 		clickedPiece = null;
 		changePlayerTurn(player1);
 		changePlayerTurn(player2);
@@ -158,8 +158,10 @@ public class Controller {
 	 */
 	public void movePiece(Coord coord) {
 		print("Move Piece...");
-		selectedPiece.setX(coord.getX()*gridsize + gridsize/4);
-		selectedPiece.setY(coord.getY()*gridsize + gridsize/4);
+		movingPiece = true;
+		//moveOnKeyPressed(selectedPiece, coord.getX()*gridsize + gridsize/4, coord.getY()*gridsize + gridsize/4);
+		//selectedPiece.setX(coord.getX()*gridsize + gridsize/4);
+		//selectedPiece.setY(coord.getY()*gridsize + gridsize/4);
 		selectedPiece.setCoord(new Coord(coord.getX(), coord.getY()));
 		changeTurns();
 	}

@@ -63,6 +63,12 @@ public class Board{
 				if(piecesInitialised) {
 					//clearValidMoves();		//Need to clear this in controller somehow
 					controller.determineClickType(clickedSquare);							//Use this line
+					if(controller.movingPiece) {
+						moveOnKeyPressed(controller.selectedPiece, 
+							controller.selectedPiece.getCoord().getX(), 
+							controller.selectedPiece.getCoord().getY());
+							controller.movingPiece = false;
+					}
 					if(controller.pieceCurrentlySelected) {
 //						clearValidMoves();
 						drawCircles();	//	Need to draw these in the controller somehow - pass variables from controller
