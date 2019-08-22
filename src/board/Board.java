@@ -60,14 +60,19 @@ public class Board{
 //				Coord coord = new Coord(x, y);
 				print("x " +x + " y " + y);
 				Coord clickedSquare = new Coord(x, y);
-				if(piecesInitialised) {
+				//if(piecesInitialised) {
 					//clearValidMoves();		//Need to clear this in controller somehow
 					controller.determineClickType(clickedSquare);							//Use this line
 					if(controller.movingPiece) {
+						print(""+controller.selectedPiece.getCoord().getX());
+						print(""+controller.selectedPiece.getCoord().getY());
+						print("" + (controller.selectedPiece.getCoord().getX()*gridsize + gridsize/4));
+						print(""+ (controller.selectedPiece.getCoord().getY()*gridsize + gridsize/4));
 						moveOnKeyPressed(controller.selectedPiece, 
-							controller.selectedPiece.getCoord().getX(), 
-							controller.selectedPiece.getCoord().getY());
-							controller.movingPiece = false;
+								controller.selectedPiece.getCoord().getX(), 
+								controller.selectedPiece.getCoord().getY());
+						 controller.movingPiece = false;
+						//controller.selectedPiece.setCoord(new Coord(controller.selectedPiece.getCoord().getX(), controller.selectedPiece.getCoord().getY()));
 					}
 					if(controller.pieceCurrentlySelected) {
 //						clearValidMoves();
@@ -76,7 +81,7 @@ public class Board{
 //						clearValidMarkers();
 						clearValidMoves();
 					}
-				}
+				//}
 			}
 		});
 	}
@@ -115,12 +120,15 @@ public class Board{
         final TranslateTransition transition = new TranslateTransition(Literals.TRANSLATE_DURATION, piece);
         //This was before restructuring -> not sure if group works instead of scene
         //scene.setOnMousePressed(e -> {
+        print("Moving");
         group.setOnMousePressed(e -> {
         	transition.setFromX(piece.getTranslateX());
             transition.setFromY(piece.getTranslateY());
             transition.setToX(x*gridsize - piece.getX() + gridsize/4);
             transition.setToY(y*gridsize - piece.getY() + gridsize/4);
         	transition.playFromStart();
+        	print("Did this");
+        	//This never gets called on the first key clicked?!
         });
     }
 

@@ -35,7 +35,7 @@ public class Controller {
 	private void changeTurns() {
 		pieceCurrentlySelected = false;
 		//selectedPiece = null;
-		clickedPiece = null;
+		//clickedPiece = null;
 		changePlayerTurn(player1);
 		changePlayerTurn(player2);
 	}
@@ -191,6 +191,7 @@ public class Controller {
 	public void clickedOnEmptySquare(Coord coord) {
 		print("Clicked on Empty Square...");
 		if(pieceCurrentlySelected) {
+			print("Piece Selected while empty square clicked on...");
 			if(validSquareSelection(coord)) {
 				movePiece(coord);
 			}else {
