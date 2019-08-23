@@ -118,18 +118,13 @@ public class Board{
 	private void moveOnKeyPressed(Piece piece, int x, int y)
     {
         final TranslateTransition transition = new TranslateTransition(Literals.TRANSLATE_DURATION, piece);
-        //This was before restructuring -> not sure if group works instead of scene
-        //scene.setOnMousePressed(e -> {
         print("Moving");
-        group.setOnMousePressed(e -> {
         	transition.setFromX(piece.getTranslateX());
             transition.setFromY(piece.getTranslateY());
             transition.setToX(x*gridsize - piece.getX() + gridsize/4);
             transition.setToY(y*gridsize - piece.getY() + gridsize/4);
         	transition.playFromStart();
         	print("Did this");
-        	//This never gets called on the first key clicked?!
-        });
     }
 
 	private void drawLines() {
