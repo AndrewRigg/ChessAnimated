@@ -8,6 +8,7 @@ public class Player {
 
 	PieceFactory factory = new PieceFactory();
 	ArrayList<Piece> pieces;
+	int takenPieces = 0;
 	Colour colour;
 	boolean turn, clockActive = true;
 	private ChessClock clock;
@@ -84,5 +85,13 @@ public class Player {
 	
 	public ArrayList<Piece> getPieces(){
 		return pieces;
+	}
+
+	public void addTakenPiece() {
+		takenPieces++;
+	}
+	
+	public int getTakenPieces() {
+		return takenPieces;
 	}
 }

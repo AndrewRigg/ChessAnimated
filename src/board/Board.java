@@ -20,7 +20,7 @@ public class Board{
 	int asciiCaps = Literals.ASCII_CAPS;
 	ArrayList<Circle> validMoveCircles;
 	public final Group group;
-	public boolean pieceSelected, piecesInitialised;
+	public boolean pieceSelected, piecesInitialised, pieceHighlighted;
 	public Piece currentPiece;
 	public Scene scene;
 	public Controller controller;
@@ -60,28 +60,30 @@ public class Board{
 //				Coord coord = new Coord(x, y);
 				print("x " +x + " y " + y);
 				Coord clickedSquare = new Coord(x, y);
-				//if(piecesInitialised) {
-					//clearValidMoves();		//Need to clear this in controller somehow
-					controller.determineClickType(clickedSquare);							//Use this line
+					controller.determineClickType(clickedSquare);	
+					if(!controller.pieceCurrentlySelected || pieceHighlighted) {
+						clearValidMoves();//Use this line
+					}
 					if(controller.movingPiece) {
-						print(""+controller.selectedPiece.getCoord().getX());
-						print(""+controller.selectedPiece.getCoord().getY());
-						print("" + (controller.selectedPiece.getCoord().getX()*gridsize + gridsize/4));
-						print(""+ (controller.selectedPiece.getCoord().getY()*gridsize + gridsize/4));
-						moveOnKeyPressed(controller.selectedPiece, 
-								controller.selectedPiece.getCoord().getX(), 
-								controller.selectedPiece.getCoord().getY());
-						 controller.movingPiece = false;
+						moveOnKeyPressed(controller.selectedPiece, controller.selectedPiece.getCoord().getX(), controller.selectedPiece.getCoord().getY());
+						controller.movingPiece = false;
+						pieceHighlighted = false;
 						//controller.selectedPiece.setCoord(new Coord(controller.selectedPiece.getCoord().getX(), controller.selectedPiece.getCoord().getY()));
+					}else if(controller.pieceCurrentlySelected && pieceHighlighted) {
+						//if same colour piece selected and piece already selected prior						
+						print("Selected when piece already highlighted");
+						pieceHighlighted = true;
+						drawCircles();
 					}
-					if(controller.pieceCurrentlySelected) {
-//						clearValidMoves();
+					else if(controller.pieceCurrentlySelected) {
+						//if no piece selected prior
+						print("Selected first time");
 						drawCircles();	//	Need to draw these in the controller somehow - pass variables from controller
+						pieceHighlighted = true;
 					}else {
-//						clearValidMarkers();
-						clearValidMoves();
+						print("In the else condition...");
+						pieceHighlighted = false;
 					}
-				//}
 			}
 		});
 	}
@@ -102,7 +104,7 @@ public class Board{
 	 */
 	public void clearValidMoves(){
 		print("Cleared"+ controller.validMoveMarkers.toString());
-		
+		//This needs to happen before the moves are calculated
 		if(!controller.validMoveMarkers.isEmpty()) {
 			group.getChildren().removeAll(controller.validMoveMarkers);
 		}

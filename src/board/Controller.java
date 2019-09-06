@@ -12,7 +12,7 @@ public class Controller {
 	ArrayList<Circle> validMoveMarkers;
 	ArrayList<Coord> validMoves;
 	Piece selectedPiece, clickedPiece;
-	boolean pieceCurrentlySelected, movingPiece;
+	boolean pieceCurrentlySelected, movingPiece, pieceHighlighted;
 	int gridsize = Literals.GRIDSIZE;
 	
 	public Controller(Player player1, Player player2) {
@@ -262,7 +262,8 @@ public class Controller {
 		if(pieceCurrentlySelected && validPieceCapture(clickedPiece)) {
 			takePiece(clickedPiece);
 		}else {
-			doNothing();
+			unselectPiece();
+			//doNothing();
 		}
 	}
 	/**
@@ -299,8 +300,10 @@ public class Controller {
 		// TODO Sort this out!
 		//movePiece(piece)
 		print("Send Piece Off Board...");
-		piece.setX(0);
+		opponent.addTakenPiece();
+		piece.setX(opponent.getTakenPieces());
 		piece.setY(0);
+		//movePiece(piece.getCoord());
 	}
 
 	/**
