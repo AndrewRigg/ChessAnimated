@@ -1,6 +1,8 @@
 package board;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import chess_piece.*;
 import javafx.scene.paint.*;
@@ -14,6 +16,8 @@ public class Controller {
 	Piece selectedPiece, clickedPiece;
 	boolean pieceCurrentlySelected, movingPiece, pieceHighlighted;
 	int gridsize = Literals.GRIDSIZE;
+	public List<Object> blackTakenCoords, whiteTakenCoords;
+	public ArrayList<Coord> whiteTakenPieces, blackTakenPieces;
 	
 	public Controller(Player player1, Player player2) {
 		this.player1 = player1;
@@ -26,6 +30,33 @@ public class Controller {
 		}
 		validMoves = new ArrayList<>();
 		validMoveMarkers = new ArrayList<>();
+		setTakenZones();
+	}
+	
+	private void setTakenZones() {
+		blackTakenCoords = Arrays.asList(new Coord(1,1), 
+										 new Coord(2,1),
+										 new Coord(3,1), 
+										 new Coord(4,1),
+										 new Coord(5,1),
+										 new Coord(6,1),
+										 new Coord(7,1),
+										 new Coord(8,1),
+										 new Coord(9,1),
+										 new Coord(10,1),
+										 new Coord(10,2),
+										 new Coord(10,3),
+										 new Coord(10,4),
+										 new Coord(10,5),
+										 new Coord(10,6),
+										 new Coord(10,7),
+										 new Coord(10,8),
+										 new Coord(10,9));
+		whiteTakenCoords = Arrays.asList(new Coord(9,0), 
+										 new Coord(9,1),
+										 new Coord(9,2), 
+										 new Coord(9,3),
+										 new Coord(9,4));
 	}
 	
 	public void print(String str) {
@@ -163,7 +194,6 @@ public class Controller {
 		//selectedPiece.setX(coord.getX()*gridsize + gridsize/4);
 		//selectedPiece.setY(coord.getY()*gridsize + gridsize/4);
 		selectedPiece.setCoord(new Coord(coord.getX(), coord.getY()));
-		changeTurns();
 	}
 	
 	/**
@@ -194,6 +224,7 @@ public class Controller {
 			print("Piece Selected while empty square clicked on...");
 			if(validSquareSelection(coord)) {
 				movePiece(coord);
+				changeTurns();
 			}else {
 				//Maybe do nothing here
 				//doNothing();
@@ -290,6 +321,7 @@ public class Controller {
 		Coord current = piece.getCoord();
 		sendTakenPieceOffBoard(piece);
 		movePiece(current);
+		changeTurns();
 	}
 	
 	/**
@@ -300,10 +332,14 @@ public class Controller {
 		// TODO Sort this out!
 		//movePiece(piece)
 		print("Send Piece Off Board...");
+		Coord taken = (Coord) blackTakenCoords.get(opponent.getTakenPieces());
+		print("Taken Coord: (" + taken.getX()  + ", " + taken.getY() + ")");
+		piece.setCoord(taken);
+		piece.setX(taken.getX()*gridsize);
+		piece.setY(taken.getY()*gridsize);
+		movePiece(piece.getCoord());
+		calculateValidMoves(piece);
 		opponent.addTakenPiece();
-		piece.setX(opponent.getTakenPieces());
-		piece.setY(0);
-		//movePiece(piece.getCoord());
 	}
 
 	/**

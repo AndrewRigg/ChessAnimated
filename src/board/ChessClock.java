@@ -120,6 +120,10 @@ public class ChessClock {
 		seconds--;
 	}
 	
+	//TODO : Add logic to deal with NORMAL mode and TIME DELAY mode
+	//This requires certain additions of time after each move see here: https://www.fide.com/fide/handbook.html?id=124&view=article
+	
+	
 	/**
 	 * Returns a formatted String for the timer in 
 	 * minutes and seconds in the format mm:ss

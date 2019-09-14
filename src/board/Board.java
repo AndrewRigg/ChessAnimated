@@ -1,6 +1,8 @@
 package board;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import chess_piece.*;
 import javafx.animation.*;
@@ -24,10 +26,9 @@ public class Board{
 	public Piece currentPiece;
 	public Scene scene;
 	public Controller controller;
-	ArrayList<Node> removable;
+
 
 	public Board(Controller controller) {
-		removable = new ArrayList<Node>();
 		this.controller = controller;
 		group = new Group();
         drawSquares();
@@ -39,7 +40,7 @@ public class Board{
 		validMoveCircles = new ArrayList<Circle>();
 		pieceSelected = false;
 	}
-	
+
 	public void print(String str) {
 		Literals.print(str, Literals.BOARD_DEBUG);
 	}
