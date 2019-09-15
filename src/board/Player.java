@@ -14,6 +14,7 @@ public class Player {
 	private ChessClock clock;
 	private static int defaultMinutes = 20, defaultSeconds = 00;
 	int clockPosition, gridsize = Literals.GRIDSIZE;
+	public Coord [] takenZone = new Coord[18];
 	
 	/**
 	 * Default constructor
@@ -43,10 +44,25 @@ public class Player {
 		this.colour = colour;
 		setClockPosition();
 		pieces = new ArrayList<Piece>();
+		setTakenZones();
 		if(clockActive) {
 			clock = new ChessClock(minutes, seconds, colour == Colour.WHITE);
 		}
 		initialise();
+	}
+	
+	private void setTakenZones() {
+		int horizontal, vertical;
+		for(horizontal = 1; horizontal <= 10; horizontal++) {
+			takenZone[horizontal - 1] = new Coord((colour == Colour.WHITE) ? (10 - horizontal) : horizontal+1, (colour == Colour.WHITE) ? 11 : 0);
+		}
+		for(vertical = 2; vertical <= 9; vertical++) {
+			takenZone[horizontal + vertical - 3] = new Coord((colour == Colour.WHITE) ? 0 : 11, (colour == Colour.WHITE) ? (12 - vertical) : vertical-1 );
+		}
+		print("TakenZone: ");
+		for(int i = 0; i < 18; i++) {
+			print("(" + takenZone[i].getX()+ ", " + takenZone[i].getY()+ ")");
+		}
 	}
 
 	public static final void print(String str) {
@@ -93,5 +109,10 @@ public class Player {
 	
 	public int getTakenPieces() {
 		return takenPieces;
+	}
+
+	public Coord getTakenZone(int takenPieces) {
+		// TODO Auto-generated method stub
+		return takenZone[takenPieces];
 	}
 }

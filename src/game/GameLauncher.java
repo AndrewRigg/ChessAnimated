@@ -17,8 +17,8 @@ public class GameLauncher extends Application{
 	
 	public GameLauncher() {
 //		game1 = new Game(0, 10, 1, 40);
-		game2 = new Game(false);
-//		game3 = new Game(true);
+//		game2 = new Game(false);
+		game3 = new Game(true);
 //		game4 = new Game();
 	}
 	
@@ -29,8 +29,8 @@ public class GameLauncher extends Application{
 	@Override
 	public void start(Stage stage) throws Exception {
 //		setScene(scene, stage, game1);
-		setScene(scene, new Stage(), game2);
-//		setScene(scene, new Stage(), game3);
+//		setScene(scene, new Stage(), game2);
+		setScene(scene, new Stage(), game3);
 //		setScene(scene, new Stage(), game4);
 	}
 	

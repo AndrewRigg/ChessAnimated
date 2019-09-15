@@ -1,7 +1,6 @@
 package board;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import chess_piece.*;
@@ -30,33 +29,6 @@ public class Controller {
 		}
 		validMoves = new ArrayList<>();
 		validMoveMarkers = new ArrayList<>();
-		setTakenZones();
-	}
-	
-	private void setTakenZones() {
-		blackTakenCoords = Arrays.asList(new Coord(1,1), 
-										 new Coord(2,1),
-										 new Coord(3,1), 
-										 new Coord(4,1),
-										 new Coord(5,1),
-										 new Coord(6,1),
-										 new Coord(7,1),
-										 new Coord(8,1),
-										 new Coord(9,1),
-										 new Coord(10,1),
-										 new Coord(10,2),
-										 new Coord(10,3),
-										 new Coord(10,4),
-										 new Coord(10,5),
-										 new Coord(10,6),
-										 new Coord(10,7),
-										 new Coord(10,8),
-										 new Coord(10,9));
-		whiteTakenCoords = Arrays.asList(new Coord(9,0), 
-										 new Coord(9,1),
-										 new Coord(9,2), 
-										 new Coord(9,3),
-										 new Coord(9,4));
 	}
 	
 	public void print(String str) {
@@ -136,33 +108,6 @@ public class Controller {
 		}
 	}
 
-	private Piece getPieceClickedOn(Player player, Coord coord) {
-		Piece thisPiece = null;
-		for(Piece piece: player.pieces) {
-			if (compareCoords(piece.getCoord(), coord)){
-				//print("Piece: " + piece.getName() + " Coord: (" + piece.getCoord().getX() + ", " + piece.getCoord().getY()+ ")");
-				thisPiece = piece;
-			}
-		}
-		return thisPiece;
-	}
-
-	private boolean checkPieces(Player player, Coord coord) {
-		for(Piece piece: player.pieces) {
-			if(compareCoords(piece.getCoord(), coord) && !piece.equals(selectedPiece)) {
-				return true;
-			}
-		}
-		return false;
-	}
-
-	private boolean isValidMove(Coord coord) {
-		for(Coord move: validMoves) {
-			return compareCoords(move, coord);
-		}
-		return false;
-	}
-
 	/**
 	 * Determine if a piece has been clicked on
 	 * @param player
@@ -191,8 +136,8 @@ public class Controller {
 		print("Move Piece...");
 		movingPiece = true;
 		//moveOnKeyPressed(selectedPiece, coord.getX()*gridsize + gridsize/4, coord.getY()*gridsize + gridsize/4);
-		//selectedPiece.setX(coord.getX()*gridsize + gridsize/4);
-		//selectedPiece.setY(coord.getY()*gridsize + gridsize/4);
+		selectedPiece.setX(coord.getX()*gridsize + gridsize/4);
+		selectedPiece.setY(coord.getY()*gridsize + gridsize/4);
 		selectedPiece.setCoord(new Coord(coord.getX(), coord.getY()));
 	}
 	
@@ -329,14 +274,12 @@ public class Controller {
 	 * @param piece
 	 */
 	private void sendTakenPieceOffBoard(Piece piece) {
-		// TODO Sort this out!
-		//movePiece(piece)
 		print("Send Piece Off Board...");
-		Coord taken = (Coord) blackTakenCoords.get(opponent.getTakenPieces());
+		Coord taken = opponent.getTakenZone(opponent.getTakenPieces());
 		print("Taken Coord: (" + taken.getX()  + ", " + taken.getY() + ")");
 		piece.setCoord(taken);
-		piece.setX(taken.getX()*gridsize);
-		piece.setY(taken.getY()*gridsize);
+		piece.setX((taken.getX()*gridsize) + (gridsize/4));
+		piece.setY((taken.getY()*gridsize) + (gridsize/4));
 		movePiece(piece.getCoord());
 		calculateValidMoves(piece);
 		opponent.addTakenPiece();
