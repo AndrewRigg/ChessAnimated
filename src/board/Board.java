@@ -94,9 +94,7 @@ public class Board{
 	 * empty square coordinates and coordinates of pieces which may be captured
 	 */
 	public void drawCircles() {
-		for(Circle circle: controller.validMoveMarkers) {
-			group.getChildren().add(circle);
-		}
+		group.getChildren().addAll(controller.validMoveMarkers);
 	}
 	
 	/**

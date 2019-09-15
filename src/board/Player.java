@@ -59,10 +59,6 @@ public class Player {
 		for(vertical = 2; vertical <= 9; vertical++) {
 			takenZone[horizontal + vertical - 3] = new Coord((colour == Colour.WHITE) ? 0 : 11, (colour == Colour.WHITE) ? (12 - vertical) : vertical-1 );
 		}
-		print("TakenZone: ");
-		for(int i = 0; i < 18; i++) {
-			print("(" + takenZone[i].getX()+ ", " + takenZone[i].getY()+ ")");
-		}
 	}
 
 	public static final void print(String str) {
