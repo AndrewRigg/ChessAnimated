@@ -77,21 +77,43 @@ public class Piece extends Rectangle{
 	 * calculate the valid moves for this piece 
 	 * (movementCondition is overridden by individual pieces)
 	 */
-	public void calculateValidMoves() {
+	public void calculateValidMoves(Player player, Player opponent) {
 		validMoves.clear();
 		print(""+ this.getClass() + " Max: " + getMaximumMove() + " Mag: " + getMagnitudeMove());
 		for (int i = getMagnitudeMove()*(-1); i <= getMagnitudeMove(); i++) {
 			for (int j = getMagnitudeMove()*(-1); j <= getMagnitudeMove(); j++) {
+				magnitudeLoop:
 				for (int k = 1; k <= getMaximumMove(); k++) {
 					if (movementCondition(i, j, k) && !(i == 0 && j == 0)) {
 						Coord coord = validMoveCoord(i, j, k);
 						if (coord.onGrid() && !getValidMoves().contains(coord)) {
+							//Need something like this to block pieces
+							//if (board.getSquare(coord).occupyingPiece.colour != this.colour) {
+							print("Inside inner");
+							for(Piece piece: player.pieces) {
+								if(compareCoords(piece.getCoord(), coord)) {
+									print("Inside inner same");
+									break magnitudeLoop;
+									//break one of the loops (k loop)
+								}
+							}
+							for(Piece oppoPiece: opponent.pieces) {
+								if(compareCoords(oppoPiece.getCoord(), coord)) {
+									validMoves.add(coord);
+									print("Inside inner opponent");
+									break magnitudeLoop;
+								}
+							}
 							validMoves.add(coord);
 						}
 					}
 				}
 			}
 		}
+	}
+	
+	public boolean compareCoords(Coord coord1, Coord coord2) {
+		return (coord1.getX() == coord2.getX() && coord1.getY() == coord2.getY());
 	}
 	
 	public Coord validMoveCoord(int i, int j, int k) {

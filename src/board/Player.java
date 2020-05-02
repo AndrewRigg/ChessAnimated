@@ -7,7 +7,7 @@ import enums.*;
 public class Player {
 
 	PieceFactory factory = new PieceFactory();
-	ArrayList<Piece> pieces;
+	public ArrayList<Piece> pieces;
 	int takenPieces = 0;
 	Colour colour;
 	boolean turn, clockActive = true;
@@ -73,7 +73,7 @@ public class Player {
 		for(Type type : Type.values()){
 			for(int number = 1; number <= type.getQuantity(); number++) {
 				Piece piece = factory.assignPieces(type, colour, number);
-				piece.calculateValidMoves();
+				//piece.calculateValidMoves(this, );
 				pieces.add(piece);
 			}
 		}

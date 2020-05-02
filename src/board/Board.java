@@ -1,14 +1,11 @@
 package board;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
+import java.util.*;
 import chess_piece.*;
 import javafx.animation.*;
 import javafx.event.*;
 import javafx.scene.*;
-import javafx.scene.control.Label;
+import javafx.scene.control.*;
 import javafx.scene.input.*;
 import javafx.scene.paint.*;
 import javafx.scene.shape.*;

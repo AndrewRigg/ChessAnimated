@@ -23,12 +23,20 @@ public class Controller {
 		this.player2 = player2;
 		currentPlayer = player1;
 		opponent = player2;
+		initialiseMoves(player1, player2);
+		initialiseMoves(player2, player1);
 		player1.setTurn(true);
 		if(player1.clockActive) {
 			player1.getClock().setRunning(true);
 		}
 		validMoves = new ArrayList<>();
 		validMoveMarkers = new ArrayList<>();
+	}	
+	
+	public void initialiseMoves(Player player, Player opponent) {
+		for(Piece piece: player.pieces) {
+			piece.calculateValidMoves(player, opponent);
+		}
 	}
 	
 	public void print(String str) {
@@ -76,8 +84,8 @@ public class Controller {
 	 * This will generate green circles as a visual indication of valid moves
 	 * @param piece
 	 */
-	private void calculateValidMoves(Piece piece) {
-		piece.calculateValidMoves();
+	private void calculateValidMoves(Player player, Player opponent, Piece piece) {
+		piece.calculateValidMoves(currentPlayer, opponent);
 		validMoves.addAll(piece.getValidMoves());
 		for(Coord coord: validMoves) {
 			Circle circle =  new Circle(gridsize/3.5);
@@ -128,6 +136,7 @@ public class Controller {
 	public boolean compareCoords(Coord coord1, Coord coord2) {
 		return (coord1.getX() == coord2.getX() && coord1.getY() == coord2.getY());
 	}
+	
 	/**
 	 * Action to move piece to an empty square
 	 * @param coord
@@ -149,7 +158,7 @@ public class Controller {
 		print("Selected Piece " + piece.getName() + "...");
 		selectedPiece = piece;
 		pieceCurrentlySelected = true;	//Do this when the piece is clicked on
-		calculateValidMoves(piece);
+		calculateValidMoves(currentPlayer, opponent, piece);
 	}
 	
 	/**
@@ -281,7 +290,7 @@ public class Controller {
 		piece.setX((taken.getX()*gridsize) + (gridsize/4));
 		piece.setY((taken.getY()*gridsize) + (gridsize/4));
 		movePiece(piece.getCoord());
-		calculateValidMoves(piece);
+		calculateValidMoves(currentPlayer, opponent, piece);
 		opponent.addTakenPiece();
 	}
 
