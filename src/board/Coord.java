@@ -26,6 +26,7 @@ public class Coord {
 	}
 	
 	public boolean onGrid() {
-		return (x > 1 && x < 10 && y > 1 && y < 10);
+		return (x >= Utils.FIRST_ROW && x <= Utils.EIGHTH_ROW && 
+				y >= Utils.FIRST_COLUMN && y <= Utils.EIGHTH_COLUMN);
 	}
 }

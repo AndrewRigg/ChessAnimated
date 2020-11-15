@@ -13,17 +13,17 @@ import javafx.scene.text.*;
 
 public class Board{
 	
-	int rows = Literals.RANKS;
-	int cols = Literals.FILES;
-	int gridsize = Literals.GRIDSIZE;
-	int asciiCaps = Literals.ASCII_CAPS;
+	int rows = Utils.RANKS;
+	int cols = Utils.FILES;
+	int gridsize = Utils.GRIDSIZE;
+	int asciiCaps = Utils.ASCII_CAPS;
 	ArrayList<Circle> validMoveCircles;
 	public final Group group;
 	public boolean pieceSelected, piecesInitialised, pieceHighlighted;
 	public Piece currentPiece;
 	public Scene scene;
 	public Controller controller;
-
+	Rectangle selectedSquare = new Rectangle (0,0,gridsize, gridsize);
 
 	public Board(Controller controller) {
 		this.controller = controller;
@@ -36,15 +36,17 @@ public class Board{
 		piecesInitialised = true;
 		validMoveCircles = new ArrayList<Circle>();
 		pieceSelected = false;
+		group.getChildren().add(selectedSquare);
+		selectedSquare.setFill(Color.rgb(0, 0, 0, 0));
 	}
 
 	public void print(String str) {
-		Literals.print(str, Literals.BOARD_DEBUG);
+		Utils.print(str, Utils.BOARD_DEBUG);
 	}
 
 	private void drawSquares() {
-		for(int i = 0; i < Literals.FILES; i++) {
-			for(int j = 0; j < Literals.RANKS; j++) {
+		for(int i = 0; i < Utils.FILES; i++) {
+			for(int j = 0; j < Utils.RANKS; j++) {
 				Rectangle rectangle= new Rectangle(gridsize*2 + i * gridsize, gridsize*2 + j * gridsize, gridsize, gridsize);
 				rectangle.setFill((i + j) % 2 != 0 ? Color.grayRgb(180) : Color.WHITE);
 				group.getChildren().add(rectangle);
@@ -55,31 +57,31 @@ public class Board{
 			public void handle(MouseEvent event) {
 				int x = (int)(event.getSceneX()/gridsize);
 				int y = (int)(event.getSceneY()/gridsize);
-//				Coord coord = new Coord(x, y);
-				print("x " +x + " y " + y);
 				Coord clickedSquare = new Coord(x, y);
-					controller.determineClickType(clickedSquare);	
-					if(!controller.pieceCurrentlySelected || pieceHighlighted) {
-						clearValidMoves();//Use this line
-					}
+				selectedSquare.setX(gridsize*x);
+				selectedSquare.setY(gridsize*y);
+				selectedSquare.setFill(Color.rgb(0, 200, 200, 0.2));
+					controller.determineClickType(clickedSquare);						
 					if(controller.movingPiece) {
+						selectedSquare.setFill(Color.rgb(0, 0, 0, 0));
 						moveOnKeyPressed(controller.selectedPiece, controller.selectedPiece.getCoord().getX(), controller.selectedPiece.getCoord().getY());
 						controller.movingPiece = false;
 						pieceHighlighted = false;
-						//controller.selectedPiece.setCoord(new Coord(controller.selectedPiece.getCoord().getX(), controller.selectedPiece.getCoord().getY()));
 					}else if(controller.pieceCurrentlySelected && pieceHighlighted) {
 						//if same colour piece selected and piece already selected prior						
 						print("Selected when piece already highlighted");
 						pieceHighlighted = true;
-						drawCircles();
+						if(!controller.validMoves.isEmpty()) {
+							drawCircles();
+						}
 					}
 					else if(controller.pieceCurrentlySelected) {
 						//if no piece selected prior
-						print("Selected first time");
+						print("First Move");
 						drawCircles();	//	Need to draw these in the controller somehow - pass variables from controller
 						pieceHighlighted = true;
 					}else {
-						print("In the else condition...");
+						print("No valid move selected");
 						pieceHighlighted = false;
 					}
 			}
@@ -115,14 +117,12 @@ public class Board{
 	
 	private void moveOnKeyPressed(Piece piece, int x, int y)
     {
-        final TranslateTransition transition = new TranslateTransition(Literals.TRANSLATE_DURATION, piece);
-        print("Moving");
+        final TranslateTransition transition = new TranslateTransition(Utils.TRANSLATE_DURATION, piece);
         	transition.setFromX(piece.getTranslateX());
             transition.setFromY(piece.getTranslateY());
             transition.setToX(x*gridsize - piece.getX() + gridsize/4);
             transition.setToY(y*gridsize - piece.getY() + gridsize/4);
         	transition.playFromStart();
-        	print("Did this");
     }
 
 	private void drawLines() {
@@ -170,7 +170,7 @@ public class Board{
 	}
 	
 	public void addChessClock(Player player) {
-		Label clockLabel = player.getClock().getLabel();
+		Label clockLabel = player.getClock().getCountdown();
 		clockLabel.setTextAlignment(TextAlignment.CENTER);
 		clockLabel.setTranslateX(player.clockPosition);
 		clockLabel.setTranslateY(gridsize);

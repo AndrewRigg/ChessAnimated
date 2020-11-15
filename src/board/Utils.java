@@ -1,42 +1,49 @@
 package board;
 
+import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontPosture;
+import javafx.scene.text.FontWeight;
 import javafx.util.Duration;
 
 /**
  * @author andrew.rigg
  */
-public class Literals {
+public class Utils {
 
 	/**
-	 * 
+	 * The following values are the row and column numbers (which are all offset) 
+	 * and other useful numerical parameters
 	 */
 	public static final int GRIDSIZE = 60,
 							RANKS = 8,
-							FILES = 8,
+							FILES = RANKS,
 							ASCII_CAPS = 64,
 							ASCII_SMALLS = 96,
-							FIRST_ROW = 2,
-							SECOND_ROW = 3,
-							THIRD_ROW = 4,
-							FOURTH_ROW = 5,
-							FIFTH_ROM = 6,
-							SIXTH_ROW = 7,
-							SEVENTH_ROW = 8,
-							EIGHTH_ROW = 9,
-							BOARD_END = 11,
-							FIRST_COLUMN = 2,
-							SECOND_COLUMN = 3,
-							THIRD_COLUMN = 4,
-							FOURTH_COLUMN = 5,
-							FIFTH_COLUMN = 6,
-							SIXTH_COLUMN = 7,
-							SEVENTH_COLUMN = 8,
-							EIGHTH_COLUMN = 9,
 							BOARD_OFFSET_X = 2,
-							BOARD_OFFSET_Y = 2;
+							BOARD_OFFSET_Y = 2,
+							DEFAULT_MINUTES = 20,
+							DEFAULT_SECONDS = 0,
+							FIRST_ROW = BOARD_OFFSET_X,
+							SECOND_ROW = FIRST_ROW + 1,
+							THIRD_ROW = SECOND_ROW + 1,
+							FOURTH_ROW = THIRD_ROW + 1,
+							FIFTH_ROM = FOURTH_ROW + 1,
+							SIXTH_ROW = FIFTH_ROM + 1,
+							SEVENTH_ROW = SIXTH_ROW + 1,
+							EIGHTH_ROW = SEVENTH_ROW + 1,
+							FIRST_COLUMN = BOARD_OFFSET_Y,
+							SECOND_COLUMN = FIRST_COLUMN + 1,
+							THIRD_COLUMN = SECOND_COLUMN + 1,
+							FOURTH_COLUMN = THIRD_COLUMN + 1,
+							FIFTH_COLUMN = FOURTH_COLUMN + 1,
+							SIXTH_COLUMN = FIFTH_COLUMN + 1,
+							SEVENTH_COLUMN = SIXTH_COLUMN + 1,
+							EIGHTH_COLUMN = SEVENTH_COLUMN + 1,
+							BOARD_END = EIGHTH_COLUMN + BOARD_OFFSET_Y;
 	
 	/**
-	 * Below are a list of commonly used points systems which can be set for the type enums
+	 * Below are a list of commonly used points systems which can be set for the 'Type' enums
 	 */
 	public static final double [] 	STANDARD 	= {3, 3, 5, 9, 1000000, 1},
 									SARRATT 	= {3.1, 3.3, 5, 7.9, 2.2, 1},
@@ -62,16 +69,23 @@ public class Literals {
 	
 	public static final String EMPTY = "";
 	
-	public static final Duration TRANSLATE_DURATION = Duration.seconds(0.5); 
+	public static final Duration TRANSLATE_DURATION = Duration.millis(500); 
 	
 	public static final boolean BOARD_DEBUG 		= true,
 								PIECE_DEBUG 		= true,
 								PAWN_DEBUG  		= false,
 								KING_DEBUG  		= false,
-								PLAYER_DEBUG 		= true,
+								PLAYER_DEBUG 		= false,
 								COORD_DEBUG 		= false,
 								CLOCK_DEBUG			= false, 
 								CONTROLLER_DEBUG	= true;
+	
+	public static final Font clockFont = Font.font("Century Gothic", FontWeight.MEDIUM, FontPosture.REGULAR, 20);
+	public static final Color run = Color.web("#00CC00"),
+								wait = Color.web("#000000"),
+								losing = Color.web("#CC7700"),
+								lost = Color.web("FF0000");
+	
 	
 	public static final void print(String str, boolean bool) {
 		if(bool) {

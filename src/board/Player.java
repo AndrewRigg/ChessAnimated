@@ -8,12 +8,11 @@ public class Player {
 
 	PieceFactory factory = new PieceFactory();
 	public ArrayList<Piece> pieces;
-	int takenPieces = 0;
+	int capturedPieces = 0;
 	Colour colour;
 	boolean turn, clockActive = true;
-	private ChessClock clock;
-	private static int defaultMinutes = 20, defaultSeconds = 00;
-	int clockPosition, gridsize = Literals.GRIDSIZE;
+	private PlayerTimer clock;
+	int clockPosition, gridsize = Utils.GRIDSIZE;
 	public Coord [] takenZone = new Coord[18];
 	
 	/**
@@ -30,7 +29,7 @@ public class Player {
 	 * @param clockActive
 	 */
 	public Player(Colour colour, boolean clockActive) {
-		this(colour, defaultMinutes, defaultSeconds);
+		this(colour, Utils.DEFAULT_MINUTES, Utils.DEFAULT_SECONDS);
 		this.clockActive = clockActive;
 	}
 	
@@ -46,7 +45,7 @@ public class Player {
 		pieces = new ArrayList<Piece>();
 		setTakenZones();
 		if(clockActive) {
-			clock = new ChessClock(minutes, seconds, colour == Colour.WHITE);
+			clock = new PlayerTimer(minutes, seconds, colour == Colour.WHITE);
 		}
 		initialise();
 	}
@@ -62,7 +61,7 @@ public class Player {
 	}
 
 	public static final void print(String str) {
-		Literals.print(str, Literals.PLAYER_DEBUG);
+		Utils.print(str, Utils.PLAYER_DEBUG);
 	}
 	
 	private void setClockPosition() {
@@ -73,7 +72,7 @@ public class Player {
 		for(Type type : Type.values()){
 			for(int number = 1; number <= type.getQuantity(); number++) {
 				Piece piece = factory.assignPieces(type, colour, number);
-				//piece.calculateValidMoves(this, );
+//				piece.calculateValidMoves(this, );
 				pieces.add(piece);
 			}
 		}
@@ -87,11 +86,11 @@ public class Player {
 		this.turn = turn;
 	}
 	
-	public ChessClock getClock() {
+	public PlayerTimer getClock() {
 		return clock;
 	}
 	
-	public void setClock(ChessClock clock) {
+	public void setClock(PlayerTimer clock) {
 		this.clock = clock;
 	}
 	
@@ -100,15 +99,14 @@ public class Player {
 	}
 
 	public void addTakenPiece() {
-		takenPieces++;
+		capturedPieces++;
 	}
 	
 	public int getTakenPieces() {
-		return takenPieces;
+		return capturedPieces;
 	}
 
 	public Coord getTakenZone(int takenPieces) {
-		// TODO Auto-generated method stub
 		return takenZone[takenPieces];
 	}
 }

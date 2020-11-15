@@ -10,7 +10,7 @@ import javafx.scene.shape.*;
 
 public class Piece extends Rectangle{
 
-	static int gridsize = Literals.GRIDSIZE;
+	static int gridsize = Utils.GRIDSIZE;
 	String name, notation;
 	Image image;
 	Colour colour;
@@ -18,7 +18,7 @@ public class Piece extends Rectangle{
 	Type type;
 	int number;
 	private int magnitudeMove, maximumMove;
-	public boolean thisPieceSelected, isWhite, thisPieceCondition;
+	public boolean thisPieceSelected, isWhite, thisPieceCondition, firstMove = true;
 	private ArrayList<Coord> validMoves;
 	Coord coord;
 	PieceActions actions;
@@ -40,7 +40,6 @@ public class Piece extends Rectangle{
 		this.setValidMoves(new ArrayList<Coord>());
 		this.setFill(new ImagePattern(image));
 		setCoord(getInitialCoords(type, number));
-		//calculateValidMoves();		//This is not setting right as it's not being overridden yet.  Need to do this after pieces created
 		actions = new PieceActions(this);
 	}	
 
@@ -49,12 +48,12 @@ public class Piece extends Rectangle{
 	 * @param str
 	 */
 	public void print(String str) {
-		Literals.print(str, Literals.PIECE_DEBUG);
+		Utils.print(str, Utils.PIECE_DEBUG);
 	}
 	
 	public void getInitialCoords() {
-		this.setY((isWhite ? Literals.EIGHTH_ROW : Literals.FIRST_ROW) * gridsize + gridsize/4);
-		this.setX((number == 1 ? type.getPositionX()+1 : Literals.BOARD_END - type.getPositionX()-1)*gridsize + gridsize/4);
+		this.setY((isWhite ? Utils.EIGHTH_ROW : Utils.FIRST_ROW) * gridsize + gridsize/4);
+		this.setX((number == 1 ? type.getPositionX()+1 : Utils.BOARD_END - type.getPositionX()-1)*gridsize + gridsize/4);
 	}
 	
 	public Coord getInitialCoords(Type type, int number) {
@@ -79,7 +78,6 @@ public class Piece extends Rectangle{
 	 */
 	public void calculateValidMoves(Player player, Player opponent) {
 		validMoves.clear();
-		print(""+ this.getClass() + " Max: " + getMaximumMove() + " Mag: " + getMagnitudeMove());
 		for (int i = getMagnitudeMove()*(-1); i <= getMagnitudeMove(); i++) {
 			for (int j = getMagnitudeMove()*(-1); j <= getMagnitudeMove(); j++) {
 				magnitudeLoop:
@@ -89,18 +87,14 @@ public class Piece extends Rectangle{
 						if (coord.onGrid() && !getValidMoves().contains(coord)) {
 							//Need something like this to block pieces
 							//if (board.getSquare(coord).occupyingPiece.colour != this.colour) {
-							print("Inside inner");
 							for(Piece piece: player.pieces) {
 								if(compareCoords(piece.getCoord(), coord)) {
-									print("Inside inner same");
 									break magnitudeLoop;
-									//break one of the loops (k loop)
 								}
 							}
 							for(Piece oppoPiece: opponent.pieces) {
 								if(compareCoords(oppoPiece.getCoord(), coord)) {
 									validMoves.add(coord);
-									print("Inside inner opponent");
 									break magnitudeLoop;
 								}
 							}
@@ -158,6 +152,5 @@ public class Piece extends Rectangle{
 
 	public void setCoord(Coord coord) {
 		this.coord = coord;
-//		calculateValidMoves();
 	}
 }
