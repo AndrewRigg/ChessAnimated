@@ -9,10 +9,10 @@ import javafx.scene.shape.Circle;
 public class Controller {
 	
 	Player player1, player2, currentPlayer, opponent;
-	static ArrayList<Circle> validMoveMarkers;
-	static ArrayList<Coord> validMoves;
+	ArrayList<Circle> validMoveMarkers;
+	ArrayList<Coord> validMoves;
 	Piece selectedPiece, clickedPiece;
-	boolean pieceCurrentlySelected, movingPiece, pieceHighlighted, startingMove = true;
+	boolean pieceCurrentlySelected, movingPiece, taking, pieceHighlighted, startingMove = true;
 	int gridsize = Utils.GRIDSIZE;
 	public ArrayList<Coord> whiteTakenPieces, blackTakenPieces;
 	
@@ -40,7 +40,7 @@ public class Controller {
 	}
 	
 	private void changeTurns() {
-		print("Changing Turns\n________________________________________");
+		print("Changing Turns\n__________Current Turn: " + (player1.isTurn() ? "BLACK" : "WHITE") + "__________");
 		//Here record the move played
 		//recordingMove();
 		pieceCurrentlySelected = false;
@@ -156,8 +156,19 @@ public class Controller {
 	 * @param coord
 	 */
 	public void movePiece(Coord coord) {
+		defaultSizes();
 		print("Moving Piece");
 		movingPiece = true;
+		selectedPiece.setCoord(new Coord(coord.getX(), coord.getY()));
+	}
+	
+	/**
+	 * Action to move piece to an empty square
+	 * @param coord
+	 */
+	public void takingPiece(Coord coord) {
+		print("Taking Piece");
+		taking = true;
 		selectedPiece.setCoord(new Coord(coord.getX(), coord.getY()));
 	}
 	
@@ -166,6 +177,7 @@ public class Controller {
 	 * @param piece
 	 */
 	public void selectPiece(Piece piece) {
+		defaultSizes();
 		print("Selected Piece " + piece.getName());
 		selectedPiece = piece;
 		pieceCurrentlySelected = true;	//Do this when the piece is clicked on
@@ -274,10 +286,11 @@ public class Controller {
 	 * @param piece
 	 */
 	public void takePiece(Piece piece) {
+		defaultSizes();
 		print("Taking Piece");
 		Coord current = piece.getCoord();
 		sendTakenPieceOffBoard(piece);
-		movePiece(current);
+		takingPiece(current);
 		changeTurns();
 	}
 	
@@ -288,13 +301,7 @@ public class Controller {
 	private void sendTakenPieceOffBoard(Piece piece) {
 		print("Sending Piece Off the Board");
 		Coord taken = opponent.getTakenZone(opponent.getTakenPieces());
-		print("Taken Coord: (" + taken.getX()  + ", " + taken.getY() + ")");
-		piece.setCoord(taken);
-		piece.setX((taken.getX()*gridsize) + (gridsize/4));
-		piece.setY((taken.getY()*gridsize) + (gridsize/4));
-		movePiece(piece.getCoord());
-		calculateValidMoves(currentPlayer, opponent, piece);
-		opponent.addTakenPiece();
+		//opponent.addTakenPiece();
 	}
 
 	/**
@@ -311,14 +318,25 @@ public class Controller {
 	 * This is for when the click leaves the current state unchanged
 	 */
 	public void doNothing() {
+		defaultSizes();
 		print("Doing Nothing");
 		return;
+	}
+	
+	public void defaultSizes() {
+		if(pieceCurrentlySelected) {
+			selectedPiece.setWidth(Utils.DEFAULT_SIZE);
+			selectedPiece.setHeight(Utils.DEFAULT_SIZE);
+			selectedPiece.setX((int)(selectedPiece.getX()/gridsize)*gridsize + gridsize/4);
+			selectedPiece.setY((int)(selectedPiece.getY()/gridsize)*gridsize + gridsize/4);
+		}
 	}
 	
 	/**
 	 * Set selectedPiece to false and clear the valid squares
 	 */
 	public void unselectPiece() {
+		defaultSizes();
 		print("Unselecting Piece");
 		pieceCurrentlySelected = false;
 		selectedPiece = null;

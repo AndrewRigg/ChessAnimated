@@ -12,7 +12,7 @@ public class Piece extends Rectangle{
 
 	static int gridsize = Utils.GRIDSIZE;
 	String name, notation;
-	Image image;
+	public Image image;
 	Colour colour;
 	State state;
 	Type type;

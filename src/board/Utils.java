@@ -40,7 +40,9 @@ public class Utils {
 							SIXTH_COLUMN = FIFTH_COLUMN + 1,
 							SEVENTH_COLUMN = SIXTH_COLUMN + 1,
 							EIGHTH_COLUMN = SEVENTH_COLUMN + 1,
-							BOARD_END = EIGHTH_COLUMN + BOARD_OFFSET_Y;
+							BOARD_END = EIGHTH_COLUMN + BOARD_OFFSET_Y,
+							DEFAULT_SIZE = 30,
+							HIGHLIGHTED_SIZE = 40;
 	
 	/**
 	 * Below are a list of commonly used points systems which can be set for the 'Type' enums
@@ -75,7 +77,7 @@ public class Utils {
 								PIECE_DEBUG 		= true,
 								PAWN_DEBUG  		= false,
 								KING_DEBUG  		= false,
-								PLAYER_DEBUG 		= false,
+								PLAYER_DEBUG 		= true,
 								COORD_DEBUG 		= false,
 								CLOCK_DEBUG			= false, 
 								CONTROLLER_DEBUG	= true;

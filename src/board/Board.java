@@ -61,25 +61,35 @@ public class Board{
 				selectedSquare.setX(gridsize*x);
 				selectedSquare.setY(gridsize*y);
 				selectedSquare.setFill(Color.rgb(0, 200, 200, 0.2));
-					controller.determineClickType(clickedSquare);						
+					controller.determineClickType(clickedSquare);	
+					if(controller.pieceCurrentlySelected) {
+						currentPiece = controller.selectedPiece;
+						currentPiece.toFront();
+						currentPiece.setWidth(Utils.HIGHLIGHTED_SIZE);
+						currentPiece.setHeight(Utils.HIGHLIGHTED_SIZE);
+						currentPiece.setX(currentPiece.getX() - 5);
+						currentPiece.setY(currentPiece.getY() - 5);
+					}
 					if(controller.movingPiece) {
 						selectedSquare.setFill(Color.rgb(0, 0, 0, 0));
 						moveOnKeyPressed(controller.selectedPiece, controller.selectedPiece.getCoord().getX(), controller.selectedPiece.getCoord().getY());
 						controller.movingPiece = false;
 						pieceHighlighted = false;
-					}else if(controller.pieceCurrentlySelected && pieceHighlighted) {
+					}else if(controller.taking) {
+						selectedSquare.setFill(Color.rgb(0, 0, 0, 0));
+						moveOnKeyPressed(controller.clickedPiece, controller.opponent.getTakenZone(controller.opponent.getTakenPieces()).getX(), controller.opponent.getTakenZone(controller.opponent.getTakenPieces()).getY());
+						moveOnKeyPressed(controller.selectedPiece, controller.selectedPiece.getCoord().getX(), controller.selectedPiece.getCoord().getY());
+						controller.taking = false;
+						controller.opponent.addTakenPiece();
+						pieceHighlighted = false;
+					}
+					else if(controller.pieceCurrentlySelected) {
 						//if same colour piece selected and piece already selected prior						
 						print("Selected when piece already highlighted");
 						pieceHighlighted = true;
 						if(!controller.validMoves.isEmpty()) {
 							drawCircles();
 						}
-					}
-					else if(controller.pieceCurrentlySelected) {
-						//if no piece selected prior
-						print("First Move");
-						drawCircles();	//	Need to draw these in the controller somehow - pass variables from controller
-						pieceHighlighted = true;
 					}else {
 						print("No valid move selected");
 						pieceHighlighted = false;
