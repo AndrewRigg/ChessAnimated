@@ -91,7 +91,7 @@ public class Controller {
 		validMoves.addAll(piece.getValidMoves());
 		for(Coord coord: validMoves) {
 			Circle circle =  new Circle(gridsize/3.5);
-			circle.setFill(Color.GREENYELLOW);
+			circle.setFill(Color.rgb(0, 255, 0, 0.5));
 			circle.setCenterX(coord.getX() * gridsize + gridsize/2);
 			circle.setCenterY(coord.getY() * gridsize + gridsize/2);
 			validMoveMarkers.add(circle);
