@@ -42,6 +42,36 @@ public class Piece extends Rectangle{
 		setCoord(getInitialCoords(type, number));
 		actions = new PieceActions(this);
 	}	
+	
+	public Piece(Type type, Colour colour, int number, Coord coord) {
+		super(gridsize/2, gridsize/2);
+		this.type = type; 
+		this.colour = colour; 
+		this.number = number; 
+		this.isWhite = (colour == Colour.WHITE);
+		this.state = State.NORMAL; 
+		this.notation = type.toString().substring(0, 1); 
+		this.name = colour.toString().toLowerCase() + "_" + type.toString().toLowerCase();
+		this.image = new Image("res/"+name+".png");
+		this.thisPieceSelected = false;
+		this.coord = coord;
+		this.setX(coord.getX()* gridsize + gridsize/4);
+		this.setY(coord.getY()* gridsize + gridsize/4);
+		this.setMagnitudeMove(1);
+		this.setMaximumMove(7);
+		this.setValidMoves(new ArrayList<Coord>());
+		this.setFill(new ImagePattern(image));
+		actions = new PieceActions(this);
+		print(name + number);
+	}	
+
+	public Type getType() {
+		return type;
+	}
+
+	public void setType(Type type) {
+		this.type = type;
+	}
 
 	/**
 	 * Debugging function, set PIECE_DEBUG to true to turn on
@@ -104,6 +134,11 @@ public class Piece extends Rectangle{
 				}
 			}
 		}
+	}
+	
+	public void setPositionBasedOnCoord(Coord coord) {
+		this.setX(coord.getX()* gridsize + gridsize/4);
+		this.setY(coord.getX()* gridsize + gridsize/4);
 	}
 	
 	public boolean compareCoords(Coord coord1, Coord coord2) {

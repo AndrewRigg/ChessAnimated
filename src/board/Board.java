@@ -2,6 +2,7 @@ package board;
 
 import java.util.*;
 import chess_piece.*;
+import enums.Type;
 import javafx.animation.*;
 import javafx.event.*;
 import javafx.scene.*;
@@ -72,12 +73,15 @@ public class Board{
 					}
 					if(controller.movingPiece) {
 						selectedSquare.setFill(Color.rgb(0, 0, 0, 0));
+						checkForPromotion();
 						moveOnKeyPressed(controller.selectedPiece, controller.selectedPiece.getCoord().getX(), controller.selectedPiece.getCoord().getY());
 						controller.movingPiece = false;
 						pieceHighlighted = false;
 					}else if(controller.taking) {
 						selectedSquare.setFill(Color.rgb(0, 0, 0, 0));
-						moveOnKeyPressed(controller.clickedPiece, controller.opponent.getTakenZone(controller.opponent.getTakenPieces()).getX(), controller.opponent.getTakenZone(controller.opponent.getTakenPieces()).getY());
+						checkForPromotion();
+						controller.clickedPiece.setCoord(new Coord(controller.opponent.getTakenZone(controller.opponent.getTakenPieces()).getX(), controller.opponent.getTakenZone(controller.opponent.getTakenPieces()).getY()));
+						moveOnKeyPressed(controller.clickedPiece, controller.clickedPiece.getCoord().getX(), controller.clickedPiece.getCoord().getY());
 						moveOnKeyPressed(controller.selectedPiece, controller.selectedPiece.getCoord().getX(), controller.selectedPiece.getCoord().getY());
 						controller.taking = false;
 						controller.opponent.addTakenPiece();
@@ -96,6 +100,12 @@ public class Board{
 					}
 			}
 		});
+	}
+	
+	public void checkForPromotion(){
+		if(controller.checkForPromotion()) {
+			group.getChildren().add(controller.selectedPiece);
+		}
 	}
 	
 	/**

@@ -1,20 +1,44 @@
 package board;
 
 import java.util.ArrayList;
+import java.util.Optional;
 
+import chess_piece.Knight;
 import chess_piece.Piece;
+import chess_piece.Queen;
+import chess_piece.Rook;
+import enums.Colour;
+import enums.Type;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.Label;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 
 public class Controller {
 	
+	Stage stage = new Stage();
 	Player player1, player2, currentPlayer, opponent;
 	ArrayList<Circle> validMoveMarkers;
 	ArrayList<Coord> validMoves;
 	Piece selectedPiece, clickedPiece;
-	boolean pieceCurrentlySelected, movingPiece, taking, pieceHighlighted, startingMove = true;
+	static boolean pieceCurrentlySelected;
+	boolean movingPiece, taking, pieceHighlighted, startingMove = true;
 	int gridsize = Utils.GRIDSIZE;
 	public ArrayList<Coord> whiteTakenPieces, blackTakenPieces;
+	Alert promotion;
+	int [] promotionNumber = new int [6];
+	ButtonType buttonTypeOne;
+	ButtonType buttonTypeTwo;
+	ButtonType buttonTypeThree;
+	Button buttonOne, buttonTwo, buttonThree;
 	
 	public Controller(Player player1, Player player2) {
 		this.player1 = player1;
@@ -27,7 +51,45 @@ public class Controller {
 		player1.setTurn(true);
 		validMoves = new ArrayList<>();
 		validMoveMarkers = new ArrayList<>();
+		promotion = setAlert();
 	}	
+	
+	private Alert setAlert() {
+		promotion = new Alert(AlertType.NONE);
+		promotion.setTitle("Pawn Promotion");
+		promotion.getDialogPane().setMaxSize(2,2);
+		Label label = new Label("Choose which piece to promote your pawn to:");
+		ImageView im1 = new ImageView(new Image("res/white_knight.png"));
+		ImageView im2 = new ImageView(new Image("res/white_rook.png"));
+		ImageView im3 = new ImageView(new Image("res/white_queen.png"));
+		buttonOne = new Button();
+		buttonTwo = new Button();
+		buttonThree = new Button();
+		buttonOne.setGraphic(im1);
+		buttonTwo.setGraphic(im2);
+		buttonThree.setGraphic(im3);
+		buttonOne.setScaleX(0.5);
+		buttonOne.setScaleY(0.5);
+		buttonTwo.setScaleX(0.5);
+		buttonTwo.setScaleY(0.5);
+		buttonThree.setScaleX(0.5);
+		buttonThree.setScaleY(0.5);
+		
+		//buttonOne.setOnMouseClicked(value);
+		GridPane grid = new GridPane();
+		grid.add(label, 0, 0, 3, 1);
+		grid.add(buttonOne, 0, 1);
+		grid.add(buttonTwo, 1, 1);
+		grid.add(buttonThree, 2, 1);
+		
+		Stage stage = (Stage) promotion.getDialogPane().getScene().getWindow();
+		stage.getIcons().add(new Image("res/white_pawn.png"));
+		
+		promotion.setGraphic(grid);
+		//promotion.getButtonTypes().setAll(buttonTypeOne, buttonTypeTwo, buttonTypeThree);
+		
+		return promotion;
+	}
 	
 	public void initialiseMoves(Player player, Player opponent) {
 		for(Piece piece: player.pieces) {
@@ -90,21 +152,14 @@ public class Controller {
 		piece.calculateValidMoves(currentPlayer, opponent);
 		validMoves.addAll(piece.getValidMoves());
 		for(Coord coord: validMoves) {
-			Circle circle =  new Circle(gridsize/3.5);
+			Circle circle =  new Circle(gridsize/3);
 			circle.setFill(Color.rgb(0, 255, 0, 0.5));
 			circle.setCenterX(coord.getX() * gridsize + gridsize/2);
 			circle.setCenterY(coord.getY() * gridsize + gridsize/2);
 			validMoveMarkers.add(circle);
 		}
 	}
-	
-	private void removeValidMoves() {
-		for(Circle circle: validMoveMarkers) {
-			circle.setFill(Color.color(0, 0, 0, 0));
-		}
-		validMoveMarkers.clear();
-	}
-	
+		
 	/**
 	 * This is the method to determine which type of click has occurred
 	 * and what to do with it
@@ -131,6 +186,13 @@ public class Controller {
 		}
 	}
 
+	private void removeValidMoves() {
+		for(Circle circle: validMoveMarkers) {
+			circle.setFill(Color.color(0, 0, 0, 0));
+		}
+		validMoveMarkers.clear();
+	}
+	
 	/**
 	 * Determine if a piece has been clicked on
 	 * @param player
@@ -287,21 +349,10 @@ public class Controller {
 	 */
 	public void takePiece(Piece piece) {
 		defaultSizes();
-		print("Taking Piece");
 		Coord current = piece.getCoord();
-		sendTakenPieceOffBoard(piece);
+		piece.setValidMoves(null);
 		takingPiece(current);
 		changeTurns();
-	}
-	
-	/**
-	 * Figure out where in the graveyard of that colour to put the taken piece
-	 * @param piece
-	 */
-	private void sendTakenPieceOffBoard(Piece piece) {
-		print("Sending Piece Off the Board");
-		Coord taken = opponent.getTakenZone(opponent.getTakenPieces());
-		//opponent.addTakenPiece();
 	}
 
 	/**
@@ -318,7 +369,7 @@ public class Controller {
 	 * This is for when the click leaves the current state unchanged
 	 */
 	public void doNothing() {
-		defaultSizes();
+		unselectPiece();
 		print("Doing Nothing");
 		return;
 	}
@@ -341,5 +392,34 @@ public class Controller {
 		pieceCurrentlySelected = false;
 		selectedPiece = null;
 		removeValidMoves();
+	}
+	
+	public boolean checkForPromotion() {
+		if(selectedPiece.getType()==Type.PAWN) {
+			if(selectedPiece.getCoord().getY() == (selectedPiece.isWhite ? Utils.FIRST_ROW : Utils.EIGHTH_ROW)) {
+				getPawnPromotion();
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	public void getPawnPromotion(){
+		Piece promoted = null;
+		promotion.showAndWait();
+//		Optional<ButtonType> result = promotion.showAndWait();
+//		if(result.get() == buttonTypeOne) {
+//			promoted = new Knight(Type.KNIGHT, selectedPiece.isWhite ? Colour.WHITE : Colour.BLACK, promotionNumber[selectedPiece.isWhite ? 0 : 1]++, clickedPiece.getCoord());
+//		}else if(result.get() == buttonTypeTwo) {
+//			promoted = new Rook(Type.ROOK, selectedPiece.isWhite ? Colour.WHITE : Colour.BLACK, promotionNumber[selectedPiece.isWhite ? 0 : 1]++, clickedPiece.getCoord());
+//		} else if(result.get() == buttonTypeThree) {
+//			promoted = new Queen(Type.QUEEN, selectedPiece.isWhite ? Colour.WHITE : Colour.BLACK, promotionNumber[selectedPiece.isWhite ? 0 : 1]++, clickedPiece.getCoord());
+//		}
+		selectedPiece.setCoord(currentPlayer.getTakenZone(currentPlayer.getTakenPieces()));
+		selectedPiece.setPositionBasedOnCoord(selectedPiece.getCoord());
+		currentPlayer.addTakenPiece();
+		selectedPiece.setValidMoves(null);
+		currentPlayer.pieces.add(promoted);
+		selectedPiece = promoted;
 	}
 }

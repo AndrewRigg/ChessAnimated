@@ -1,11 +1,16 @@
 package chess_piece;
 
+import board.Coord;
 import enums.*;
 
 public class Rook extends Piece {
 
 	public Rook(Type type, Colour colour, int number) {
 		super(type, colour, number);
+	}
+	
+	public Rook(Type type, Colour colour, int number, Coord coord) {
+		super(type, colour, number, coord);
 	}
 	
 	@Override

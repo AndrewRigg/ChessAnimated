@@ -17,7 +17,7 @@ public class Pawn extends Piece{
 		this.setY((isWhite ? Utils.SEVENTH_ROW : Utils.SECOND_ROW) * gridsize + gridsize/4);
 		this.setX((type.getPositionX()+number)*gridsize + gridsize/4);
 	}
-		
+	
 	//TODO: this needs careful consideration
 //	@Override
 //	public boolean movementCondition(int xDirection, int yDirection, int magnitude) {
