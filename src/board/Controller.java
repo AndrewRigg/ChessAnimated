@@ -9,6 +9,8 @@ import chess_piece.Queen;
 import chess_piece.Rook;
 import enums.Colour;
 import enums.Type;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
@@ -19,8 +21,8 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
-import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 
 public class Controller {
 	
@@ -33,12 +35,16 @@ public class Controller {
 	boolean movingPiece, taking, pieceHighlighted, startingMove = true;
 	int gridsize = Utils.GRIDSIZE;
 	public ArrayList<Coord> whiteTakenPieces, blackTakenPieces;
-	Alert promotion;
+	
 	int [] promotionNumber = new int [6];
 	ButtonType buttonTypeOne;
 	ButtonType buttonTypeTwo;
 	ButtonType buttonTypeThree;
 	Button buttonOne, buttonTwo, buttonThree;
+	boolean promotionActive = false;
+	Optional<ButtonType> result;
+	Piece promoted;
+	String pawn = "pawn.png", knight = "knight.png", rook = "rook.png", queen = "queen.png";
 	
 	public Controller(Player player1, Player player2) {
 		this.player1 = player1;
@@ -51,20 +57,52 @@ public class Controller {
 		player1.setTurn(true);
 		validMoves = new ArrayList<>();
 		validMoveMarkers = new ArrayList<>();
-		promotion = setAlert();
 	}	
 	
-	private Alert setAlert() {
-		promotion = new Alert(AlertType.NONE);
+	private Alert setAlert(String colour) {
+		Alert promotion = new Alert(AlertType.NONE);
 		promotion.setTitle("Pawn Promotion");
 		promotion.getDialogPane().setMaxSize(2,2);
 		Label label = new Label("Choose which piece to promote your pawn to:");
-		ImageView im1 = new ImageView(new Image("res/white_knight.png"));
-		ImageView im2 = new ImageView(new Image("res/white_rook.png"));
-		ImageView im3 = new ImageView(new Image("res/white_queen.png"));
+		ImageView im1 = new ImageView(new Image(colour + knight));
+		ImageView im2 = new ImageView(new Image(colour + rook));
+		ImageView im3 = new ImageView(new Image(colour + queen));
 		buttonOne = new Button();
+		buttonOne.setOnAction(new EventHandler<ActionEvent>() {
+	        @Override
+	        public void handle(ActionEvent event) {
+	            System.out.println("Promoted to Knight");
+	            promoted = new Knight(Type.KNIGHT, selectedPiece.isWhite ? Colour.WHITE : Colour.BLACK, 
+						promotionNumber[selectedPiece.isWhite ? 0 : 1]++, clickedPiece.getCoord());
+	            promotePawn(promoted);
+	            promotion.getDialogPane().getButtonTypes().addAll(ButtonType.CANCEL);
+	            promotion.close();
+	        }
+	    });
 		buttonTwo = new Button();
+		buttonTwo.setOnAction(new EventHandler<ActionEvent>() {
+	        @Override
+	        public void handle(ActionEvent event) {
+	            System.out.println("Promoted to Rook");
+	            promoted = new Rook(Type.ROOK, selectedPiece.isWhite ? Colour.WHITE : Colour.BLACK, 
+						promotionNumber[selectedPiece.isWhite ? 0 : 1]++, clickedPiece.getCoord());
+	            promotePawn(promoted);
+	            promotion.getDialogPane().getButtonTypes().addAll(ButtonType.CANCEL);
+	            promotion.close();
+	        }
+	    });
 		buttonThree = new Button();
+		buttonThree.setOnAction(new EventHandler<ActionEvent>() {
+	        @Override
+	        public void handle(ActionEvent event) {
+	            System.out.println("Promoted to Queen");
+	            promoted = new Queen(Type.QUEEN, selectedPiece.isWhite ? Colour.WHITE : Colour.BLACK, 
+						promotionNumber[selectedPiece.isWhite ? 0 : 1]++, clickedPiece.getCoord());
+	            promotePawn(promoted);
+	            promotion.getDialogPane().getButtonTypes().addAll(ButtonType.CANCEL);
+	            promotion.close();
+	        }
+	    });
 		buttonOne.setGraphic(im1);
 		buttonTwo.setGraphic(im2);
 		buttonThree.setGraphic(im3);
@@ -81,14 +119,20 @@ public class Controller {
 		grid.add(buttonOne, 0, 1);
 		grid.add(buttonTwo, 1, 1);
 		grid.add(buttonThree, 2, 1);
-		
 		Stage stage = (Stage) promotion.getDialogPane().getScene().getWindow();
-		stage.getIcons().add(new Image("res/white_pawn.png"));
-		
+		stage.getIcons().add(new Image(colour + pawn));
+		//stage.initStyle(StageStyle.UNDECORATED);
 		promotion.setGraphic(grid);
-		//promotion.getButtonTypes().setAll(buttonTypeOne, buttonTypeTwo, buttonTypeThree);
-		
 		return promotion;
+	}
+	
+	public void promotePawn(Piece promoted) {
+		selectedPiece.setCoord(currentPlayer.getTakenZone(currentPlayer.getTakenPieces()));
+  		selectedPiece.setPositionBasedOnCoord(selectedPiece.getCoord());
+  		currentPlayer.addTakenPiece();
+  		selectedPiece.setValidMoves(null);
+  		currentPlayer.pieces.add(promoted);
+  		selectedPiece = promoted;
 	}
 	
 	public void initialiseMoves(Player player, Player opponent) {
@@ -405,21 +449,8 @@ public class Controller {
 	}
 	
 	public void getPawnPromotion(){
-		Piece promoted = null;
+		Alert promotion = setAlert(currentPlayer.colour == Colour.WHITE ? "res/black_" : "res/white_");
+		promotionActive = true;
 		promotion.showAndWait();
-//		Optional<ButtonType> result = promotion.showAndWait();
-//		if(result.get() == buttonTypeOne) {
-//			promoted = new Knight(Type.KNIGHT, selectedPiece.isWhite ? Colour.WHITE : Colour.BLACK, promotionNumber[selectedPiece.isWhite ? 0 : 1]++, clickedPiece.getCoord());
-//		}else if(result.get() == buttonTypeTwo) {
-//			promoted = new Rook(Type.ROOK, selectedPiece.isWhite ? Colour.WHITE : Colour.BLACK, promotionNumber[selectedPiece.isWhite ? 0 : 1]++, clickedPiece.getCoord());
-//		} else if(result.get() == buttonTypeThree) {
-//			promoted = new Queen(Type.QUEEN, selectedPiece.isWhite ? Colour.WHITE : Colour.BLACK, promotionNumber[selectedPiece.isWhite ? 0 : 1]++, clickedPiece.getCoord());
-//		}
-		selectedPiece.setCoord(currentPlayer.getTakenZone(currentPlayer.getTakenPieces()));
-		selectedPiece.setPositionBasedOnCoord(selectedPiece.getCoord());
-		currentPlayer.addTakenPiece();
-		selectedPiece.setValidMoves(null);
-		currentPlayer.pieces.add(promoted);
-		selectedPiece = promoted;
 	}
 }
