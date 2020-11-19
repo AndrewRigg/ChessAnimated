@@ -65,14 +65,6 @@ public class Piece extends Rectangle{
 		print(name + number);
 	}	
 
-	public Type getType() {
-		return type;
-	}
-
-	public void setType(Type type) {
-		this.type = type;
-	}
-
 	/**
 	 * Debugging function, set PIECE_DEBUG to true to turn on
 	 * @param str
@@ -187,5 +179,22 @@ public class Piece extends Rectangle{
 
 	public void setCoord(Coord coord) {
 		this.coord = coord;
+	}
+	
+	public Type getType() {
+		return type;
+	}
+
+	public void setType(Type type) {
+		this.type = type;
+	}
+
+	
+	public State getState() {
+		return state;
+	}
+
+	public void setState(State state) {
+		this.state = state;
 	}
 }

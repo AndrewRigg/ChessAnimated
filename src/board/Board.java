@@ -2,7 +2,6 @@ package board;
 
 import java.util.*;
 import chess_piece.*;
-import enums.Type;
 import javafx.animation.*;
 import javafx.event.*;
 import javafx.scene.*;
@@ -24,7 +23,8 @@ public class Board{
 	public Piece currentPiece;
 	public Scene scene;
 	public Controller controller;
-	Rectangle selectedSquare = new Rectangle (0,0,gridsize, gridsize);
+	Rectangle selectedSquare = new Rectangle (0,0,gridsize-2, gridsize-2);
+	Rectangle selectedSquare2 = new Rectangle (0,0,gridsize-2, gridsize-2);
 
 	public Board(Controller controller) {
 		this.controller = controller;
@@ -38,7 +38,9 @@ public class Board{
 		validMoveCircles = new ArrayList<Circle>();
 		pieceSelected = false;
 		group.getChildren().add(selectedSquare);
+		group.getChildren().add(selectedSquare2);
 		selectedSquare.setFill(Color.rgb(0, 0, 0, 0));
+		selectedSquare2.setFill(Color.rgb(0, 0, 0, 0));
 	}
 
 	public void print(String str) {
@@ -59,13 +61,18 @@ public class Board{
 				int x = (int)(event.getSceneX()/gridsize);
 				int y = (int)(event.getSceneY()/gridsize);
 				Coord clickedSquare = new Coord(x, y);
-				selectedSquare.setX(gridsize*x);
-				selectedSquare.setY(gridsize*y);
-				selectedSquare.setFill(Color.rgb(0, 200, 200, 0.2));
+				if(clickedSquare.onGrid()) {
+					selectedSquare.setX(gridsize*x+1);
+					selectedSquare.setY(gridsize*y+1);
+					selectedSquare2.setX(gridsize*x+1);
+					selectedSquare2.setY(gridsize*y+1);
+					selectedSquare.setFill(Color.rgb(255, 255, 255, 1));
+					selectedSquare2.setFill(Color.rgb(0, 200, 100, 0.3));
+				}
 					controller.determineClickType(clickedSquare);	
 					if(controller.pieceCurrentlySelected) {
 						currentPiece = controller.selectedPiece;
-						currentPiece.toFront();
+						//currentPiece.toFront();
 						currentPiece.setWidth(Utils.HIGHLIGHTED_SIZE);
 						currentPiece.setHeight(Utils.HIGHLIGHTED_SIZE);
 						currentPiece.setX(currentPiece.getX() - 5);
@@ -73,12 +80,14 @@ public class Board{
 					}
 					if(controller.movingPiece) {
 						selectedSquare.setFill(Color.rgb(0, 0, 0, 0));
+						selectedSquare2.setFill(Color.rgb(0, 0, 0, 0));
 						checkForPromotion();
 						moveOnKeyPressed(controller.selectedPiece, controller.selectedPiece.getCoord().getX(), controller.selectedPiece.getCoord().getY());
 						controller.movingPiece = false;
 						pieceHighlighted = false;
 					}else if(controller.taking) {
 						selectedSquare.setFill(Color.rgb(0, 0, 0, 0));
+						selectedSquare2.setFill(Color.rgb(0, 0, 0, 0));
 						checkForPromotion();
 						controller.clickedPiece.setCoord(new Coord(controller.opponent.getTakenZone(controller.opponent.getTakenPieces()).getX(), controller.opponent.getTakenZone(controller.opponent.getTakenPieces()).getY()));
 						moveOnKeyPressed(controller.clickedPiece, controller.clickedPiece.getCoord().getX(), controller.clickedPiece.getCoord().getY());
@@ -88,7 +97,7 @@ public class Board{
 						pieceHighlighted = false;
 					}
 					else if(controller.pieceCurrentlySelected) {
-						//if same colour piece selected and piece already selected prior						
+						//if same colour piece selected and piece already selected prior		
 						print("Selected when piece already highlighted");
 						pieceHighlighted = true;
 						if(!controller.validMoves.isEmpty()) {
