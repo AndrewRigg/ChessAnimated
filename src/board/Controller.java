@@ -21,7 +21,7 @@ public class Controller {
 	ArrayList<Circle> validMoveMarkers;
 	ArrayList<Coord> validMoves;
 	Piece selectedPiece, clickedPiece;
-	static boolean pieceCurrentlySelected;
+	boolean pieceCurrentlySelected;
 	boolean movingPiece, taking, pieceHighlighted, startingMove = true;
 	int gridsize = Utils.GRIDSIZE;
 	public ArrayList<Coord> whiteTakenPieces, blackTakenPieces;
@@ -193,10 +193,15 @@ public class Controller {
 		validMoves.addAll(piece.getValidMoves());
 		for (Coord coord : validMoves) {
 			Circle circle = new Circle(gridsize / 3);
-			circle.setFill(Color.rgb(0, 255, 0, 0.5));
+			Circle circle2 = new Circle(gridsize / 3);
+			circle.setFill(Color.rgb(100, 255, 100, 0.5));
 			circle.setCenterX(coord.getX() * gridsize + gridsize / 2);
 			circle.setCenterY(coord.getY() * gridsize + gridsize / 2);
+			circle2.setFill(Color.rgb(0, 255, 0, 0.3));
+			circle2.setCenterX(coord.getX() * gridsize + gridsize / 2);
+			circle2.setCenterY(coord.getY() * gridsize + gridsize / 2);
 			validMoveMarkers.add(circle);
+			validMoveMarkers.add(circle2);
 		}
 	}
 
@@ -402,7 +407,7 @@ public class Controller {
 	public void takePiece(Piece piece) {
 		defaultSizes();
 		Coord current = piece.getCoord();
-		piece.setValidMoves(null);
+		//piece.setValidMoves(null);
 		takingPiece(current);
 		changeTurns();
 	}
@@ -441,6 +446,8 @@ public class Controller {
 	 */
 	public void unselectPiece() {
 		defaultSizes();
+		if(selectedPiece == clickedPiece) {
+		}
 		print("Unselecting Piece");
 		pieceCurrentlySelected = false;
 		selectedPiece = null;

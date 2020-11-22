@@ -19,7 +19,7 @@ public class Board{
 	int asciiCaps = Utils.ASCII_CAPS;
 	ArrayList<Circle> validMoveCircles;
 	public final Group group;
-	public boolean pieceSelected, piecesInitialised, pieceHighlighted;
+	public boolean pieceSelected, piecesInitialised, pieceHighlighted, flip=true;
 	public Piece currentPiece;
 	public Scene scene;
 	public Controller controller;
@@ -61,15 +61,31 @@ public class Board{
 				int x = (int)(event.getSceneX()/gridsize);
 				int y = (int)(event.getSceneY()/gridsize);
 				Coord clickedSquare = new Coord(x, y);
+				Coord square = new Coord((int)(selectedSquare.getX()/gridsize), (int)(selectedSquare.getY()/gridsize));
+				if(controller.compareCoords(clickedSquare, square)) {
+					flip = !flip;
+					print("flip is false: square clicked twice");
+				}else {
+					flip = true;
+				}
 				if(clickedSquare.onGrid()) {
 					selectedSquare.setX(gridsize*x+1);
 					selectedSquare.setY(gridsize*y+1);
 					selectedSquare2.setX(gridsize*x+1);
 					selectedSquare2.setY(gridsize*y+1);
-					selectedSquare.setFill(Color.rgb(255, 255, 255, 1));
-					selectedSquare2.setFill(Color.rgb(0, 200, 100, 0.3));
 				}
 					controller.determineClickType(clickedSquare);	
+					if(flip && controller.pieceCurrentlySelected) {
+						selectedSquare.setFill(Color.rgb(255, 255, 255, 1));
+						selectedSquare2.setFill(Color.rgb(0, 200, 100, 0.3));
+					}else if(flip){
+						selectedSquare.setFill(Color.rgb(255, 255, 255, 1));
+						selectedSquare2.setFill(Color.rgb(200, 100, 100, 0.3));
+					}
+					else if(!flip){
+						selectedSquare.setFill(Color.rgb(0, 0, 0, 0));
+						selectedSquare2.setFill(Color.rgb(0, 0, 0, 0));
+					}
 					if(controller.pieceCurrentlySelected) {
 						currentPiece = controller.selectedPiece;
 						//currentPiece.toFront();
@@ -105,6 +121,7 @@ public class Board{
 						}
 					}else {
 						print("No valid move selected");
+						//Not sure about these two lines:
 						pieceHighlighted = false;
 					}
 			}
