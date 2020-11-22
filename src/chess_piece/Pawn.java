@@ -8,7 +8,7 @@ public class Pawn extends Piece{
 	public Pawn(Type type, Colour colour, int number) {
 		super(type, colour, number);
 		notation = "";
-		setMagnitudeMove(1);
+		setMagnitudeMove(2);
 		setMaximumMove(1);
 	}
 	
@@ -19,8 +19,8 @@ public class Pawn extends Piece{
 	}
 	
 	//TODO: this needs careful consideration
-//	@Override
-//	public boolean movementCondition(int xDirection, int yDirection, int magnitude) {
-//		return (Math.abs(yDirection) != Math.abs(xDirection) && !(xDirection == 0 || yDirection == 0));
-//	}
+	@Override
+	public boolean movementCondition(int xDirection, int yDirection, int magnitude) {
+		return (xDirection==0 && yDirection == (isWhite? -1 : 1) || xDirection==0 && yDirection== (isWhite ? -2 : 2) && firstMove);
+	}	
 }

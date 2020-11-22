@@ -269,6 +269,7 @@ public class Controller {
 		defaultSizes();
 		print("Moving Piece");
 		movingPiece = true;
+		selectedPiece.firstMove = false;
 		selectedPiece.setCoord(new Coord(coord.getX(), coord.getY()));
 	}
 
@@ -280,6 +281,7 @@ public class Controller {
 	public void takingPiece(Coord coord) {
 		print("Taking Piece");
 		taking = true;
+		selectedPiece.firstMove = false;
 		selectedPiece.setCoord(new Coord(coord.getX(), coord.getY()));
 	}
 
