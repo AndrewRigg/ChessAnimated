@@ -18,7 +18,7 @@ public class Piece extends Rectangle{
 	Type type;
 	int number;
 	private int magnitudeMove, maximumMove;
-	public boolean thisPieceSelected, isWhite, thisPieceCondition, firstMove = true;
+	public boolean thisPieceSelected, isWhite, thisPieceCondition, firstMove = true, revealCheck;
 	private ArrayList<Coord> validMoves;
 	Coord coord;
 	PieceActions actions;
@@ -92,6 +92,10 @@ public class Piece extends Rectangle{
 	 */
 	public boolean movementCondition(int xDirection, int yDirection, int magnitude) {
 		return true;
+	}
+	
+	public void setRevealCheck(Player opponent) {
+		
 	}
 	
 	/**

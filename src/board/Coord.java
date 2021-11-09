@@ -29,4 +29,8 @@ public class Coord {
 		return (x >= Utils.FIRST_ROW && x <= Utils.EIGHTH_ROW && 
 				y >= Utils.FIRST_COLUMN && y <= Utils.EIGHTH_COLUMN);
 	}
+	
+	public String toString() {
+		return "Coordinate: x=" + x + ", y=" + y; 
+	}
 }

@@ -2,6 +2,7 @@ package board;
 
 import java.util.*;
 import chess_piece.*;
+import enums.Type;
 import javafx.animation.*;
 import javafx.event.*;
 import javafx.scene.*;
@@ -10,6 +11,7 @@ import javafx.scene.input.*;
 import javafx.scene.paint.*;
 import javafx.scene.shape.*;
 import javafx.scene.text.*;
+import javafx.util.Duration;
 
 public class Board{
 	
@@ -161,14 +163,56 @@ public class Board{
 //		controller.validMoves.clear();
 //	}
 	
+	private ArrayList<Coord> calculateTraversal(Piece piece, int toX, int toY) {
+		ArrayList<Coord> traversals = new ArrayList<Coord>();
+		System.out.println("Piece: currentX:" + (int)(piece.getX()/gridsize) + ", currentY: " + (int)(piece.getY()/gridsize) + ", toX: " + toX + ", toY: " + toY);
+		int xDiff = (int) Math.abs(toX - (int)(piece.getX()/gridsize));
+		int yDiff = (int) Math.abs(toY - (int)(piece.getY()/gridsize));
+		int xDir = (int) ((toX - (int)(piece.getX()/gridsize))/xDiff);
+		int yDir = (int) ((toY - (int)(piece.getY()/gridsize))/yDiff);
+		System.out.println("Xdiff: " + xDiff + " yDiff: " + yDiff + " xDir: " + xDir + " yDir: " + yDir);
+		traversals.add(new Coord(piece.getCoord().getX()+(xDir < 0 ? -1 : 0), piece.getCoord().getY()+(yDir > 0 ? 1 : 0)));
+		for(int i = 1; i <= xDiff; i++) {
+			Coord temp = new Coord((int)(piece.getX()/gridsize)+i*xDir, (int)(piece.getY()/gridsize));
+			traversals.add(temp);
+		}
+		for (int j = 1; j <= yDiff; j++) {
+			traversals.add(new Coord((int)(piece.getX()/gridsize)+xDir*xDiff, (int)(piece.getY()/gridsize)+j*yDir));
+		}
+		return traversals;
+	}
+	
+	private TranslateTransition animate(Duration duration, Piece piece, double toX, double toY) {
+		TranslateTransition transition = new TranslateTransition(Utils.TRANSLATION_PARTIAL_DURATION(0.5), piece);
+    	transition.setFromX(piece.getTranslateX());
+        transition.setFromY(piece.getTranslateY());
+        transition.setToX(toX);
+        transition.setToY(toY);
+		piece.setTranslateX(toX);
+        piece.setTranslateY(toY);
+        return transition;
+	}
+	
 	private void moveOnKeyPressed(Piece piece, int x, int y)
     {
-        final TranslateTransition transition = new TranslateTransition(Utils.TRANSLATE_DURATION, piece);
-        	transition.setFromX(piece.getTranslateX());
-            transition.setFromY(piece.getTranslateY());
-            transition.setToX(x*gridsize - piece.getX() + gridsize/4);
-            transition.setToY(y*gridsize - piece.getY() + gridsize/4);
+		if(Utils.PHYSICAL_BOARD_REPRESENTATION && piece.getType() == Type.KNIGHT) {
+			ArrayList<Coord> traversals  = new ArrayList<Coord>();
+			traversals = calculateTraversal(piece, x, y);
+			SequentialTransition sequence = new SequentialTransition(piece);
+			for(int i = 1; i < traversals.size(); i++) {
+				System.out.println(traversals.get(i).toString());
+				double toX = traversals.get(i).getX()*gridsize - piece.getX() + (i==traversals.size()-1 ? gridsize/4 : - gridsize/4);
+				double toY = traversals.get(i).getY()*gridsize - piece.getY() - (i==traversals.size()-1 ? gridsize/4 : - gridsize/4);
+				TranslateTransition transition = animate(Utils.TRANSLATION_PARTIAL_DURATION(0.5), piece, toX, toY);
+	            sequence.getChildren().add(transition);
+			}
+            sequence.play();
+		}else{
+			double toX = x*gridsize - piece.getX() + gridsize/4;
+			double toY = y*gridsize - piece.getY() + gridsize/4;
+			TranslateTransition transition = animate(Utils.TRANSLATE_DURATION, piece, toX, toY);
         	transition.playFromStart();
+		}
     }
 
 	private void drawLines() {

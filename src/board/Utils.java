@@ -1,9 +1,7 @@
 package board;
 
 import javafx.scene.paint.Color;
-import javafx.scene.text.Font;
-import javafx.scene.text.FontPosture;
-import javafx.scene.text.FontWeight;
+import javafx.scene.text.*;
 import javafx.util.Duration;
 
 /**
@@ -42,7 +40,8 @@ public class Utils {
 							EIGHTH_COLUMN = SEVENTH_COLUMN + 1,
 							BOARD_END = EIGHTH_COLUMN + BOARD_OFFSET_Y,
 							DEFAULT_SIZE = 30,
-							HIGHLIGHTED_SIZE = 40;
+							HIGHLIGHTED_SIZE = 40,
+							DURATION = 500;
 	
 	/**
 	 * Below are a list of commonly used points systems which can be set for the 'Type' enums
@@ -71,16 +70,20 @@ public class Utils {
 	
 	public static final String EMPTY = "";
 	
-	public static final Duration TRANSLATE_DURATION = Duration.millis(500); 
+	public static final Duration TRANSLATE_DURATION = Duration.millis(DURATION);
+	public static final Duration TRANSLATION_PARTIAL_DURATION(double x) {
+		return Duration.millis(DURATION/x); 
+	}
 	
-	public static final boolean BOARD_DEBUG 		= true,
-								PIECE_DEBUG 		= true,
-								PAWN_DEBUG  		= false,
-								KING_DEBUG  		= false,
-								PLAYER_DEBUG 		= true,
-								COORD_DEBUG 		= false,
-								CLOCK_DEBUG			= false, 
-								CONTROLLER_DEBUG	= true;
+	public static final boolean BOARD_DEBUG 					= true,
+								PIECE_DEBUG 					= true,
+								PAWN_DEBUG  					= false,
+								KING_DEBUG  					= false,
+								PLAYER_DEBUG 					= true,
+								COORD_DEBUG 					= false,
+								CLOCK_DEBUG						= false, 
+								CONTROLLER_DEBUG				= true,
+								PHYSICAL_BOARD_REPRESENTATION 	= false;
 	
 	public static final Font clockFont = Font.font("Century Gothic", FontWeight.MEDIUM, FontPosture.REGULAR, 20);
 	public static final Color run = Color.web("#00CC00"),

@@ -16,7 +16,7 @@ public class GameLauncher extends Application{
 	@Override
 	public void start(Stage stage) throws Exception {
 		setScene(
-		new Game(true));
+		new Game());
 //		new Game());
 //		new Game(false));
 //		new Game(0, 13, 1, 40));

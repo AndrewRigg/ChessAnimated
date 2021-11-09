@@ -19,17 +19,12 @@ public class Controller {
 	Stage stage = new Stage();
 	Player player1, player2, currentPlayer, opponent;
 	ArrayList<Circle> validMoveMarkers;
-	ArrayList<Coord> validMoves;
+	ArrayList<Coord> validMoves, whiteTakenPieces, blackTakenPieces;
 	Piece selectedPiece, clickedPiece;
-	boolean pieceCurrentlySelected;
-	boolean movingPiece, taking, pieceHighlighted, startingMove = true;
+	boolean pieceCurrentlySelected, movingPiece, taking, pieceHighlighted, startingMove = true;
 	int gridsize = Utils.GRIDSIZE;
-	public ArrayList<Coord> whiteTakenPieces, blackTakenPieces;
 
 	int[] promotionNumber = new int[6];
-	ButtonType buttonTypeOne;
-	ButtonType buttonTypeTwo;
-	ButtonType buttonTypeThree;
 	Button buttonOne, buttonTwo, buttonThree;
 	boolean promotionActive = false;
 	Optional<ButtonType> result;
@@ -54,17 +49,14 @@ public class Controller {
 		promotion.setTitle("Pawn Promotion");
 		promotion.getDialogPane().setMaxSize(2, 2);
 		Label label = new Label("Choose which piece to promote your pawn to:");
-		ImageView im1 = new ImageView(new Image(colour + knight));
-		ImageView im2 = new ImageView(new Image(colour + rook));
-		ImageView im3 = new ImageView(new Image(colour + queen));
 		buttonOne = new Button();
 		buttonOne.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
 				System.out.println("Promoted to Knight");
-				promoted = new Knight(Type.KNIGHT, selectedPiece.isWhite ? Colour.WHITE : Colour.BLACK,
+				selectedPiece = new Knight(Type.KNIGHT, selectedPiece.isWhite ? Colour.WHITE : Colour.BLACK,
 						promotionNumber[selectedPiece.isWhite ? 0 : 1]++, clickedPiece.getCoord());
-				promotePawn(promoted);
+				promotePawn(selectedPiece);
 				promotion.getDialogPane().getButtonTypes().addAll(ButtonType.CANCEL);
 				promotion.close();
 			}
@@ -74,9 +66,9 @@ public class Controller {
 			@Override
 			public void handle(ActionEvent event) {
 				System.out.println("Promoted to Rook");
-				promoted = new Rook(Type.ROOK, selectedPiece.isWhite ? Colour.WHITE : Colour.BLACK,
+				selectedPiece = new Rook(Type.ROOK, selectedPiece.isWhite ? Colour.WHITE : Colour.BLACK,
 						promotionNumber[selectedPiece.isWhite ? 0 : 1]++, clickedPiece.getCoord());
-				promotePawn(promoted);
+				promotePawn(selectedPiece);
 				promotion.getDialogPane().getButtonTypes().addAll(ButtonType.CANCEL);
 				promotion.close();
 			}
@@ -86,16 +78,16 @@ public class Controller {
 			@Override
 			public void handle(ActionEvent event) {
 				System.out.println("Promoted to Queen");
-				promoted = new Queen(Type.QUEEN, selectedPiece.isWhite ? Colour.WHITE : Colour.BLACK,
+				selectedPiece = new Queen(Type.QUEEN, selectedPiece.isWhite ? Colour.WHITE : Colour.BLACK,
 						promotionNumber[selectedPiece.isWhite ? 0 : 1]++, clickedPiece.getCoord());
-				promotePawn(promoted);
+				promotePawn(selectedPiece);
 				promotion.getDialogPane().getButtonTypes().addAll(ButtonType.CANCEL);
 				promotion.close();
 			}
 		});
-		buttonOne.setGraphic(im1);
-		buttonTwo.setGraphic(im2);
-		buttonThree.setGraphic(im3);
+		buttonOne.setGraphic(new ImageView(new Image(colour + knight)));
+		buttonTwo.setGraphic(new ImageView(new Image(colour + rook)));
+		buttonThree.setGraphic(new ImageView(new Image(colour + queen)));
 		buttonOne.setScaleX(0.5);
 		buttonOne.setScaleY(0.5);
 		buttonTwo.setScaleX(0.5);

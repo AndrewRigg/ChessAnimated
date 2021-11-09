@@ -21,6 +21,9 @@ public class Pawn extends Piece{
 	//TODO: this needs careful consideration
 	@Override
 	public boolean movementCondition(int xDirection, int yDirection, int magnitude) {
-		return (xDirection==0 && yDirection == (isWhite? -1 : 1) || xDirection==0 && yDirection== (isWhite ? -2 : 2) && firstMove);
-	}	
+		return (xDirection == 0 && yDirection == (isWhite? -1 : 1) || 
+				xDirection == 0 && yDirection == (isWhite ? -2 : 2) && firstMove ||
+				xDirection == 1 && yDirection == (isWhite? -1 : 1) && //&& opponent piece present here 
+				xDirection == -1 && yDirection == (isWhite? -1 : 1)); //&& oppponent piece present here);
+	}
 }

@@ -11,7 +11,6 @@ public class PlayerTimer {
 	Label countdown;
 	Timer timer;
 	Alert alert;
-	//Color colour;
 	private int minutes, seconds;
 	boolean running;
 
